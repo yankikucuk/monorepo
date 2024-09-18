@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
+  "*": "prettier --ignore-unknown --write",
+  "{src/**,tests/**}.{js,ts}": "eslint --fix",
+  "src/**.ts": "vitest related --run --config ../../vitest.config.ts"
+}

@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": "packages/package/src/index.ts",
+      "bookmarks": [
+        {
+          "line": 5,
+          "column": 4,
+          "label": "First Bookmark"
+        }
+      ]
+    }
+  ]
+}
