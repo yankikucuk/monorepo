@@ -1,0 +1,36 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["tsconfig.json"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "package.json", "vite.config.ts", "tsconfig.json"]
+    },
+    "format": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "src/**",
+        "dist/**",
+        "../../tsconfig.json",
+        "../../eslint.config.js",
+        "../../prettierrc.json",
+        "package.json"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["build"],
+      "inputs": [
+        "src/**",
+        "dist/**",
+        "../../tsconfig.json",
+        "../../eslint.config.js",
+        "../../prettierrc.json",
+        "package.json"
+      ]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": ["tests/**", "../../vitest.config.ts"]
+    }
+  }
+}
