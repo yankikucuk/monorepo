@@ -1,8 +1,11 @@
-### Common ###
+### General ###
 .turbo
 .husky/*
 !.husky/commit-msg
 !.husky/pre-commit
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 artifacts
 
 ### Linux ###
@@ -28,6 +31,7 @@ artifacts
 
 # Icon must end with two \r
 Icon
+
 
 # Thumbnails
 ._*
@@ -194,9 +198,11 @@ dist
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/bookmarks.json
 !.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/

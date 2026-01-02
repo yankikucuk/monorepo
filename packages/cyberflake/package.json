@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@april/cyberflake",
+  "version": "1.0.0",
+  "description": "A high-performance, Snowflake-inspired distributed ID generator designed as a core infrastructure primitive for the April monorepo. Provides globally unique, monotonically ordered identifiers with clock-regression tolerance and deterministic test support.",
+  "private": true,
+  "type": "module",
+  "main": "../../artifacts/cyberflake/index.js",
+  "typings": "typings/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "prettier --check ./src && eslint ./src --max-warnings=0",
+    "format": "prettier --write ./src && eslint --fix ./src",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
+  },
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.27.0"
+}

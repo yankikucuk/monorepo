@@ -1,36 +1,19 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["tsconfig.json"],
+  "$schema": "https://turborepo.com/schema.json",
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["src/**", "package.json", "vite.config.ts", "tsconfig.json"]
-    },
-    "format": {
-      "dependsOn": ["build"],
-      "inputs": [
-        "src/**",
-        "dist/**",
-        "../../tsconfig.json",
-        "../../eslint.config.js",
-        "../../prettierrc.json",
-        "package.json"
-      ]
-    },
-    "lint": {
-      "dependsOn": ["build"],
-      "inputs": [
-        "src/**",
-        "dist/**",
-        "../../tsconfig.json",
-        "../../eslint.config.js",
-        "../../prettierrc.json",
-        "package.json"
-      ]
+    "dev": {
+      "cache": false,
+      "persistent": false
     },
     "test": {
-      "dependsOn": ["build"],
-      "inputs": ["tests/**", "../../vitest.config.ts"]
-    }
+      "cache": false,
+      "persistent": false
+    },
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {},
+    "format": {},
+    "clean": {}
   }
 }

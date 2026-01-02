@@ -1,59 +1,60 @@
 {
-  "$schema": "https://json.schemastore.org/package.json",
-  "name": "{repo}",
-  "version": "0.0.1",
-  "description": "",
+  "$schema": "https://www.schemastore.org/package",
+  "name": "april",
+  "version": "0.1.0",
+  "description": "Amazing description!",
   "private": true,
   "type": "module",
   "scripts": {
     "prepare": "is-ci || husky",
-    "build": "turbo run build --concurrency=4",
-    "format": "turbo run format --concurrency=4",
-    "lint": "turbo run lint --concurrency=4",
-    "test": "turbo run test --concurrency=4",
-    "clear": "tsx ./packages/cleaner/src/app.ts",
+    "dev": "turbo run dev",
+    "test": "vitest",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "lint:build": "prettier --check ./packages && eslint ./packages",
+    "format": "turbo run format",
+    "format:build": "prettier --write ./packages && eslint --fix ./packages",
+    "clean": "turbo run clean",
+    "clean:root": "rm -rf node_modules .husky/_ .turbo pnpm-lock.yaml artifacts",
     "update": "pnpm --recursive update --interactive",
     "update:latest": "pnpm --recursive update --interactive --latest"
   },
   "keywords": [],
-  "homepage": "https://github.com/{org}/{repo}",
-  "funding": "https://github.com/{org}/{repo}?sponsor",
+  "homepage": "https://github.com/playerberry/april",
+  "funding": "https://github.com/playerberry/april?sponsor",
   "repository": {
-    "type": "git",
-    "url": "https://github.com/{org}/{repo}.git"
+    "type": "",
+    "url": "https://github.com/playerberry/april.git"
   },
   "bugs": {
-    "email": "kendinikertenkelebek@me.com",
-    "url": "https://github.com/{org}/{repo}/issues"
+    "email": "bugs@playerberry.com",
+    "url": "https://github.com/playerberry/april/issues"
   },
-  "dependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-angular": "^19.5.0",
-    "@favware/cliff-jumper": "^4.1.0",
-    "@types/node": "^22.5.5",
-    "@vitest/coverage-v8": "^2.1.1",
+  "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-angular": "^20.2.0",
+    "@types/node": "^25.0.3",
     "conventional-changelog-cli": "^5.0.0",
-    "eslint": "^9.10.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-jsdoc": "^50.2.3",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.6",
-    "is-ci": "^3.0.1",
-    "lint-staged": "^15.2.10",
-    "nodemon": "^3.1.5",
-    "prettier": "^3.3.3",
-    "tsx": "^4.19.1",
-    "turbo": "^2.1.2",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.6.0",
-    "vitest": "^2.1.1"
+    "eslint": "^9.39.2",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^61.5.0",
+    "eslint-plugin-unicorn": "^62.0.0",
+    "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "is-ci": "^4.1.0",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
+    "turbo": "^2.7.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.51.0",
+    "vitest": "^4.0.16"
   },
-  "engines": {
-    "node": ">= 22.8.0"
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
   },
-  "license": "LGPL-3.0-or-later",
-  "author": "Yankı Küçük <kendinikertenkelebek@me.com>",
-  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.27.0"
 }
