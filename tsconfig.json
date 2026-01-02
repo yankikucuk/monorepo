@@ -15,6 +15,12 @@
     "noUnusedParameters": true,
     "strict": true,
 
+    "noImplicitAny": true,
+    "useUnknownInCatchVariables": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": false,
+
     // Modules
     "allowArbitraryExtensions": false,
     "allowImportingTsExtensions": false,
@@ -38,5 +44,5 @@
     "target": "ESNext",
     "useDefineForClassFields": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "artifacts", "**/*.test.ts"]
 }

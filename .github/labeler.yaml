@@ -3,3 +3,9 @@ packages:api:
       - any-glob-to-any-file:
           - packages/api/*
           - packages/api/**/*
+
+packages:cyberflake:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/cyberflake/*
+          - packages/cyberflake/**/*

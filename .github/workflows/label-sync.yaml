@@ -5,14 +5,14 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - stage
     paths:
       - '.github/labels.yaml'
 jobs:
   label-sync:
     name: Label sync
     runs-on: ubuntu-latest
-    if: github.repository_owner == '{org}'
+    if: github.repository_owner == 'playerberry'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,3 +21,4 @@ jobs:
         uses: crazy-max/ghaction-github-labeler@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          yaml-file: .github/labels.yaml
