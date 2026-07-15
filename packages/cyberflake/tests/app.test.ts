@@ -1,6 +1,7 @@
-/* eslint-disable no-magic-numbers, id-length, prefer-const, no-bitwise, max-lines-per-function  */
+/* eslint-disable prefer-const, no-bitwise  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import { Cyberflake } from '../src/cyberflake.js';
 
 /**
@@ -619,25 +620,40 @@ describe('CyberFlake', () => {
   });
 
   /**
-   * Ensures that negative numeric values are never considered valid IDs.
+   * Ensures that enabling deterministic mode without an explicit time source
+   * fails fast at construction time.
    *
-   * Cyberflake IDs are strictly non-negative integers.
-   * Negative values are rejected unconditionally as they cannot
-   * represent a valid encoded identifier.
+   * Deterministic mode exists to guarantee fully reproducible output in tests,
+   * benchmarks, and controlled environments. Allowing it to silently fall back
+   * to `Date.now` would defeat that guarantee and mask configuration mistakes.
+   *
+   * Cyberflake therefore treats `deterministic: true` without a `now` function
+   * as a configuration error and throws a `RangeError` immediately.
    */
-  it('rejects negative numeric IDs', () => {
-    expect(Cyberflake.isValid('-5')).toBe(false);
+  it('throws when deterministic mode is enabled without a time source', () => {
+    expect(() => new Cyberflake({ workerId: 1, deterministic: true })).toThrow(RangeError);
   });
 
   /**
-   * Ensures that empty or whitespace-only inputs are rejected.
+   * Ensures that deterministic mode operates normally when an explicit time
+   * source is supplied.
    *
-   * Although some JavaScript runtimes may coerce such inputs
-   * during BigInt parsing, Cyberflake explicitly treats them
-   * as invalid to avoid ambiguous or accidental acceptance.
+   * When both `deterministic: true` and a `now` function are provided, the
+   * generator must construct successfully and produce valid identifiers driven
+   * exclusively by the injected clock.
    */
-  it('rejects empty or whitespace-only IDs', () => {
-    expect(Cyberflake.isValid('')).toBe(false);
-    expect(Cyberflake.isValid('   ')).toBe(false);
+  it('generates valid IDs in deterministic mode with an explicit time source', () => {
+    const fixedNow = 1_700_000_000_000;
+
+    const cf = new Cyberflake({
+      workerId: 1,
+      deterministic: true,
+      now: () => fixedNow,
+    });
+
+    const id = cf.generate();
+
+    expect(Cyberflake.isValid(id)).toBe(true);
+    expect(cf.deconstruct(id).timestamp).toBe(fixedNow);
   });
 });

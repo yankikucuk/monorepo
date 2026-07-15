@@ -1,5 +1,3 @@
-/* eslint-disable no-magic-numbers, no-console */
-
 /**
  * Captures and logs a snapshot of the current Node.js process memory usage.
  *

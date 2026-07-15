@@ -9,7 +9,13 @@ export default defineConfig({
       enabled: false,
       reporter: ['text', 'lcov', 'json'],
       provider: 'v8',
-      include: ['test'],
+      include: ['packages/cyberflake/src/**/*.ts'],
+      thresholds: {
+        lines: 90,
+        functions: 90,
+        branches: 90,
+        statements: 90,
+      },
     },
   },
 });

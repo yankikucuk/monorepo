@@ -1,0 +1,58 @@
+# Contributing
+
+Thanks for contributing to April! This guide covers the local workflow and the
+conventions enforced by CI.
+
+## Prerequisites
+
+- Node.js `>=26` (`nvm use` reads [`.nvmrc`](.nvmrc))
+- pnpm `>=11` (via Corepack — the `packageManager` field pins the exact version)
+
+```bash
+pnpm install
+```
+
+## Development workflow
+
+1. Create a branch off `stage`.
+2. Make your change. Add or update tests and TSDoc.
+3. Run the quality gates locally (see below).
+4. Add a changeset if your change affects a package's public behavior:
+   ```bash
+   pnpm changeset
+   ```
+5. Commit using the Angular convention (enforced by commitlint), e.g.
+   `feat(cyberflake): add batch generation`. Husky runs lint-staged and
+   commitlint on commit.
+6. Open a PR against `stage`.
+
+## Quality gates
+
+CI runs — and you should run locally before pushing:
+
+```bash
+pnpm typecheck    # tsc --noEmit
+pnpm lint         # Prettier + strict, type-checked ESLint
+pnpm test:coverage # Vitest with 90% coverage thresholds
+pnpm build        # emit to dist/
+pnpm manypkg      # workspace consistency
+pnpm depcruise    # dependency boundaries
+pnpm knip         # unused deps/exports (advisory)
+```
+
+## Conventions
+
+- **No inline `eslint-disable`** in product code — rule exceptions live in the
+  central ESLint config.
+- **Documentation is mandatory** — public APIs need TSDoc.
+- Formatting is handled by Prettier; do not hand-format.
+- Shared config changes go through the `@april/eslint-config`,
+  `@april/prettier-config`, and `@april/tsconfig` packages.
+
+## Adding a package
+
+New packages live under `packages/`. Extend the shared presets:
+
+- `tsconfig.json` → `@april/tsconfig/library.json` (or `base.json`)
+- ESLint via the root config's file globs
+- Prettier is inherited from the root config

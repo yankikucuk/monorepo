@@ -1,7 +1,8 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "@april/tsconfig/library.json",
   "compilerOptions": {
-    "outDir": "../../artifacts/cyberflake",
-    "typeRoots": ["./src/typings", "../../node_modules/@types"]
-  }
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src"]
 }

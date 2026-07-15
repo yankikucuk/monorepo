@@ -1,11 +1,34 @@
-packages:api:
-  - changed-files:
-      - any-glob-to-any-file:
-          - packages/api/*
-          - packages/api/**/*
-
 packages:cyberflake:
   - changed-files:
       - any-glob-to-any-file:
           - packages/cyberflake/*
           - packages/cyberflake/**/*
+
+packages:eslint-config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/eslint-config/*
+          - packages/eslint-config/**/*
+
+packages:prettier-config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/prettier-config/*
+          - packages/prettier-config/**/*
+
+packages:tsconfig:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/tsconfig/*
+          - packages/tsconfig/**/*
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - docs/**/*

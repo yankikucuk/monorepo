@@ -1,5 +1,3 @@
-/* eslint-disable no-console, no-magic-numbers, id-length */
-
 /**
  * Cyberflake Same-Millisecond Benchmark
  *

@@ -1,7 +1,14 @@
 packages:
   - packages/*
 
-ignoredBuiltDependencies:
-  - esbuild
+# esbuild ve unrs-resolver platform binary'lerini optionalDependencies ile getirir;
+# postinstall build script'lerine gerek yok (false = çalıştırma).
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
 
 linkWorkspacePackages: true
+
+minimumReleaseAgeExclude:
+  - eslint-plugin-unicorn@72.0.0
+  - knip@6.27.0

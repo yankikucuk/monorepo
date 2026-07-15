@@ -1,0 +1,28 @@
+{
+  "forbidden": [
+    {
+      "name": "no-circular",
+      "severity": "error",
+      "comment": "Circular dependencies make the graph hard to reason about and break incremental builds.",
+      "from": {},
+      "to": { "circular": true },
+    },
+    {
+      "name": "config-packages-are-leaves",
+      "severity": "error",
+      "comment": "Shared config packages must never depend on runtime library code.",
+      "from": { "path": "^packages/(eslint-config|prettier-config|tsconfig)/" },
+      "to": { "path": "^packages/cyberflake/" },
+    },
+  ],
+  "options": {
+    "doNotFollow": { "path": "node_modules" },
+    "exclude": { "path": "(dist|node_modules|/tests/|/benchmarks/|\\.d\\.ts$)" },
+    "tsConfig": { "fileName": "tsconfig.json" },
+    "tsPreCompilationDeps": true,
+    "enhancedResolveOptions": {
+      "exportsFields": ["exports"],
+      "conditionNames": ["import", "types", "default"],
+    },
+  },
+}
