@@ -1,0 +1,9 @@
+{
+  "extends": "@april/tsconfig/base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

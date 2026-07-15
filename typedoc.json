@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["packages/cyberflake/src/index.ts"],
+  "tsconfig": "packages/cyberflake/tsconfig.json",
+  "out": "docs/api",
+  "readme": "packages/cyberflake/README.md",
+  "excludeInternal": true,
+  "githubPages": false
+}

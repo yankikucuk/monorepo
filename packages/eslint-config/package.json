@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@april/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared, strict, type-checked flat ESLint configuration for the April monorepo. Exposes `base`, `frontend`, and `backend` presets.",
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "flat-config",
+    "typescript",
+    "strict"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/playerberry/april.git",
+    "directory": "packages/eslint-config"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./base": "./src/base.ts",
+    "./frontend": "./src/frontend.ts",
+    "./backend": "./src/backend.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "prettier --check ./src && eslint ./src --max-warnings=0",
+    "format": "prettier --write ./src && eslint --fix ./src",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "dependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.7.2",
+    "@eslint/js": "^10.0.1",
+    "eslint-plugin-check-file": "^3.3.1",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-jsdoc": "^63.0.13",
+    "eslint-plugin-perfectionist": "^5.10.0",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-regexp": "^3.1.1",
+    "eslint-plugin-sonarjs": "^4.2.0",
+    "eslint-plugin-unicorn": "^72.0.0",
+    "globals": "^17.7.0",
+    "typescript-eslint": "^8.64.0"
+  },
+  "devDependencies": {
+    "@april/tsconfig": "workspace:*",
+    "eslint": "^10.7.0",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "eslint": ">=10.0.0",
+    "typescript": ">=6.0.0 <6.1.0"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@april/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript configuration presets for the April monorepo.",
+  "keywords": [
+    "tsconfig",
+    "typescript",
+    "config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/playerberry/april.git",
+    "directory": "packages/tsconfig"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
+  },
+  "type": "module",
+  "exports": {
+    "./base.json": "./base.json",
+    "./library.json": "./library.json"
+  },
+  "files": [
+    "base.json",
+    "library.json"
+  ],
+  "scripts": {
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "clean": "rm -rf node_modules .turbo"
+  }
+}

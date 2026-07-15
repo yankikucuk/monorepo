@@ -80,6 +80,10 @@ now += 1;
 cf.generate();
 ```
 
+> **Note:** When `deterministic` is `true`, an explicit `now` time source is
+> **required**. Omitting it throws a `RangeError` at construction time, so the
+> generator never silently falls back to `Date.now`.
+
 Used for:
 
 - Unit tests
@@ -149,7 +153,13 @@ Benchmarks are provided under:
 packages/cyberflake/benchmarks/
 ```
 
-Run with:
+Run all benchmarks via the package script:
+
+```bash
+pnpm --filter @april/cyberflake bench
+```
+
+Or run an individual benchmark directly:
 
 ```bash
 pnpm tsx packages/cyberflake/benchmarks/generate.bench.ts
@@ -167,6 +177,31 @@ pnpm tsx packages/cyberflake/benchmarks/sameMs.bench.ts
 - All guarantees are enforced via tests
 
 This package is designed to be **boring, predictable, and safe**.
+
+---
+
+## Architecture
+
+Cyberflake is intentionally split into small, single-purpose modules. The public
+entry point re-exports only the class and its types; everything under
+`src/internal/` is a private implementation detail and may change without notice.
+
+```
+src/
+├── index.ts        # Public entry point (Cyberflake + types)
+├── cyberflake.ts   # Thin orchestration class holding generator state
+├── constants.ts    # Bit layout, shifts, masks, ranges
+├── types.ts        # Public type definitions
+└── internal/
+    ├── time.ts       # Epoch enforcement & logical time
+    ├── clock.ts      # Clock-regression handling
+    ├── sequence.ts   # Intra-millisecond sequencing & overflow
+    ├── encoding.ts   # Bit packing / unpacking / parsing
+    └── validation.ts # Config guards & semantic ID validation
+```
+
+Each internal module is pure and independently testable; the class merely wires
+them together in the correct order.
 
 ---
 

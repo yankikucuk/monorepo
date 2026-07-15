@@ -1,0 +1,10 @@
+# Default owner for everything in the repo.
+* @yankikucuk
+
+# Shared configuration packages — changes here affect every package.
+/packages/eslint-config/  @yankikucuk
+/packages/prettier-config/ @yankikucuk
+/packages/tsconfig/       @yankikucuk
+
+# CI / repository tooling.
+/.github/                 @yankikucuk

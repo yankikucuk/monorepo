@@ -1,7 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../artifacts/api",
-    "typeRoots": ["./src/typings", "../../node_modules/@types"]
-  }
-}

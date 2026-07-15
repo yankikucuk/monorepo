@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [stage]
+  pull_request:
+    branches: [stage]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck · Lint · Test · Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test (with coverage)
+        run: pnpm test:coverage
+
+      - name: Build
+        run: pnpm build
+
+      - name: Workspace consistency (manypkg)
+        run: pnpm manypkg
+
+      - name: Dependency boundaries (dependency-cruiser)
+        run: pnpm depcruise
+
+      - name: package.json order (sort-package-json)
+        run: pnpm sort:pkg:check
+
+  audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit (high severity)
+        run: pnpm audit --audit-level=high
+
+  knip:
+    name: Knip (kullanılmayan bağımlılık/export - bilgilendirici)
+    runs-on: ubuntu-latest
+    # Yeni eklenen araç: şu an temiz geçiyor ama gate yapmadan önce bir süre
+    # gözlemlemek için advisory. Kararlıysa continue-on-error'ı kaldırıp gate yapın.
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Knip
+        run: pnpm knip

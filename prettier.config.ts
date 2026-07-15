@@ -1,10 +1,1 @@
-export default {
-  printWidth: 120,
-  trailingComma: 'es5',
-  tabWidth: 2,
-  semi: true,
-  singleQuote: true,
-  arrowParens: 'avoid',
-  quoteProps: 'as-needed',
-  endOfLine: 'lf',
-};
+export { default } from '@april/prettier-config';
