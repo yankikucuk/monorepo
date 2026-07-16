@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import { INITIAL, MASKS, NUMERIC } from '../constants.js';
+import { INITIAL, MASKS } from '../constants.js';
 
 /**
  * Outcome of a sequence evaluation for a single generation step.
@@ -49,15 +49,15 @@ export const handleSequence = (
     return { timestamp, sequence: INITIAL.SEQUENCE, offset };
   }
 
-  const nextSequence = sequence + NUMERIC.BIGINT_ONE;
+  const nextSequence = sequence + 1n;
 
   if (nextSequence <= MASKS.SEQUENCE) {
     return { timestamp, sequence: nextSequence, offset };
   }
 
   return {
-    timestamp: timestamp + NUMERIC.BIGINT_ONE,
+    timestamp: timestamp + 1n,
     sequence: INITIAL.SEQUENCE,
-    offset: offset + NUMERIC.BIGINT_ONE,
+    offset: offset + 1n,
   };
 };

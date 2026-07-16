@@ -1,4 +1,4 @@
-/* eslint-disable prefer-const, no-bitwise  */
+/* eslint-disable no-bitwise */
 
 import { describe, expect, it } from 'vitest';
 
@@ -333,7 +333,7 @@ describe('CyberFlake', () => {
    * and to isolate decoding logic from time-related variability.
    */
   it('deconstructs ID into correct components', () => {
-    let now = 1_700_000_000_000;
+    const now = 1_700_000_000_000;
 
     const cf = new Cyberflake({
       workerId: 7,
@@ -342,7 +342,7 @@ describe('CyberFlake', () => {
     });
 
     const id = cf.generate();
-    const data = cf.deconstruct(id);
+    const data = Cyberflake.deconstruct(id);
 
     expect(data.workerId).toBe(7);
     expect(data.processId).toBe(3);
@@ -375,7 +375,7 @@ describe('CyberFlake', () => {
    * time-related assertions remain stable and reproducible.
    */
   it('maintains consistency between generate and deconstruct', () => {
-    let now = 1_700_000_000_000;
+    const now = 1_700_000_000_000;
 
     const cf = new Cyberflake({
       workerId: 12,
@@ -384,7 +384,7 @@ describe('CyberFlake', () => {
     });
 
     const id = cf.generate();
-    const data = cf.deconstruct(id);
+    const data = Cyberflake.deconstruct(id);
 
     expect(data.workerId).toBe(12);
     expect(data.processId).toBe(7);
@@ -654,6 +654,43 @@ describe('CyberFlake', () => {
     const id = cf.generate();
 
     expect(Cyberflake.isValid(id)).toBe(true);
-    expect(cf.deconstruct(id).timestamp).toBe(fixedNow);
+    expect(Cyberflake.deconstruct(id).timestamp).toBe(fixedNow);
+  });
+
+  /**
+   * Ensures that fractional timestamps from high-resolution time sources are
+   * truncated to whole milliseconds instead of crashing.
+   *
+   * `Date.now()` always returns integers, but injected time sources may not
+   * (e.g. sources derived from `performance.now()`). The layout encodes whole
+   * milliseconds, so fractional input must be truncated toward zero rather
+   * than surfacing as an obscure `BigInt` conversion error.
+   */
+  it('truncates fractional time sources to whole milliseconds', () => {
+    const fractionalNow = 1_700_000_000_000.75;
+
+    const cf = new Cyberflake({
+      workerId: 1,
+      now: () => fractionalNow,
+    });
+
+    const id = cf.generate();
+
+    expect(Cyberflake.isValid(id)).toBe(true);
+    expect(Cyberflake.deconstruct(id).timestamp).toBe(1_700_000_000_000);
+  });
+
+  /**
+   * Ensures that non-integer worker and process identifiers are rejected at
+   * construction time.
+   *
+   * A fractional identifier cannot be represented in a fixed-width bit field;
+   * accepting one would silently corrupt the encoded value. The constructor
+   * therefore fails fast with a clear `RangeError` instead of deferring to an
+   * obscure `BigInt` conversion failure at generation time.
+   */
+  it('throws if workerId or processId is not an integer', () => {
+    expect(() => new Cyberflake({ workerId: 1.5 })).toThrow(RangeError);
+    expect(() => new Cyberflake({ workerId: 1, processId: 2.5 })).toThrow(RangeError);
   });
 });

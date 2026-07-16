@@ -30,6 +30,21 @@ import { assertValidProcessId, assertValidWorkerId, isValidId } from './internal
  *
  * Each instance maintains its own internal state and must be configured with a
  * unique `(workerId, processId)` pair in distributed environments.
+ * @example
+ * ```ts
+ * import { Cyberflake } from '@april/cyberflake';
+ *
+ * const generator = new Cyberflake({ workerId: 1, processId: 0 });
+ *
+ * const id = generator.generate();
+ * // => '158110629309382656'
+ *
+ * Cyberflake.deconstruct(id).workerId;
+ * // => 1
+ *
+ * Cyberflake.isValid(id);
+ * // => true
+ * ```
  */
 export class Cyberflake {
   /** Worker identifier encoded into every generated ID. */
@@ -83,6 +98,11 @@ export class Cyberflake {
    * The pipeline reads the current time, converts it to logical time, absorbs
    * any clock regression, resolves the intra-millisecond sequence, commits the
    * resulting state, and packs the fields into a single identifier.
+   * @example
+   * ```ts
+   * const id = generator.generate();
+   * // => '158110629309382656' (safe for DB keys, logs, JSON)
+   * ```
    * @throws {RangeError} If the system time precedes the Cyberflake epoch.
    * @returns {string} The generated Cyberflake ID as a decimal string.
    */
@@ -101,10 +121,24 @@ export class Cyberflake {
 
   /**
    * Deconstructs a Cyberflake ID into its individual components.
+   *
+   * Static because decoding depends only on the fixed bit layout, never on
+   * generator state — any ID can be decoded without an instance.
+   * @example
+   * ```ts
+   * const parts = Cyberflake.deconstruct('158110629309382656');
+   * parts.timestamp; // 1_700_000_000_000
+   * parts.workerId; // 1
+   * parts.processId; // 0
+   * parts.sequence; // 0
+   * ```
    * @param {string | bigint} id - Cyberflake ID to decode.
+   * @throws {SyntaxError} If `id` is a string that cannot be parsed as an
+   * integer. Use {@link Cyberflake.isValid} first when handling untrusted
+   * input.
    * @returns {DeconstructedCyberflake} The recovered components.
    */
-  deconstruct(id: string | bigint): DeconstructedCyberflake {
+  static deconstruct(id: string | bigint): DeconstructedCyberflake {
     const value = typeof id === 'bigint' ? id : BigInt(id);
 
     return deconstructId(value);
@@ -112,6 +146,14 @@ export class Cyberflake {
 
   /**
    * Performs semantic validation of a Cyberflake ID.
+   *
+   * Never throws: unparseable, negative, or oversized input simply returns
+   * `false`, making this safe as a guard for untrusted input.
+   * @example
+   * ```ts
+   * Cyberflake.isValid('158110629309382656'); // true
+   * Cyberflake.isValid('not-a-number'); // false
+   * ```
    * @param {string} id - Cyberflake ID as a string.
    * @returns {boolean} `true` if the ID is structurally valid.
    */

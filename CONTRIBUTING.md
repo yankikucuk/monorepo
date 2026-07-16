@@ -51,8 +51,13 @@ pnpm knip         # unused deps/exports (advisory)
 
 ## Adding a package
 
-New packages live under `packages/`. Extend the shared presets:
+New packages live under `packages/`; shared configuration packages live under
+`packages/shared/`. Extend the shared presets (consumed by package name, so
+location never matters):
 
 - `tsconfig.json` → `@april/tsconfig/library.json` (or `base.json`)
 - ESLint via the root config's file globs
 - Prettier is inherited from the root config
+
+Then add the new source glob to the root `eslint.config.ts` product block and,
+if the package emits code, point `main`/`types`/`exports` at its `dist/`.

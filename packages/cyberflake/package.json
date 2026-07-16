@@ -32,7 +32,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
@@ -45,7 +46,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "prettier --check ./src && eslint ./src --max-warnings=0",
     "format": "prettier --write ./src && eslint --fix ./src",
-    "bench": "tsx benchmarks/generate.bench.ts && tsx benchmarks/sameMs.bench.ts",
+    "bench": "NODE_OPTIONS=--expose-gc tsx benchmarks/generate.bench.ts && NODE_OPTIONS=--expose-gc tsx benchmarks/sameMs.bench.ts",
     "clean": "rm -rf node_modules .turbo dist"
   },
   "devDependencies": {

@@ -27,8 +27,8 @@ export default tseslint.config(
     files: [
       'eslint.config.ts',
       '*.config.ts',
-      'packages/eslint-config/src/**/*.ts',
-      'packages/prettier-config/src/**/*.ts',
+      'scripts/**/*.mjs',
+      'packages/shared/*/src/**/*.ts',
       'packages/*/tests/**/*.ts',
       'packages/*/benchmarks/**/*.ts',
     ],
@@ -60,15 +60,9 @@ export default tseslint.config(
     },
   },
   {
-    files: ['packages/cyberflake/src/internal/encoding.ts', 'packages/cyberflake/src/internal/validation.ts'],
+    files: ['packages/cyberflake/src/internal/encoding.ts'],
     rules: {
       'no-bitwise': 'off',
-    },
-  },
-  {
-    files: ['packages/cyberflake/src/cyberflake.ts'],
-    rules: {
-      'class-methods-use-this': 'off',
     },
   }
 );

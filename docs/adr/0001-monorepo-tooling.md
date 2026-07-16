@@ -14,9 +14,11 @@ package management, and shared configuration that scales without ceremony.
   protocol). pnpm is pinned via `packageManager` / Corepack.
 - **Turborepo** for task orchestration and caching (`build`, `typecheck`,
   `lint`, `test`, `format`, `clean`). Build outputs are declared for caching.
-- **Shared config packages** rather than duplicated root config:
-  `@april/tsconfig` (TS presets), `@april/eslint-config` (flat ESLint presets),
-  `@april/prettier-config` (Prettier).
+- **Shared config packages** rather than duplicated root config, grouped under
+  `packages/shared/`: `@april/tsconfig` (TS presets), `@april/eslint-config`
+  (flat ESLint presets), `@april/prettier-config` (Prettier). They are consumed
+  by package name, so their location under `packages/shared/` is an
+  organizational detail — moving them does not affect consumers.
 - **Per-package `dist/`** build output (not a shared top-level `artifacts/`),
   with `exports`/`types` pointing at emitted `.d.ts`.
 - **No TypeScript project references.** Turborepo already orchestrates build

@@ -4,23 +4,28 @@ packages:cyberflake:
           - packages/cyberflake/*
           - packages/cyberflake/**/*
 
+packages:shared:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/shared/**/*
+
 packages:eslint-config:
   - changed-files:
       - any-glob-to-any-file:
-          - packages/eslint-config/*
-          - packages/eslint-config/**/*
+          - packages/shared/eslint-config/*
+          - packages/shared/eslint-config/**/*
 
 packages:prettier-config:
   - changed-files:
       - any-glob-to-any-file:
-          - packages/prettier-config/*
-          - packages/prettier-config/**/*
+          - packages/shared/prettier-config/*
+          - packages/shared/prettier-config/**/*
 
 packages:tsconfig:
   - changed-files:
       - any-glob-to-any-file:
-          - packages/tsconfig/*
-          - packages/tsconfig/**/*
+          - packages/shared/tsconfig/*
+          - packages/shared/tsconfig/**/*
 
 ci:
   - changed-files:
