@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - packages/shared/*
 
 # esbuild ve unrs-resolver platform binary'lerini optionalDependencies ile getirir;
 # postinstall build script'lerine gerek yok (false = çalıştırma).

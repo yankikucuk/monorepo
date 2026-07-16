@@ -18,7 +18,7 @@ import process from 'node:process';
 
 import { sortPackageJson } from 'sort-package-json';
 
-const DEFAULT_PATTERNS = ['package.json', 'packages/*/package.json'];
+const DEFAULT_PATTERNS = ['package.json', 'packages/*/package.json', 'packages/shared/*/package.json'];
 
 const args = process.argv.slice(2);
 const check = args.includes('--check');

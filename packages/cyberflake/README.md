@@ -95,8 +95,11 @@ Used for:
 
 ## Deconstruction
 
+Decoding is **static** — it depends only on the bit layout, so no generator
+instance is needed:
+
 ```ts
-const data = cf.deconstruct(id);
+const data = Cyberflake.deconstruct(id);
 
 console.log(data.timestamp);
 console.log(data.workerId);
@@ -116,26 +119,45 @@ Useful for:
 ## Validation
 
 ```ts
-Cyberflake.isValid(id); // boolean
+Cyberflake.isValid(id); // boolean — never throws
 ```
 
-Performs **semantic validation**, not just parsing:
+Accepts exactly the values that are structurally valid Cyberflakes:
 
-- Bit layout correctness
-- Epoch validity
-- Worker / process bounds
-- Non-negative constraint
+- Non-empty, parseable integer strings
+- Non-negative values
+- Values that fit the 63-bit layout
+
+Field-level bounds (worker, process, sequence) need no separate checks — the
+bit layout guarantees them structurally for any value that passes the size
+check. `isValid` is safe as a guard for untrusted input; `deconstruct` throws
+on unparseable strings, so validate first when input is untrusted.
+
+---
+
+## Bit Layout
+
+Each ID is a 63-bit unsigned integer, returned as a decimal string:
+
+| Field     | Bits | Range         | Purpose                             |
+| --------- | ---- | ------------- | ----------------------------------- |
+| timestamp | 41   | ~69 years     | Milliseconds since the custom epoch |
+| worker    | 5    | 0–31          | Logical node / service instance     |
+| process   | 5    | 0–31          | Process within a worker             |
+| sequence  | 12   | 0–4095 per ms | Disambiguates same-millisecond IDs  |
+
+Epoch: `2015-01-01T00:00:00.000Z`.
 
 ---
 
 ## Performance
 
-Measured on Node.js 18+:
+Measured on Node.js 26 (Apple Silicon):
 
 | Scenario               | Throughput   |
 | ---------------------- | ------------ |
-| Normal generation      | ~10M IDs/sec |
-| Same-millisecond burst | ~14M IDs/sec |
+| Normal generation      | ~12M IDs/sec |
+| Same-millisecond burst | ~18M IDs/sec |
 
 Memory behavior:
 
@@ -207,12 +229,13 @@ them together in the correct order.
 
 ## Versioning
 
-- **v1.0.0** — Initial stable release
-- Public API is considered stable
-- Breaking changes will follow semver
+Versions and changelogs are managed with [Changesets](../../.changeset); breaking
+changes follow semver. The public API surface is `Cyberflake`,
+`CyberflakeConfig`, and `DeconstructedCyberflake` — everything under
+`src/internal/` may change without notice.
 
 ---
 
 ## License
 
-Internal — April Monorepo
+Apache-2.0 — see the repository [LICENSE](../../LICENSE).

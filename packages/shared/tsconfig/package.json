@@ -12,7 +12,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/playerberry/april.git",
-    "directory": "packages/tsconfig"
+    "directory": "packages/shared/tsconfig"
   },
   "license": "Apache-2.0",
   "author": {
@@ -32,5 +32,8 @@
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "clean": "rm -rf node_modules .turbo"
+  },
+  "engines": {
+    "node": ">=26.0.0"
   }
 }

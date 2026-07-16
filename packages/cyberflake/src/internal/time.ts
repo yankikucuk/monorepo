@@ -16,14 +16,18 @@ import { TIME } from '../constants.js';
 /**
  * Reads the current time from the injected time source and enforces that it is
  * not earlier than the Cyberflake epoch.
+ *
+ * Fractional timestamps (e.g. from high-resolution time sources) are truncated
+ * toward zero, since the layout encodes whole milliseconds.
  * @param {() => number} now - Time source returning milliseconds since the Unix
  * epoch (typically `Date.now` or a deterministic stub).
- * @throws {RangeError} If the reported time precedes the Cyberflake epoch and
- * therefore cannot be represented within the timestamp bit field.
- * @returns {bigint} The current physical time, in milliseconds, as a `bigint`.
+ * @throws {RangeError} If the reported time precedes the Cyberflake epoch, or
+ * if the time source returns a non-finite value such as `NaN`.
+ * @returns {bigint} The current physical time, in whole milliseconds, as a
+ * `bigint`.
  */
 export const readCurrentTime = (now: () => number): bigint => {
-  const current = BigInt(now());
+  const current = BigInt(Math.trunc(now()));
 
   if (current < TIME.EPOCH) {
     throw new RangeError('System time is before Cyberflake epoch. Refusing to generate ID.');

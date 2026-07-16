@@ -21,7 +21,9 @@ export const backend = tseslint.config(base, {
     },
   },
   rules: {
-    'no-magic-numbers': 'error',
+    // -1/0/1 (and their bigint forms) are structural, not "magic" — naming
+    // them (e.g. NUMERIC.ONE) adds indirection without documentation value.
+    'no-magic-numbers': ['error', { ignore: [-1, 0, 1, '-1n', '0n', '1n'] }],
     'no-sync': 'error',
   },
 });

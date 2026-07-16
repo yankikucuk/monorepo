@@ -9,13 +9,13 @@ importers:
     devDependencies:
       '@april/eslint-config':
         specifier: workspace:*
-        version: link:packages/eslint-config
+        version: link:packages/shared/eslint-config
       '@april/prettier-config':
         specifier: workspace:*
-        version: link:packages/prettier-config
+        version: link:packages/shared/prettier-config
       '@april/tsconfig':
         specifier: workspace:*
-        version: link:packages/tsconfig
+        version: link:packages/shared/tsconfig
       '@changesets/cli':
         specifier: ^2.31.0
         version: 2.31.0(@types/node@26.1.1)
@@ -81,12 +81,12 @@ importers:
     devDependencies:
       '@april/tsconfig':
         specifier: workspace:*
-        version: link:../tsconfig
+        version: link:../shared/tsconfig
       tsx:
         specifier: ^4.23.1
         version: 4.23.1
 
-  packages/eslint-config:
+  packages/shared/eslint-config:
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: ^4.7.2
@@ -135,7 +135,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/prettier-config:
+  packages/shared/prettier-config:
     devDependencies:
       '@april/tsconfig':
         specifier: workspace:*
@@ -144,7 +144,7 @@ importers:
         specifier: ^3.9.5
         version: 3.9.5
 
-  packages/tsconfig: {}
+  packages/shared/tsconfig: {}
 
 packages:
   '@babel/code-frame@7.29.7':

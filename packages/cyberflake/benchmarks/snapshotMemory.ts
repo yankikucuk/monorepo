@@ -1,62 +1,43 @@
 /**
- * Captures and logs a snapshot of the current Node.js process memory usage.
+ * Memory snapshot helper for benchmark scripts.
  *
- * This helper is designed to be used exclusively in benchmark scripts
- * to observe memory behavior before and after high-throughput operations.
- *
- * The snapshot includes:
- * - RSS (Resident Set Size)
- * - Heap total size
- * - Heap used size
- * - External memory usage
- *
- * NOTE:
- * This utility is not intended for production runtime monitoring.
- * It is a lightweight diagnostic tool for benchmark and performance analysis.
+ * Not intended for production runtime monitoring — this is a lightweight
+ * diagnostic used to compare retained memory before and after a benchmark's
+ * hot loop.
+ * @packageDocumentation
  */
 
+const BYTES_PER_MB = 1024 * 1024;
+const DECIMALS = 2;
+
 /**
- * Forces a garbage collection cycle (when available) and logs
- * a labeled memory usage snapshot.
+ * Logs a labeled snapshot of the current process memory usage (RSS, heap
+ * total, heap used, external).
  *
- * When Node.js is started with the `--expose-gc` flag, this function
- * triggers a full garbage collection before capturing memory metrics.
- * This ensures that the reported values reflect retained allocations
- * rather than transient garbage.
- * @param {string} label - A descriptive label used to identify the snapshot
- *                (e.g. "start", "after warmup", "finish")
+ * When Node.js runs with `--expose-gc` (the `bench` script enables it via
+ * `NODE_OPTIONS`), a full garbage-collection cycle is forced first so the
+ * numbers reflect retained allocations rather than transient garbage.
+ * @example
+ * ```ts
+ * snapshotMemory('start');
+ * // ... hot loop ...
+ * snapshotMemory('finish');
+ * ```
+ * @param {string} label - Identifies the snapshot (e.g. `'start'`, `'finish'`).
+ * @returns {void} Nothing; the snapshot is written to stdout.
  */
 export const snapshotMemory = (label: string): void => {
-  /**
-   * Trigger a full GC cycle when explicitly exposed.
-   *
-   * This is intentionally guarded to avoid runtime errors when
-   * `--expose-gc` is not provided.
-   */
+  // Guarded: `gc` only exists when Node is started with --expose-gc.
   if (global.gc) {
     global.gc();
   }
 
-  /**
-   * Read current process memory statistics.
-   *
-   * - rss: Resident Set Size (total memory allocated to the process)
-   * - heapTotal: Total size of the V8 heap
-   * - heapUsed: Actively used portion of the heap
-   * - external: Memory used by C++ objects bound to JavaScript objects
-   */
   const { rss, heapTotal, heapUsed, external } = process.memoryUsage();
+  const toMb = (bytes: number): string => (bytes / BYTES_PER_MB).toFixed(DECIMALS);
 
-  /**
-   * Output a human-readable memory snapshot.
-   *
-   * Values are converted from bytes to megabytes to:
-   * - Improve readability
-   * - Simplify comparison between snapshots
-   */
   console.log(`\n[Memory Snapshot: ${label}]`);
-  console.log(`rss:       ${(rss / 1024 / 1024).toFixed(2)} MB`);
-  console.log(`heapTotal: ${(heapTotal / 1024 / 1024).toFixed(2)} MB`);
-  console.log(`heapUsed:  ${(heapUsed / 1024 / 1024).toFixed(2)} MB`);
-  console.log(`external:  ${(external / 1024 / 1024).toFixed(2)} MB`);
+  console.log(`rss:       ${toMb(rss)} MB`);
+  console.log(`heapTotal: ${toMb(heapTotal)} MB`);
+  console.log(`heapUsed:  ${toMb(heapUsed)} MB`);
+  console.log(`external:  ${toMb(external)} MB`);
 };
