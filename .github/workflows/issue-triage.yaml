@@ -2,6 +2,9 @@ name: 'Issue Labeler'
 on:
   issues:
     types: [opened]
+permissions:
+  contents: read
+  issues: write
 jobs:
   issue-triage:
     runs-on: ubuntu-latest
