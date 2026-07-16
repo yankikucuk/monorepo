@@ -6,6 +6,9 @@ on:
       - edited
       - reopened
       - synchronize
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   label:
     name: Label
