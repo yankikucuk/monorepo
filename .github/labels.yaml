@@ -46,7 +46,15 @@
   color: e4e669
 - name: need repro
   color: c66037
-- name: packages:api
+- name: packages:cyberflake
+  color: fbca04
+- name: packages:shared
+  color: fbca04
+- name: packages:eslint-config
+  color: fbca04
+- name: packages:prettier-config
+  color: fbca04
+- name: packages:tsconfig
   color: fbca04
 - name: performance
   color: 80c042
