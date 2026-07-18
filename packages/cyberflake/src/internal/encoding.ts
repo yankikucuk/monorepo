@@ -8,9 +8,8 @@
  * @packageDocumentation
  */
 
-import type { DeconstructedCyberflake } from '../types.js';
-
 import { BINARY, BITS, MASKS, SHIFTS, TIME } from '../constants.js';
+import type { DeconstructedCyberflake } from '../types.js';
 
 /**
  * Packs the individual fields into a single Cyberflake identifier by shifting

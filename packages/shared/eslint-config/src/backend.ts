@@ -21,9 +21,8 @@ export const backend = tseslint.config(base, {
     },
   },
   rules: {
-    // -1/0/1 (and their bigint forms) are structural, not "magic" — naming
-    // them (e.g. NUMERIC.ONE) adds indirection without documentation value.
-    'no-magic-numbers': ['error', { ignore: [-1, 0, 1, '-1n', '0n', '1n'] }],
+    // Magic-number policy lives in the base preset
+    // (@typescript-eslint/no-magic-numbers); backend only adds the sync-I/O ban.
     'no-sync': 'error',
   },
 });
