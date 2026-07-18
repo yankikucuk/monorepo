@@ -53,7 +53,7 @@ export default tseslint.config(
     rules: JSDOC_JS_TYPE_RULES,
   },
   {
-    files: ['packages/*/tests/**/*.ts'],
+    files: ['packages/*/tests/**/*.ts', 'packages/shared/*/tests/**/*.ts'],
     extends: [backend, tseslint.configs.disableTypeChecked],
     rules: {
       ...TEST_RULES,

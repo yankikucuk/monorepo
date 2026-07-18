@@ -7,9 +7,15 @@
  * `@`-rule extensions — are parsed correctly instead of being rejected as
  * invalid CSS.
  *
- * Rules are calibrated to catch real errors (invalid hex, unknown units,
- * duplicate properties) while suppressing false positives on valid Less
- * patterns that plain CSS-aware Stylelint would otherwise flag.
+ * Rules are split into two documented groups, mirroring the structure of
+ * `@april/eslint-config`:
+ *
+ * - {@link CORRECTNESS_RULES} — enabled rules that catch real errors.
+ * - {@link LESS_EXEMPTIONS} — rules disabled (`null`) because valid Less
+ *   idioms would otherwise produce false positives; every entry carries its
+ *   reason.
+ *
+ * Formatting is intentionally out of scope — Prettier owns it.
  *
  * ### Usage
  *
@@ -39,115 +45,121 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
 /**
- * Stylelint configuration object for Less source files.
+ * Enabled rules that catch real errors: invalid values, unknown constructs,
+ * duplicates, and overrides that silently discard declarations.
  *
- * Sets `postcss-less` as the custom syntax parser and configures a curated
- * rule set that enforces correctness without generating noise from Less idioms.
- * Rules are grouped by the Stylelint category they belong to; disabled rules
- * (`null`) include an inline comment explaining the Less-specific reason.
+ * Note on `property-no-unknown`: no ignore list is needed — Stylelint already
+ * exempts custom properties (`--foo`) and vendor-prefixed properties by
+ * default (`checkPrefixed: false`), which the test suite locks in.
+ * @type {import('stylelint').Config['rules']}
+ */
+const CORRECTNESS_RULES = {
+  // --- Color ---
+  'color-no-invalid-hex': true,
+
+  // --- Font ---
+  'font-family-no-duplicate-names': true,
+
+  // --- Function ---
+  'function-calc-no-unspaced-operator': true,
+  'function-linear-gradient-no-nonstandard-direction': true,
+
+  // --- String ---
+  'string-no-newline': true,
+
+  // --- Unit ---
+  'unit-no-unknown': true,
+
+  // --- Custom property ---
+  'custom-property-no-missing-var-function': true,
+
+  // --- Property ---
+  'property-no-unknown': true,
+
+  // --- Keyframe ---
+  'keyframe-declaration-no-important': true,
+
+  // --- Declaration block ---
+  // Allow consecutive duplicate properties when the values differ
+  // (a common pattern for progressive enhancement / fallback values).
+  'declaration-block-no-duplicate-properties': [true, { ignore: ['consecutive-duplicates-with-different-values'] }],
+  'declaration-block-no-shorthand-property-overrides': true,
+
+  // --- Shorthand ---
+  'shorthand-property-no-redundant-values': true,
+
+  // --- Selector ---
+  // Less uses :extend() and :global() as pseudo-classes.
+  'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['extend', 'global', 'local'] }],
+  'selector-pseudo-element-no-unknown': true,
+  // Allow custom elements used in component markup.
+  'selector-type-no-unknown': [true, { ignore: ['custom-elements'] }],
+  'selector-anb-no-unmatchable': true,
+
+  // --- Grid ---
+  'named-grid-areas-no-invalid': true,
+
+  // --- Media ---
+  'media-feature-name-no-unknown': true,
+
+  // --- At-rule ---
+  'no-duplicate-at-import-rules': true,
+
+  // --- Comment ---
+  'comment-no-empty': true,
+
+  // --- General ---
+  'annotation-no-unknown': true,
+  'no-irregular-whitespace': true,
+};
+
+/**
+ * Rules disabled because valid Less idioms would otherwise produce false
+ * positives. Every entry documents the specific idiom that breaks it.
+ * @type {import('stylelint').Config['rules']}
+ */
+const LESS_EXEMPTIONS = {
+  // Less ships its own functions (darken, lighten, data-uri, escape, replace…)
+  // that Stylelint would flag as unknown.
+  'function-no-unknown': null,
+
+  // Font stacks live in @variables; the rule cannot see through Less
+  // interpolation and would flag every variable-driven `font-family`.
+  'font-family-no-missing-generic-family-keyword': null,
+
+  // Less frameworks commonly define empty hook mixins (.hook-component() {})
+  // as overridable extensibility stubs; these are intentionally empty.
+  'block-no-empty': null,
+
+  // Less files may intentionally repeat a selector in separate positional
+  // sections (e.g. popover placement variants).
+  'no-duplicate-selectors': null,
+
+  // Framework cascade ordering (e.g. placement/state variants) routinely
+  // violates specificity descent on purpose — the rule is all noise here.
+  'no-descending-specificity': null,
+
+  // Less uses many non-standard at-rules (@plugin, @import (reference), etc.)
+  // and treats @variable declarations as at-rules.
+  'at-rule-no-unknown': null,
+
+  // Less allows @import anywhere (after variables, inside mixin guards…);
+  // the CSS-positional restriction does not apply.
+  'no-invalid-position-at-import-rule': null,
+
+  // Less uses // single-line comments; Stylelint treats them as invalid
+  // double-slash comments in standard CSS.
+  'no-invalid-double-slash-comments': null,
+};
+
+/**
+ * Stylelint configuration object for Less source files.
  * @type {import('stylelint').Config}
  */
 export default {
   customSyntax: require.resolve('postcss-less'),
   rules: {
-    // --- Color ---
-    'color-no-invalid-hex': true,
-
-    // --- Font ---
-    'font-family-no-duplicate-names': true,
-    // Font stacks live in @variables; the rule cannot see through Less
-    // interpolation and would flag every variable-driven `font-family`.
-    'font-family-no-missing-generic-family-keyword': null,
-
-    // --- Function ---
-    // Less ships its own functions (darken, lighten, data-uri, escape, replace…)
-    // that Stylelint would flag as unknown — disable the rule entirely.
-    'function-no-unknown': null,
-    'function-calc-no-unspaced-operator': true,
-    'function-linear-gradient-no-nonstandard-direction': true,
-
-    // --- String ---
-    'string-no-newline': true,
-
-    // --- Unit ---
-    'unit-no-unknown': true,
-
-    // --- Custom property ---
-    'custom-property-no-missing-var-function': true,
-
-    // --- Property ---
-    // Some Less-generated or vendor properties look "unknown" to Stylelint.
-    'property-no-unknown': [
-      true,
-      {
-        ignoreProperties: [
-          // CSS custom properties generated via Less variable interpolation
-          '/^--/',
-          // Common vendor prefixes that postcss-less may not recognise
-          '/^-webkit-/',
-          '/^-moz-/',
-          '/^-ms-/',
-          '/^-o-/',
-        ],
-      },
-    ],
-
-    // --- Keyframe ---
-    'keyframe-declaration-no-important': true,
-
-    // --- Declaration block ---
-    // Allow consecutive duplicate properties when the values differ
-    // (a common pattern for progressive enhancement / fallback values).
-    'declaration-block-no-duplicate-properties': [true, { ignore: ['consecutive-duplicates-with-different-values'] }],
-    'declaration-block-no-shorthand-property-overrides': true,
-
-    // --- Shorthand ---
-    'shorthand-property-no-redundant-values': true,
-
-    // --- Block ---
-    // Less frameworks commonly define empty hook mixins (.hook-component() {})
-    // as overridable extensibility stubs. These are intentionally empty and
-    // would produce a flood of false positives — disable the rule.
-    'block-no-empty': null,
-
-    // --- Selector ---
-    // Less files may intentionally repeat a selector in separate positional
-    // sections (e.g. popover placement variants). Disable to avoid false
-    // positives on valid Less architecture.
-    'no-duplicate-selectors': null,
-    // Framework cascade ordering (e.g. placement/state variants) routinely
-    // violates specificity descent on purpose — the rule is all noise here.
-    'no-descending-specificity': null,
-    // Less uses :extend() and :global() as pseudo-classes.
-    'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['extend', 'global', 'local'] }],
-    'selector-pseudo-element-no-unknown': true,
-    // Allow custom elements used in component markup.
-    'selector-type-no-unknown': [true, { ignore: ['custom-elements'] }],
-    'selector-anb-no-unmatchable': true,
-
-    // --- Grid ---
-    'named-grid-areas-no-invalid': true,
-
-    // --- Media ---
-    'media-feature-name-no-unknown': true,
-
-    // --- At-rule ---
-    // Less uses many non-standard at-rules (@plugin, @import (reference), etc.)
-    // and treats @variable declarations as at-rules — disable the rule entirely.
-    'at-rule-no-unknown': null,
-    'no-duplicate-at-import-rules': true,
-    // Less allows @import anywhere (after variables, inside mixin guards…);
-    // the CSS-positional restriction does not apply.
-    'no-invalid-position-at-import-rule': null,
-
-    // --- Comment ---
-    // Less uses // single-line comments; Stylelint treats them as invalid
-    // double-slash comments in standard CSS — disable the rule.
-    'no-invalid-double-slash-comments': null,
-    'comment-no-empty': true,
-
-    // --- General ---
-    'annotation-no-unknown': true,
-    'no-irregular-whitespace': true,
+    ...CORRECTNESS_RULES,
+    ...LESS_EXEMPTIONS,
   },
 };
