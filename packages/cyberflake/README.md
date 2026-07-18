@@ -96,7 +96,9 @@ Used for:
 ## Deconstruction
 
 Decoding is **static** — it depends only on the bit layout, so no generator
-instance is needed:
+instance is needed. Values outside the 63-bit domain (negative or oversized)
+throw a `RangeError` instead of decoding into meaningless components; use
+`Cyberflake.isValid` first for untrusted input.
 
 ```ts
 const data = Cyberflake.deconstruct(id);
@@ -146,7 +148,10 @@ Each ID is a 63-bit unsigned integer, returned as a decimal string:
 | process   | 5    | 0–31          | Process within a worker             |
 | sequence  | 12   | 0–4095 per ms | Disambiguates same-millisecond IDs  |
 
-Epoch: `2015-01-01T00:00:00.000Z`.
+Epoch: `2015-01-01T00:00:00.000Z`. The timestamp field is exhausted ~69.7
+years past the epoch (≈ 2084) — or earlier if sustained bursts inflate the
+logical offset — at which point `generate()` **fails fast with a `RangeError`**
+instead of silently emitting identifiers that no longer fit the layout.
 
 ---
 
