@@ -54,6 +54,8 @@
   color: fbca04
 - name: packages:prettier-config
   color: fbca04
+- name: packages:stylelint-config
+  color: fbca04
 - name: packages:tsconfig
   color: fbca04
 - name: performance
