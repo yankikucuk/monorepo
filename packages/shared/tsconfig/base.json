@@ -2,44 +2,43 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "display": "@april/tsconfig base",
   "compilerOptions": {
-    // Type Checking
-    "allowSyntheticDefaultImports": true,
+    // Type Checking — maximum strictness. noImplicitAny and
+    // useUnknownInCatchVariables are implied by `strict` but pinned so they
+    // survive even if `strict` is ever toggled.
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true,
-
-    "noImplicitAny": true,
-    "useUnknownInCatchVariables": true,
-    "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
     "skipLibCheck": false,
+    "strict": true,
+    "useUnknownInCatchVariables": true,
 
-    // Modules
+    // Modules — native Node.js ESM resolution. moduleResolution is implied by
+    // `module: NodeNext` but pinned for explicitness.
     "allowArbitraryExtensions": false,
     "allowImportingTsExtensions": false,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
 
     // Emit
     "importHelpers": false,
     "newLine": "lf",
-    "noEmitHelpers": true,
     "removeComments": false,
 
     // Interop Constraints
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
 
     // Language and Environment
-    "experimentalDecorators": true,
     "lib": ["ESNext"],
     "target": "ESNext",
     "useDefineForClassFields": true
