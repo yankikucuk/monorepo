@@ -16,14 +16,13 @@
  * `workerId` and `processId` by the consumer.
  */
 
-import type { CyberflakeConfig, DeconstructedCyberflake } from './types.js';
-
 import { DEFAULTS, INITIAL } from './constants.js';
 import { handleClockRegression } from './internal/clock.js';
 import { assembleId, deconstructId } from './internal/encoding.js';
 import { handleSequence } from './internal/sequence.js';
 import { calculateLogicalTimestamp, readCurrentTime } from './internal/time.js';
 import { assertValidProcessId, assertValidWorkerId, isValidId } from './internal/validation.js';
+import type { CyberflakeConfig, DeconstructedCyberflake } from './types.js';
 
 /**
  * Cyberflake ID generator.
