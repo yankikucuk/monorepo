@@ -366,6 +366,13 @@ export const base = tseslint.config(
         projectService: true,
       },
     },
+    settings: {
+      jsdoc: {
+        // Keep @fileoverview as-is instead of rewriting it to @file; module
+        // headers across the monorepo use the long form deliberately.
+        tagNamePreference: { fileoverview: 'fileoverview' },
+      },
+    },
     rules: {
       ...SHARED_RULES,
       ...TS_EXTENSION_RULES,

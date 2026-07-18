@@ -29,7 +29,7 @@ export default tseslint.config(
       'eslint.config.ts',
       '*.config.ts',
       'scripts/**/*.mjs',
-      'packages/shared/*/src/**/*.ts',
+      'packages/shared/*/src/**/*.{ts,js}',
       'packages/*/benchmarks/**/*.ts',
     ],
     extends: [backend, tseslint.configs.disableTypeChecked],
@@ -49,7 +49,7 @@ export default tseslint.config(
   },
   {
     // Plain JavaScript has no compiler enforcing types, so JSDoc must carry them.
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', 'packages/shared/*/src/**/*.js'],
     rules: JSDOC_JS_TYPE_RULES,
   },
   {

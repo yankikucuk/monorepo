@@ -5,12 +5,13 @@ A strict, type-safe TypeScript monorepo powered by **pnpm workspaces** and
 
 ## Packages
 
-| Package                                                     | Description                                                                   |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [`@april/cyberflake`](packages/cyberflake)                  | Snowflake-inspired distributed ID generator (the core library).               |
-| [`@april/eslint-config`](packages/shared/eslint-config)     | Shared strict, type-checked flat ESLint config (`base`/`frontend`/`backend`). |
-| [`@april/prettier-config`](packages/shared/prettier-config) | Shared Prettier config.                                                       |
-| [`@april/tsconfig`](packages/shared/tsconfig)               | Shared TypeScript config presets (`base`/`library`).                          |
+| Package                                                       | Description                                                                   |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| [`@april/cyberflake`](packages/cyberflake)                    | Snowflake-inspired distributed ID generator (the core library).               |
+| [`@april/eslint-config`](packages/shared/eslint-config)       | Shared strict, type-checked flat ESLint config (`base`/`frontend`/`backend`). |
+| [`@april/prettier-config`](packages/shared/prettier-config)   | Shared Prettier config.                                                       |
+| [`@april/stylelint-config`](packages/shared/stylelint-config) | Shared Stylelint config for Less sources (postcss-less syntax).               |
+| [`@april/tsconfig`](packages/shared/tsconfig)                 | Shared TypeScript config presets (`base`/`library`).                          |
 
 All packages are `private` and consumed **internally** via the workspace
 protocol; nothing is published to a registry. The shared config packages live
