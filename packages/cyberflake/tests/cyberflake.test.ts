@@ -693,4 +693,63 @@ describe('CyberFlake', () => {
     expect(() => new Cyberflake({ workerId: 1.5 })).toThrow(RangeError);
     expect(() => new Cyberflake({ workerId: 1, processId: 2.5 })).toThrow(RangeError);
   });
+
+  /**
+   * Ensures generation fails fast when the 41-bit timestamp space is
+   * exhausted instead of silently emitting a corrupt identifier.
+   *
+   * Before this guard existed, driving the clock past the layout capacity
+   * (~69.7 years after the epoch, or earlier once sustained bursts inflate
+   * the logical offset) produced IDs that the generator's own `isValid`
+   * rejected — silent corruption in exactly the place the package promises
+   * to be boring and safe.
+   */
+  it('throws when the timestamp space is exhausted instead of emitting corrupt IDs', () => {
+    const epoch = 1_420_070_400_000;
+    const overflowNow = epoch + 2 ** 41;
+
+    const cf = new Cyberflake({
+      workerId: 1,
+      now: () => overflowNow,
+    });
+
+    expect(() => cf.generate()).toThrow(RangeError);
+  });
+
+  /**
+   * Ensures `deconstruct` rejects values outside the 63-bit domain.
+   *
+   * Decoding a negative or oversized value previously returned meaningless
+   * components (e.g. `-5` decoded to "1 ms before the epoch, worker 31,
+   * sequence 4091" with a malformed binary string). Failing fast keeps the
+   * decoding contract total over its valid domain.
+   */
+  it('rejects out-of-domain values in deconstruct', () => {
+    expect(() => Cyberflake.deconstruct('-5')).toThrow(RangeError);
+    expect(() => Cyberflake.deconstruct(-5n)).toThrow(RangeError);
+    expect(() => Cyberflake.deconstruct(1n << 70n)).toThrow(RangeError);
+  });
+
+  /**
+   * Ensures the bigint input path of `deconstruct` round-trips exactly like
+   * the string path — both accept the same domain and recover identical
+   * components.
+   */
+  it('deconstructs bigint input identically to string input', () => {
+    const now = 1_700_000_000_000;
+
+    const cf = new Cyberflake({
+      workerId: 9,
+      processId: 4,
+      now: () => now,
+    });
+
+    const id = cf.generate();
+    const fromString = Cyberflake.deconstruct(id);
+    const fromBigint = Cyberflake.deconstruct(BigInt(id));
+
+    expect(fromBigint).toStrictEqual(fromString);
+    expect(fromBigint.workerId).toBe(9);
+    expect(fromBigint.processId).toBe(4);
+  });
 });

@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import { BINARY, BITS, MASKS, SHIFTS, TIME } from '../constants.js';
+import { BINARY, BITS, LIMITS, MASKS, SHIFTS, TIME } from '../constants.js';
 import type { DeconstructedCyberflake } from '../types.js';
 
 /**
@@ -40,10 +40,16 @@ export const parseId = (id: string): bigint | null => {
 /**
  * Decodes a Cyberflake identifier into its constituent components.
  * @param {bigint} value - The encoded Cyberflake identifier.
+ * @throws {RangeError} If `value` is negative or exceeds the 63-bit layout —
+ * decoding such values would silently produce meaningless components.
  * @returns {DeconstructedCyberflake} The recovered fields, plus a derived
  * `Date` and zero-padded binary representation.
  */
 export const deconstructId = (value: bigint): DeconstructedCyberflake => {
+  if (value < 0n || value > LIMITS.MAX_ID) {
+    throw new RangeError('Value is outside the 63-bit Cyberflake domain and cannot be deconstructed.');
+  }
+
   const timestamp = Number(value >> SHIFTS.TIMESTAMP) + Number(TIME.EPOCH);
 
   return {
