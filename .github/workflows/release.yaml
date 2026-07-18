@@ -20,6 +20,7 @@ jobs:
   release:
     name: Version packages
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,6 +40,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Create version PR
+        id: changesets
         uses: changesets/action@v1
         with:
           version: pnpm version-packages
@@ -46,3 +48,13 @@ jobs:
           title: 'chore(release): version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag current package versions once no changesets are pending (i.e.
+      # right after a version PR merges). `changeset tag` skips tags that
+      # already exist, so this step is idempotent on every push. Tags travel
+      # with the git history; GitHub Releases are intentionally not created.
+      - name: Tag released versions
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          pnpm changeset tag
+          git push origin --tags

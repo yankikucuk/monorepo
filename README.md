@@ -1,5 +1,12 @@
 # April
 
+[![CI](https://github.com/yankikucuk/monorepo/actions/workflows/ci.yaml/badge.svg?branch=stage)](https://github.com/yankikucuk/monorepo/actions/workflows/ci.yaml)
+[![CodeQL](https://github.com/yankikucuk/monorepo/actions/workflows/codeql.yaml/badge.svg?branch=stage)](https://github.com/yankikucuk/monorepo/actions/workflows/codeql.yaml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%E2%89%A526-brightgreen.svg)](.nvmrc)
+[![pnpm](https://img.shields.io/badge/pnpm-11-f69220.svg)](package.json)
+[![TypeScript](https://img.shields.io/badge/typescript-strict-3178c6.svg)](packages/shared/tsconfig)
+
 A strict, type-safe TypeScript monorepo powered by **pnpm workspaces** and
 **Turborepo**.
 

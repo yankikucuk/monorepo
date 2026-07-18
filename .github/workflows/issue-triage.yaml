@@ -8,6 +8,7 @@ permissions:
 jobs:
   issue-triage:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: github/issue-labeler@v3.4
         with:

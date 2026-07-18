@@ -14,6 +14,7 @@ jobs:
     name: Label
     if: github.event.action != 'edited'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Label pull request
         uses: actions/labeler@v5
@@ -25,6 +26,7 @@ jobs:
     name: Validate title
     if: github.event.action != 'synchronize'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Validate pull request title
         env:
