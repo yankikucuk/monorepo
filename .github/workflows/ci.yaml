@@ -17,6 +17,7 @@ jobs:
   verify:
     name: Typecheck · Lint · Test · Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,7 +41,17 @@ jobs:
         run: pnpm lint
 
       - name: Test (with coverage)
-        run: pnpm test:coverage
+        run: pnpm test:coverage | tee coverage-output.txt
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          {
+            echo '### Coverage'
+            echo '```'
+            grep -E 'Statements|Branches|Functions|Lines' coverage-output.txt || echo 'no coverage output'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Build
         run: pnpm build
@@ -60,6 +71,7 @@ jobs:
   audit:
     name: Security audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,6 +94,7 @@ jobs:
   knip:
     name: Knip (kullanılmayan bağımlılık/export - bilgilendirici)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     # Yeni eklenen araç: şu an temiz geçiyor ama gate yapmadan önce bir süre
     # gözlemlemek için advisory. Kararlıysa continue-on-error'ı kaldırıp gate yapın.
     continue-on-error: true
