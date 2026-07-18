@@ -26,21 +26,20 @@ Composed on top of the recommended presets:
 - `eslint-plugin-unicorn`, `eslint-plugin-jsdoc`, `eslint-plugin-check-file`,
   `@eslint-community/eslint-plugin-eslint-comments`
 
-The overlay is organized into named rule groups in `src/base.ts`:
+`src/base.ts` is composition only — every rule decision lives in a documented
+group under `src/rules/`, one file per concern:
 
-- **`SHARED_RULES`** — core correctness, complexity/size limits, restrictions
-  (`no-alert`, `no-bitwise`, `no-console` as warn, for…in ban, …), and style.
-- **`TS_EXTENSION_RULES`** — core rules replaced by their `@typescript-eslint`
-  equivalents, including `no-magic-numbers` (with `enforceConst` and structural
-  `0/1/-1/2` + bigint exemptions) and `no-unused-vars` with `^_` escapes.
-- **`TS_TYPE_AWARE_RULES`** — `no-floating-promises`, `no-misused-promises`,
-  `await-thenable`, `return-await` (`in-try-catch`), pinned explicitly.
-- **`JSDOC_RULES`** — documentation is mandatory; type annotations are **not**
-  required in TypeScript (the compiler owns types). For plain JS, add
-  `JSDOC_JS_TYPE_RULES` on top.
-- **`GOVERNANCE_RULES`** — no inline `eslint-disable` in product code, and
-  camelCase filenames via `check-file` (basenames only; kebab-case package
-  directories stay valid — this deliberately replaces `unicorn/filename-case`).
+| Module                | Groups                                                                                                                                                                                                                                                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rules/shared.ts`     | **`SHARED_RULES`** — core correctness, complexity/size limits, restrictions (`no-alert`, `no-bitwise`, `no-console` as warn, for…in ban, …), and style.                                                                                                                                                                 |
+| `rules/typescript.ts` | **`TS_EXTENSION_RULES`** — off/on pairs replacing core rules with `@typescript-eslint` equivalents (magic numbers with `enforceConst` + bigint exemptions, unused vars with `^_` escapes, …). **`TS_TYPE_AWARE_RULES`** — `no-floating-promises`, `await-thenable`, `return-await` (`in-try-catch`), pinned explicitly. |
+| `rules/plugins.ts`    | **`UNICORN_RULES`**, **`IMPORT_RULES`** (`import/order` + TS-aware `import/no-duplicates` + perfectionist specifier sorting), **`GOVERNANCE_RULES`** (no inline `eslint-disable`, camelCase filenames via `check-file`), **`PRESET_OVERRIDES`** (duplicate-diagnostic suppressions).                                    |
+| `rules/jsdoc.ts`      | **`JSDOC_RULES`** — documentation mandatory, type annotations not required in TS. **`JSDOC_JS_TYPE_RULES`** — type annotations for plain JS.                                                                                                                                                                            |
+| `rules/tests.ts`      | **`TEST_RULES`** — relaxed size limits for test files.                                                                                                                                                                                                                                                                  |
+
+`ignores` is exported separately and deliberately **not** baked into `base`:
+global ignores belong at the top of a consuming config exactly once, while
+`base` may be extended by several file-scoped blocks.
 
 ### Preset-specific rules
 
