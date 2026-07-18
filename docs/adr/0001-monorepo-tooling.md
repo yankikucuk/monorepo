@@ -16,7 +16,8 @@ package management, and shared configuration that scales without ceremony.
   `lint`, `test`, `format`, `clean`). Build outputs are declared for caching.
 - **Shared config packages** rather than duplicated root config, grouped under
   `packages/shared/`: `@april/tsconfig` (TS presets), `@april/eslint-config`
-  (flat ESLint presets), `@april/prettier-config` (Prettier). They are consumed
+  (flat ESLint presets), `@april/prettier-config` (Prettier), and
+  `@april/stylelint-config` (Stylelint for Less sources). They are consumed
   by package name, so their location under `packages/shared/` is an
   organizational detail — moving them does not affect consumers.
 - **Per-package `dist/`** build output (not a shared top-level `artifacts/`),

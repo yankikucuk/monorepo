@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@april/stylelint-config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared Stylelint configuration for the April monorepo, tuned for Less sources parsed via postcss-less.",
+  "keywords": [
+    "stylelint",
+    "stylelint-config",
+    "less",
+    "postcss-less",
+    "css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/playerberry/april.git",
+    "directory": "packages/shared/stylelint-config"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "main": "./src/index.js",
+  "scripts": {
+    "lint": "prettier --check ./src && eslint ./src --max-warnings=0",
+    "format": "prettier --write ./src && eslint --fix ./src",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "dependencies": {
+    "postcss-less": "^6.0.0"
+  },
+  "devDependencies": {
+    "stylelint": "^17.14.0"
+  },
+  "peerDependencies": {
+    "stylelint": ">=16.0.0"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}

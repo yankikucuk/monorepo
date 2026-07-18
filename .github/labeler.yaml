@@ -21,6 +21,12 @@ packages:prettier-config:
           - packages/shared/prettier-config/*
           - packages/shared/prettier-config/**/*
 
+packages:stylelint-config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/shared/stylelint-config/*
+          - packages/shared/stylelint-config/**/*
+
 packages:tsconfig:
   - changed-files:
       - any-glob-to-any-file:
