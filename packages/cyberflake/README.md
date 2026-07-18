@@ -42,6 +42,48 @@ const id = generator.generate();
 
 ---
 
+## Recommended Usage (Singleton)
+
+Uniqueness is guaranteed **per instance**: two instances configured with the
+same `(workerId, processId)` pair have independent sequence counters, so both
+can emit the same ID within the same millisecond — even inside a single
+process. The rule is therefore: **one instance per `(workerId, processId)`
+pair**, created once at module level and imported everywhere.
+
+```ts
+// src/idGenerator.ts — the application's ONE generator
+import { Cyberflake } from '@april/cyberflake';
+
+export const idGenerator = new Cyberflake({
+  workerId: Number(process.env.CYBERFLAKE_WORKER_ID ?? 1),
+  processId: Number(process.env.CYBERFLAKE_PROCESS_ID ?? 1),
+});
+```
+
+```ts
+// Everywhere else:
+import { idGenerator } from './idGenerator.js';
+
+const userId = idGenerator.generate();
+const telemetryId = idGenerator.generate();
+```
+
+Properties of this pattern:
+
+- **One source, many destinations.** IDs from a single generator are unique
+  across the whole system, so user rows, telemetry events, and moderation logs
+  can live in different tables — or different databases — without any risk of
+  overlap. A telemetry ID can never equal a user ID.
+- **Env-driven configuration.** The pair comes from the environment, not the
+  code. The day a second concurrent process is deployed, it simply starts with
+  a different `CYBERFLAKE_WORKER_ID`/`CYBERFLAKE_PROCESS_ID` — no code change,
+  no coordination, no silent-collision risk.
+- **Fail-fast misconfiguration.** Invalid or missing values are rejected by
+  the constructor with a `RangeError` at boot, not discovered in production
+  data.
+
+---
+
 ## Configuration
 
 ### `CyberflakeConfig`
