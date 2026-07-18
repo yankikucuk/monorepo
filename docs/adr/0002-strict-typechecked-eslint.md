@@ -16,12 +16,21 @@ versions are not always mutually compatible.
   `@eslint/js`, sonarjs, regexp, promise, perfectionist, unicorn, import-x, and
   jsdoc. Product code (`packages/*/src`) is type-checked; tooling/tests use a
   `disableTypeChecked` block.
+- **Rules live in named groups** (`SHARED_RULES`, `TS_EXTENSION_RULES`,
+  `TS_TYPE_AWARE_RULES`, `JSDOC_RULES`, `GOVERNANCE_RULES`) ported from a
+  proven external ruleset, with each concern reviewable in isolation.
 - **`frontend`** hard-bans `alert`/`confirm`/`prompt`; **`backend`** adds
-  `no-magic-numbers` and `no-sync`.
+  `no-sync`. Magic-number policy lives in `base` as
+  `@typescript-eslint/no-magic-numbers` (`enforceConst`, structural `0/1/-1/2`
+  and bigint exemptions).
 - **No inline `eslint-disable` in product code** (`eslint-comments/no-use`).
   Legitimate, file-scoped exceptions live in the central config instead.
-- **`perfectionist` is scoped to import/export ordering only** — `sort-objects`
-  / `sort-classes` / `sort-interfaces` are disabled to preserve semantic order.
+- **`import/order` owns statement ordering; `perfectionist` sorts only named
+  specifiers** (the two would conflict if both sorted statements).
+  `sort-objects`/`sort-classes`/`sort-interfaces` stay disabled to preserve
+  semantic order.
+- **JSDoc type annotations are not required in TypeScript** (the compiler owns
+  types); plain JS files opt in via `JSDOC_JS_TYPE_RULES`.
 - **`restrict-template-expressions` allows numbers** (pragmatic relaxation of
   the `strictTypeChecked` default).
 
