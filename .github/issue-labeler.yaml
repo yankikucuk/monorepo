@@ -1,3 +1,19 @@
 packages:cyberflake:
-  - "### Which (application|package|application or package) is this (bug
-    report|feature request) for\\?\\n\\nCyberflake\\n"
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nCyberflake\n'
+
+packages:eslint-config:
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nESLint config\n'
+
+packages:prettier-config:
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nPrettier config\n'
+
+packages:stylelint-config:
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nStylelint config\n'
+
+packages:tsconfig:
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nTSConfig\n'
