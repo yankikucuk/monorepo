@@ -65,6 +65,13 @@ export const MASKS = {
 export const LIMITS = {
   /** Largest value representable within {@link BITS.TOTAL} bits. */
   MAX_ID: (1n << BITS.TOTAL) - 1n,
+
+  /**
+   * Largest logical timestamp representable within {@link BITS.TIMESTAMP}
+   * bits (~69.7 years past the epoch, ≈ year 2084). Generation fails fast at
+   * this boundary instead of emitting corrupt identifiers.
+   */
+  MAX_TIMESTAMP: (1n << BITS.TIMESTAMP) - 1n,
 } as const;
 
 /**

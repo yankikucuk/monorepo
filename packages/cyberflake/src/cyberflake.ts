@@ -21,7 +21,12 @@ import { handleClockRegression } from './internal/clock.js';
 import { assembleId, deconstructId } from './internal/encoding.js';
 import { handleSequence } from './internal/sequence.js';
 import { calculateLogicalTimestamp, readCurrentTime } from './internal/time.js';
-import { assertValidProcessId, assertValidWorkerId, isValidId } from './internal/validation.js';
+import {
+  assertTimestampWithinLayout,
+  assertValidProcessId,
+  assertValidWorkerId,
+  isValidId,
+} from './internal/validation.js';
 import type { CyberflakeConfig, DeconstructedCyberflake } from './types.js';
 
 /**
@@ -102,7 +107,9 @@ export class Cyberflake {
    * const id = generator.generate();
    * // => '158110629309382656' (safe for DB keys, logs, JSON)
    * ```
-   * @throws {RangeError} If the system time precedes the Cyberflake epoch.
+   * @throws {RangeError} If the system time precedes the Cyberflake epoch, or
+   * if the 41-bit timestamp space is exhausted (~year 2084, earlier when the
+   * logical offset has been inflated by sustained bursts or regressions).
    * @returns {string} The generated Cyberflake ID as a decimal string.
    */
   generate(): string {
@@ -110,6 +117,9 @@ export class Cyberflake {
     const logicalTimestamp = calculateLogicalTimestamp(current, this.offset);
     const regression = handleClockRegression(logicalTimestamp, this.lastTimestamp, this.offset);
     const next = handleSequence(regression.timestamp, this.lastTimestamp, this.sequence, regression.offset);
+
+    // Guard before committing state — an exhausted layout must not corrupt the generator's monotonic bookkeeping.
+    assertTimestampWithinLayout(next.timestamp);
 
     this.lastTimestamp = next.timestamp;
     this.sequence = next.sequence;
@@ -133,8 +143,10 @@ export class Cyberflake {
    * ```
    * @param {string | bigint} id - Cyberflake ID to decode.
    * @throws {SyntaxError} If `id` is a string that cannot be parsed as an
-   * integer. Use {@link Cyberflake.isValid} first when handling untrusted
-   * input.
+   * integer.
+   * @throws {RangeError} If the value is negative or exceeds the 63-bit
+   * layout — decoding it would produce meaningless components. Use
+   * {@link Cyberflake.isValid} first when handling untrusted input.
    * @returns {DeconstructedCyberflake} The recovered components.
    */
   static deconstruct(id: string | bigint): DeconstructedCyberflake {

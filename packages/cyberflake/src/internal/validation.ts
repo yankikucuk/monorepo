@@ -56,6 +56,24 @@ export const assertValidProcessId = (processId: number): void => {
 };
 
 /**
+ * Asserts that a logical timestamp still fits the 41-bit timestamp field.
+ *
+ * The layout is exhausted ~69.7 years past the epoch (≈ year 2084) — or
+ * earlier if sustained sequence overflows and clock regressions inflate the
+ * logical offset. Failing fast here keeps the generator from silently
+ * emitting identifiers that its own `isValid` rejects.
+ * @param {bigint} timestamp - Logical, epoch-relative timestamp about to be
+ * encoded.
+ * @throws {RangeError} If the timestamp no longer fits the bit layout.
+ * @returns {void} Nothing; returns normally while capacity remains.
+ */
+export const assertTimestampWithinLayout = (timestamp: bigint): void => {
+  if (timestamp > LIMITS.MAX_TIMESTAMP) {
+    throw new RangeError('Cyberflake timestamp space is exhausted. Refusing to generate a corrupt ID.');
+  }
+};
+
+/**
  * Performs semantic validation of a Cyberflake identifier.
  *
  * An identifier is valid when it is a non-empty integer string whose value is
