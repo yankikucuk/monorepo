@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@april/cyberflake",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "A high-performance, Snowflake-inspired distributed ID generator designed as a core infrastructure primitive for the April monorepo. Provides globally unique, monotonically ordered identifiers with clock-regression tolerance and deterministic test support.",
   "keywords": [
