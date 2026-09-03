@@ -35,7 +35,7 @@
     "postcss-less": "^6.0.0"
   },
   "devDependencies": {
-    "stylelint": "^17.14.0"
+    "stylelint": "^17.14.1"
   },
   "peerDependencies": {
     "stylelint": ">=16.0.0"

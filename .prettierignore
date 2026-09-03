@@ -1,0 +1,7 @@
+# Generated or tool-owned files: their formatting is not ours to decide.
+pnpm-lock.yaml
+docs/api/
+coverage/
+.turbo/
+dist/
+build/

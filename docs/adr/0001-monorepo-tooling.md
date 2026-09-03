@@ -20,15 +20,19 @@ package management, and shared configuration that scales without ceremony.
   `@april/stylelint-config` (Stylelint for Less sources). They are consumed
   by package name, so their location under `packages/shared/` is an
   organizational detail — moving them does not affect consumers.
-- **Per-package `dist/`** build output (not a shared top-level `artifacts/`),
-  with `exports`/`types` pointing at emitted `.d.ts`.
+- **Per-package `dist/`** build output for product packages (not a shared
+  top-level `artifacts/`), with `exports`/`types` pointing at emitted `.d.ts`.
+  The shared configuration packages are the exception: they ship their sources
+  and have no build step — see [ADR 0004](0004-config-packages-ship-sources.md).
 - **No TypeScript project references.** Turborepo already orchestrates build
   order and caching, and there are no cross-package type dependencies today, so
   project references would add complexity with no benefit. Revisit if packages
   begin depending on each other's types.
 - Quality/release tooling: Vitest (+ v8 coverage thresholds), Changesets,
   Renovate, Husky + lint-staged + commitlint, Knip, manypkg, dependency-cruiser,
-  and TypeDoc — all wired into CI.
+  and TypeDoc — all wired into CI. What each gate covers, and what it
+  deliberately leaves out, is recorded in [ADR 0006](0006-quality-gates.md);
+  the dependency side of it in [ADR 0005](0005-supply-chain-policy.md).
 
 ## Consequences
 

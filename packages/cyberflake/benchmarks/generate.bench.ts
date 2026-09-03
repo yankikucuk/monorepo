@@ -9,6 +9,7 @@
  */
 
 import { Cyberflake } from '../src/cyberflake.js';
+
 import { runBenchmark } from './runBenchmark.js';
 
 // Large enough to amortize JIT warm-up, fast enough for local and CI runs.

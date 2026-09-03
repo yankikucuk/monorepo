@@ -25,8 +25,9 @@ versions are not always mutually compatible.
   and bigint exemptions).
 - **No inline `eslint-disable` in product code** (`eslint-comments/no-use`).
   Legitimate, file-scoped exceptions live in the central config instead.
-- **`import/order` owns statement ordering; `perfectionist` sorts only named
-  specifiers** (the two would conflict if both sorted statements).
+- ~~**`import/order` owns statement ordering; `perfectionist` sorts only named
+  specifiers**~~ — superseded by [ADR 0003](0003-in-house-import-sorting.md):
+  `import-sort/order` now owns both. `perfectionist` sorts exports only;
   `sort-objects`/`sort-classes`/`sort-interfaces` stay disabled to preserve
   semantic order.
 - **JSDoc type annotations are not required in TypeScript** (the compiler owns

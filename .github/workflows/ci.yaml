@@ -37,8 +37,11 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Lint
+      - name: Lint (packages)
         run: pnpm lint
+
+      - name: Lint (repository-wide)
+        run: pnpm lint:build
 
       - name: Test (with coverage)
         run: pnpm test:coverage | tee coverage-output.txt
@@ -92,11 +95,12 @@ jobs:
         run: pnpm audit --audit-level=high
 
   knip:
-    name: Knip (kullanılmayan bağımlılık/export - bilgilendirici)
+    name: Knip (unused dependencies and exports — advisory)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Yeni eklenen araç: şu an temiz geçiyor ama gate yapmadan önce bir süre
-    # gözlemlemek için advisory. Kararlıysa continue-on-error'ı kaldırıp gate yapın.
+    # Advisory while the tool settles in: it passes today, but we want a few
+    # weeks of observation before it can fail a pull request. Once it has proven
+    # stable, drop `continue-on-error` to turn it into a gate.
     continue-on-error: true
     steps:
       - name: Checkout
