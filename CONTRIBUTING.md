@@ -31,14 +31,20 @@ pnpm install
 CI runs — and you should run locally before pushing:
 
 ```bash
-pnpm typecheck    # tsc --noEmit
-pnpm lint         # Prettier + strict, type-checked ESLint
-pnpm test:coverage # Vitest with 90% coverage thresholds
-pnpm build        # emit to dist/
-pnpm manypkg      # workspace consistency
-pnpm depcruise    # dependency boundaries
-pnpm knip         # unused deps/exports (advisory)
+pnpm typecheck      # tsc --noEmit
+pnpm lint           # Prettier + strict, type-checked ESLint (package sources)
+pnpm lint:build     # the same checks across the whole repository
+pnpm test:coverage  # Vitest with 90% coverage thresholds
+pnpm build          # emit to dist/
+pnpm docs:api       # TypeDoc must build without warnings
+pnpm manypkg        # workspace consistency
+pnpm depcruise      # dependency boundaries
+pnpm sort:pkg:check # package.json key order
+pnpm knip           # unused deps/exports (advisory)
 ```
+
+`pnpm format` (packages) and `pnpm format:build` (whole repository) fix
+everything the first two can fix.
 
 ## Conventions
 
@@ -46,8 +52,11 @@ pnpm knip         # unused deps/exports (advisory)
   central ESLint config.
 - **Documentation is mandatory** — public APIs need TSDoc.
 - Formatting is handled by Prettier; do not hand-format.
+- Import order is enforced by `import-sort/order` (`@april/import-sort`) and
+  fixed by `pnpm format`; do not hand-sort imports.
 - Shared config changes go through the `@april/eslint-config`,
-  `@april/prettier-config`, and `@april/tsconfig` packages.
+  `@april/prettier-config`, `@april/tsconfig`, and `@april/import-sort`
+  packages.
 
 ## Adding a package
 

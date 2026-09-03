@@ -9,6 +9,7 @@
  */
 
 import { BINARY, BITS, LIMITS, MASKS, SHIFTS, TIME } from '../constants.js';
+
 import type { DeconstructedCyberflake } from '../types.js';
 
 /**

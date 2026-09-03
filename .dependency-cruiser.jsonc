@@ -11,8 +11,15 @@
       "name": "config-packages-are-leaves",
       "severity": "error",
       "comment": "Shared config packages must never depend on runtime library code.",
-      "from": { "path": "^packages/shared/(eslint-config|prettier-config|tsconfig)/" },
+      "from": { "path": "^packages/shared/(eslint-config|import-sort|prettier-config|tsconfig)/" },
       "to": { "path": "^packages/cyberflake/" },
+    },
+    {
+      "name": "import-sort-core-is-host-agnostic",
+      "severity": "error",
+      "comment": "The import-sort engine must stay reusable outside ESLint: core/ may not depend on the ESLint adapter.",
+      "from": { "path": "^packages/shared/import-sort/src/core/" },
+      "to": { "path": "^packages/shared/import-sort/src/(eslint/|index\\.ts$)" },
     },
   ],
   "options": {

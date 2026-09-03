@@ -276,7 +276,8 @@ them together in the correct order.
 
 ## Versioning
 
-Versions and changelogs are managed with [Changesets](../../.changeset); breaking
+Versions and changelogs are managed with
+[Changesets](https://github.com/changesets/changesets); breaking
 changes follow semver. The public API surface is `Cyberflake`,
 `CyberflakeConfig`, and `DeconstructedCyberflake` — everything under
 `src/internal/` may change without notice.

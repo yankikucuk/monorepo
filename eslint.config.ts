@@ -1,11 +1,13 @@
-import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
 import tseslint from 'typescript-eslint';
+
+import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
 
 /**
  * Root ESLint configuration for the April monorepo.
  *
- * - Product source (`packages/*​/src`) is linted with the strict, fully
- *   type-checked `backend` preset from `@april/eslint-config`.
+ * - Product source (the `src` directory of each product package) is linted with
+ *   the strict, fully type-checked `backend` preset from `@april/eslint-config`
+ *   (which enforces import ordering through `@april/import-sort`).
  * - Tooling files (config, the shared config sources, benchmarks, scripts)
  *   are not part of the type-checked product graph, so they use the same rules
  *   with type-aware checks disabled and a few product-only rules relaxed.
@@ -13,7 +15,16 @@ import tseslint from 'typescript-eslint';
  */
 export default tseslint.config(
   {
-    ignores: ['**/artifacts/**', '**/dist/**', '**/build/**', '**/node_modules/**', '**/.turbo/**', '**/.claude/**'],
+    ignores: [
+      '**/artifacts/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/dist/**',
+      '**/docs/api/**',
+      '**/node_modules/**',
+      '**/.claude/**',
+      '**/.turbo/**',
+    ],
   },
   {
     files: ['packages/cyberflake/src/**/*.ts'],
@@ -87,6 +98,27 @@ export default tseslint.config(
     files: ['packages/cyberflake/src/internal/encoding.ts'],
     rules: {
       'no-bitwise': 'off',
+    },
+  },
+  /*
+   * Architectural boundary: the import-sort engine must stay usable outside
+   * ESLint, so nothing under `core/` may import the ESLint adapter or any
+   * ESLint package (dependency-cruiser enforces the in-repo half of this).
+   */
+  {
+    files: ['packages/shared/import-sort/src/core/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['eslint', 'eslint/*', '@typescript-eslint/*', '**/eslint/**'],
+              message: 'The import-sort core must stay ESLint-agnostic; put ESLint-specific code under src/eslint/.',
+            },
+          ],
+        },
+      ],
     },
   }
 );

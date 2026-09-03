@@ -27,6 +27,7 @@ import {
   assertValidWorkerId,
   isValidId,
 } from './internal/validation.js';
+
 import type { CyberflakeConfig, DeconstructedCyberflake } from './types.js';
 
 /**

@@ -1,6 +1,7 @@
 /**
- * Plugin rule groups: unicorn, import hygiene/ordering, repository
- * governance, and targeted overrides of preset-enabled rules.
+ * Plugin rule groups: unicorn, import hygiene/ordering (via
+ * `@april/import-sort`), repository governance, and targeted overrides of
+ * preset-enabled rules.
  * @packageDocumentation
  */
 
@@ -26,28 +27,22 @@ export const UNICORN_RULES: Linter.RulesRecord = {
  * Import hygiene and deterministic ordering.
  *
  * Ownership is split to avoid fixer conflicts:
- * - `import/order` owns statement ordering (type imports grouped last).
+ * - `import-sort/order` (from `@april/import-sort`) owns import statement
+ *   ordering, blank lines between import groups, and the order of named
+ *   specifiers inside braces — one rule, one fix per import block. Workspace
+ *   packages (`@april/*`) form the `internal` group.
  * - `import/no-duplicates` owns duplicate detection — unlike the core
- *   `no-duplicate-imports`, it understands `import type`, which `import/order`
- *   forces into a separate statement.
- * - perfectionist sorts the specifiers inside braces, a concern
- *   `import/order` does not cover.
+ *   `no-duplicate-imports`, it understands `import type`.
+ * - perfectionist sorts exports only; it must never sort imports here.
  */
 export const IMPORT_RULES: Linter.RulesRecord = {
   'import/no-duplicates': 'error',
   'import/no-dynamic-require': 'error',
   'import/no-self-import': 'error',
   'import/no-useless-path-segments': 'error',
-  'import/order': [
-    'error',
-    {
-      groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-      alphabetize: { order: 'asc' },
-    },
-  ],
+  'import-sort/order': ['error', { internalPattern: ['^@april/'] }],
   'perfectionist/sort-exports': ['error', { type: 'natural' }],
   'perfectionist/sort-named-exports': ['error', { type: 'natural' }],
-  'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
 };
 
 /**

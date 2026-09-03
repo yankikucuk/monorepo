@@ -1,9 +1,10 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["packages/cyberflake/src/index.ts"],
-  "tsconfig": "packages/cyberflake/tsconfig.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": ["packages/cyberflake", "packages/shared/import-sort"],
   "out": "docs/api",
-  "readme": "packages/cyberflake/README.md",
+  "readme": "none",
   "excludeInternal": true,
+  "treatWarningsAsErrors": true,
   "githubPages": false
 }

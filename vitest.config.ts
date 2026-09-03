@@ -8,7 +8,7 @@ export default defineConfig({
       enabled: false,
       reporter: ['text', 'lcov', 'json'],
       provider: 'v8',
-      include: ['packages/cyberflake/src/**/*.ts'],
+      include: ['packages/cyberflake/src/**/*.ts', 'packages/shared/import-sort/src/**/*.ts'],
       thresholds: {
         lines: 90,
         functions: 90,
