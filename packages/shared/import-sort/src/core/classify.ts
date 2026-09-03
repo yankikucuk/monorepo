@@ -19,19 +19,30 @@ import type { GroupName, ImportRecord, ResolvedSortOptions } from './types.js';
 /** Structural categories a specifier can have regardless of configuration. */
 export type PathCategory = 'builtin' | 'external' | 'index' | 'internal' | 'parent' | 'sibling' | 'unknown';
 
-/** Stylesheet extensions, optionally followed by a query or fragment (`./a.css?inline`). */
-const STYLE_SOURCE = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:[?#].*)?$/u;
+/** Stylesheet extensions, anchored at the end of the path. */
+const STYLE_EXTENSION = /\.(?:css|less|pcss|postcss|sass|scss|styl|stylus)$/u;
+/** Start of a query string or fragment (`./a.css?inline`, `./a.css#id`). */
+const QUERY_OR_FRAGMENT = /[?#]/u;
 /** `.`, `./`, `./index`, `./index.js`, `./index.d.ts`, … — but never `.index`. */
 const INDEX_SOURCE = /^(?:\.|\.\/(?:index(?:\.[\w-]+)*)?)$/u;
 /** A URL-like scheme prefix (`https://`, `npm:`, `bun:`). `node:` is handled by `isBuiltin` first. */
 const SCHEME_PREFIX = /^[a-z][a-z\d+.-]*:/iu;
 
 /**
- * Whether a specifier refers to a stylesheet.
+ * Whether a specifier refers to a stylesheet, ignoring any query string or
+ * fragment (`./a.css?inline`).
+ *
+ * The query is cut with a linear scan rather than matched with a trailing
+ * `.*`: a single pattern spanning both parts backtracks quadratically on a
+ * specifier that repeats `.css#` and ends in a newline, and a module specifier
+ * is arbitrary text from a source file.
  * @param {string} source - Module specifier.
  * @returns {boolean} `true` for `.css`, `.less`, `.scss`, `.sass`, `.styl`, `.pcss` sources.
  */
-export const isStyleSource = (source: string): boolean => STYLE_SOURCE.test(source);
+export const isStyleSource = (source: string): boolean => {
+  const cut = source.search(QUERY_OR_FRAGMENT);
+  return STYLE_EXTENSION.test(cut === -1 ? source : source.slice(0, cut));
+};
 
 /**
  * Determines the structural category of a module specifier.

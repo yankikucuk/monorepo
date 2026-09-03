@@ -74,6 +74,22 @@ describe('isStyleSource', () => {
     expect(isStyleSource('./a.css#id')).toBe(true);
     expect(isStyleSource('./a.js')).toBe(false);
     expect(isStyleSource('./css')).toBe(false);
+    expect(isStyleSource('./a.css?v=1#id')).toBe(true);
+    expect(isStyleSource('./a.js?style.css')).toBe(false);
+  });
+
+  it('does not backtrack on a specifier that repeats the extension', () => {
+    // A single pattern spanning the extension and the query part runs in
+    // quadratic time on this input; cutting the query first keeps it linear.
+    // The answer comes from the path before the first `?`/`#`, so `.css#…` is
+    // a stylesheet and `.js#…` is not, however long the tail.
+    const stylesheet = `${'.css#'.repeat(20_000)}\n`;
+    const script = `${'.js#'.repeat(20_000)}\n`;
+    const started = performance.now();
+
+    expect(isStyleSource(stylesheet)).toBe(true);
+    expect(isStyleSource(script)).toBe(false);
+    expect(performance.now() - started).toBeLessThan(100);
   });
 });
 
