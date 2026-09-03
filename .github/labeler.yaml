@@ -15,6 +15,12 @@ packages:eslint-config:
           - packages/shared/eslint-config/*
           - packages/shared/eslint-config/**/*
 
+packages:import-sort:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/shared/import-sort/*
+          - packages/shared/import-sort/**/*
+
 packages:prettier-config:
   - changed-files:
       - any-glob-to-any-file:

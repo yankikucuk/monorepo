@@ -9,6 +9,7 @@
  */
 
 import { Cyberflake } from '../src/cyberflake.js';
+
 import { runBenchmark } from './runBenchmark.js';
 
 // Exceeds the 4096-per-ms sequence capacity to force logical time advancement.

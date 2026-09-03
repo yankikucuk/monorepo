@@ -9,18 +9,18 @@
   },
   "packageRules": [
     {
-      "description": "Tüm devDependencies güncellemelerini tek PR'da grupla",
+      "description": "Group every devDependency update into a single pull request",
       "matchDepTypes": ["devDependencies"],
       "groupName": "dev dependencies"
     },
     {
-      "description": "TypeScript major'ları elle: typescript-eslint TS'i <6.1 ile sınırlıyor",
+      "description": "TypeScript majors are handled by hand: typescript-eslint caps TypeScript below 6.1",
       "matchPackageNames": ["typescript"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
     {
-      "description": "ESLint major'ları elle: plugin peer çakışmaları koordinasyon gerektiriyor",
+      "description": "ESLint majors are handled by hand: plugin peer ranges need coordinating",
       "matchPackageNames": ["eslint"],
       "matchUpdateTypes": ["major"],
       "enabled": false

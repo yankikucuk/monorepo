@@ -7,9 +7,10 @@
  * - `@eslint/js` recommended (core correctness rules)
  * - `typescript-eslint` strict + stylistic, fully type-checked
  * - `eslint-plugin-regexp`, `eslint-plugin-sonarjs`, `eslint-plugin-promise`
- * - `eslint-plugin-import-x` (ordering + hygiene), `eslint-plugin-perfectionist`
- *   (named-import/export sorting), `eslint-plugin-unicorn`,
- *   `eslint-plugin-jsdoc`, `eslint-plugin-check-file`
+ * - `@april/import-sort` (import statement + specifier ordering),
+ *   `eslint-plugin-import-x` (import hygiene), `eslint-plugin-perfectionist`
+ *   (export sorting), `eslint-plugin-unicorn`, `eslint-plugin-jsdoc`,
+ *   `eslint-plugin-check-file`
  *
  * This module is composition only — every rule decision lives in a documented
  * group under `./rules/`, one file per concern.
@@ -27,10 +28,13 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
 
+import importSort from '@april/import-sort';
+
 import { JSDOC_RULES } from './rules/jsdoc.js';
 import { GOVERNANCE_RULES, IMPORT_RULES, PRESET_OVERRIDES, UNICORN_RULES } from './rules/plugins.js';
 import { SHARED_RULES } from './rules/shared.js';
 import { TS_EXTENSION_RULES, TS_TYPE_AWARE_RULES } from './rules/typescript.js';
+
 import type { Linter } from 'eslint';
 
 /**
@@ -64,6 +68,7 @@ export const base = tseslint.config(
       'check-file': checkFile,
       'eslint-comments': eslintComments,
       import: eslintPluginImportX,
+      'import-sort': importSort,
       jsdoc: eslintPluginJsdoc,
       perfectionist,
       unicorn: eslintPluginUnicorn,

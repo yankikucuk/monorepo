@@ -31,11 +31,11 @@ let unsorted = 0;
 for (const file of files) {
   const original = readFileSync(file, 'utf8');
   const parsed = JSON.parse(original);
-  const scriptsOrder = parsed.scripts === undefined ? undefined : Object.keys(parsed.scripts);
+  const scriptsOrder = parsed.scripts ? Object.keys(parsed.scripts) : null;
 
   const sorted = sortPackageJson(parsed);
 
-  if (scriptsOrder !== undefined) {
+  if (scriptsOrder) {
     const preserved = {};
     for (const key of scriptsOrder) {
       preserved[key] = sorted.scripts[key];
@@ -43,19 +43,17 @@ for (const file of files) {
     sorted.scripts = preserved;
   }
 
-  const output = `${JSON.stringify(sorted, undefined, 2)}\n`;
+  const output = `${JSON.stringify(sorted, null, 2)}\n`;
 
-  if (output === original) {
-    continue;
-  }
+  if (output !== original) {
+    unsorted += 1;
 
-  unsorted += 1;
-
-  if (check) {
-    console.error(`✗ ${file} is not sorted`);
-  } else {
-    writeFileSync(file, output);
-    console.log(`✓ sorted ${file}`);
+    if (check) {
+      console.error(`✗ ${file} is not sorted`);
+    } else {
+      writeFileSync(file, output);
+      console.log(`✓ sorted ${file}`);
+    }
   }
 }
 

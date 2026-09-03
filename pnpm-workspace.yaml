@@ -2,14 +2,17 @@ packages:
   - packages/*
   - packages/shared/*
 
-# esbuild ve unrs-resolver platform binary'lerini optionalDependencies ile getirir;
-# postinstall build script'lerine gerek yok (false = çalıştırma).
+# esbuild and unrs-resolver ship their platform binaries as optionalDependencies,
+# so their postinstall build scripts are not needed (false = do not run).
 allowBuilds:
   esbuild: false
   unrs-resolver: false
 
 linkWorkspacePackages: true
 
-minimumReleaseAgeExclude:
-  - eslint-plugin-unicorn@72.0.0
-  - knip@6.27.0
+# Security overrides for transitive dependencies we do not control directly.
+# Drop an entry once every dependent has released a fix of its own.
+overrides:
+  # GHSA-mh99-v99m-4gvg, GHSA-rgw5-rvv9-x895 — denial of service in brace-expansion,
+  # reached through minimatch (typedoc, eslint-plugin-import-x, eslint-plugin-sonarjs).
+  brace-expansion@>=4.0.0 <5.0.9: '>=5.0.9'

@@ -3,7 +3,7 @@
   "tasks": {
     "dev": {
       "cache": false,
-      "persistent": false
+      "persistent": true
     },
     "build": {
       "dependsOn": ["^build"],
@@ -13,7 +13,11 @@
       "dependsOn": ["^build"]
     },
     "lint": {},
-    "format": {},
-    "clean": {}
+    "format": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
   }
 }
