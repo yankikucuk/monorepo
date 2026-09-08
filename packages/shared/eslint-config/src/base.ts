@@ -35,20 +35,6 @@ import { GOVERNANCE_RULES, IMPORT_RULES, PRESET_OVERRIDES, UNICORN_RULES } from 
 import { SHARED_RULES } from './rules/shared.js';
 import { TS_EXTENSION_RULES, TS_TYPE_AWARE_RULES } from './rules/typescript.js';
 
-import type { Linter } from 'eslint';
-
-/**
- * Build artifacts and vendored directories that must never be linted.
- *
- * Deliberately not part of {@link base}: global ignores belong at the top of
- * the consuming config exactly once, whereas `base` may be extended by several
- * file-scoped blocks. Spread it as the first element of a package's own
- * `eslint.config.*`.
- */
-export const ignores: Linter.Config = {
-  ignores: ['**/artifacts/', '**/dist/', '**/build/', '**/node_modules/', '**/.turbo/', '**/.vendor/'],
-};
-
 /**
  * The strict, type-checked base configuration.
  *

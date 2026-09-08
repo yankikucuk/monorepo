@@ -40,7 +40,7 @@ export type TypeSpecifierPlacement = 'first' | 'last' | 'mixed';
  * @returns {string} The imported name.
  */
 const importedName = (specifier: TSESTree.ImportSpecifier): string =>
-  specifier.imported.type === AST_NODE_TYPES.Identifier ? specifier.imported.name : String(specifier.imported.value);
+  specifier.imported.type === AST_NODE_TYPES.Identifier ? specifier.imported.name : specifier.imported.value;
 
 /**
  * Ranks a specifier by its inline `type` modifier under the configured

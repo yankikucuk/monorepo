@@ -5,18 +5,19 @@ import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
 /**
  * Root ESLint configuration for the April monorepo.
  *
- * - Product source (the `src` directory of each product package) is linted with
- *   the strict, fully type-checked `backend` preset from `@april/eslint-config`
- *   (which enforces import ordering through `@april/import-sort`).
- * - Tooling files (config, the shared config sources, benchmarks, scripts)
- *   are not part of the type-checked product graph, so they use the same rules
- *   with type-aware checks disabled and a few product-only rules relaxed.
+ * - Product source (the `src` directory of each product package) and the
+ *   `@april/import-sort` engine are linted with the strict, fully type-checked
+ *   `backend` preset from `@april/eslint-config` (which enforces import
+ *   ordering through `@april/import-sort` itself).
+ * - Tooling files (config, the declarative shared config sources, benchmarks,
+ *   scripts) are not part of the type-checked product graph, so they use the
+ *   same rules with type-aware checks disabled and a few product-only rules
+ *   relaxed.
  * - Tests get the shared `TEST_RULES` limits plus repo-specific exemptions.
  */
 export default tseslint.config(
   {
     ignores: [
-      '**/artifacts/**',
       '**/build/**',
       '**/coverage/**',
       '**/dist/**',
@@ -26,7 +27,8 @@ export default tseslint.config(
     ],
   },
   {
-    files: ['packages/cyberflake/src/**/*.ts'],
+    // Product code and the import-sort engine: strict and fully type-checked (ADR 0002).
+    files: ['packages/cyberflake/src/**/*.ts', 'packages/shared/import-sort/src/**/*.ts'],
     extends: [backend],
     languageOptions: {
       parserOptions: {
@@ -36,10 +38,9 @@ export default tseslint.config(
   },
   {
     files: [
-      'eslint.config.ts',
       '*.config.ts',
       'scripts/**/*.mjs',
-      'packages/shared/*/src/**/*.{ts,js}',
+      'packages/shared/{eslint-config,prettier-config,stylelint-config}/src/**/*.{ts,js}',
       'packages/*/benchmarks/**/*.ts',
     ],
     extends: [backend, tseslint.configs.disableTypeChecked],
