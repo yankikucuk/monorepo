@@ -77,30 +77,29 @@ export const assertTimestampWithinLayout = (timestamp: bigint): void => {
 /**
  * Performs semantic validation of a Cyberflake identifier.
  *
- * An identifier is valid when it is a non-empty integer string whose value is
- * non-negative and fits within the 63-bit layout. Field-level bounds (worker,
+ * An identifier is valid when it is a canonical decimal string (digits only,
+ * no sign, whitespace, radix prefix or leading zeros) whose value fits within
+ * the 63-bit layout. Field-level bounds (worker,
  * process, sequence) require no separate checks: the bit layout guarantees
  * them structurally for any value that passes the size check.
  * @example
  * ```ts
- * isValidId('158110629309382656'); // true
+ * isValidId('1174109840998531072'); // true
  * isValidId('-5'); // false (negative)
  * isValidId('not-a-number'); // false (unparseable)
+ * isValidId('0x1F'); // false (not canonical decimal)
  * isValidId((1n << 70n).toString()); // false (exceeds 63-bit layout)
  * ```
  * @param {string} id - Candidate Cyberflake identifier as a string.
  * @returns {boolean} `true` if the identifier is structurally valid.
  */
 export const isValidId = (id: string): boolean => {
-  if (id.trim().length === 0) {
+  // Untyped callers may pass anything; a guard must never throw.
+  if (typeof (id as unknown) !== 'string') {
     return false;
   }
 
   const value = parseId(id);
 
-  if (value === null) {
-    return false;
-  }
-
-  return value >= 0n && value <= LIMITS.MAX_ID;
+  return value !== null && value <= LIMITS.MAX_ID;
 };

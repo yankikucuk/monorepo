@@ -100,7 +100,7 @@ interface CyberflakeConfig {
 ### Worker / Process IDs
 
 - `workerId` identifies a logical node or service instance
-- `processId` allows multiple processes on the same worker
+- `processId` allows multiple processes on the same worker (defaults to `0`)
 - `(workerId, processId)` pairs **must be unique**
 - Misconfiguration fails fast at construction time
 
@@ -124,7 +124,8 @@ cf.generate();
 
 > **Note:** When `deterministic` is `true`, an explicit `now` time source is
 > **required**. Omitting it throws a `RangeError` at construction time, so the
-> generator never silently falls back to `Date.now`.
+> generator never silently falls back to `Date.now`. The flag changes nothing
+> else: generation is fully determined by `now`, with or without it.
 
 Used for:
 
@@ -166,16 +167,19 @@ Useful for:
 Cyberflake.isValid(id); // boolean — never throws
 ```
 
-Accepts exactly the values that are structurally valid Cyberflakes:
+Accepts exactly the values that a generator can emit:
 
-- Non-empty, parseable integer strings
-- Non-negative values
+- Canonical decimal strings: digits only, no sign, whitespace, radix prefix
+  (`0x`, `0b`) or leading zeros
 - Values that fit the 63-bit layout
+
+Anything else, including non-string input from untyped callers, returns `false`.
 
 Field-level bounds (worker, process, sequence) need no separate checks — the
 bit layout guarantees them structurally for any value that passes the size
-check. `isValid` is safe as a guard for untrusted input; `deconstruct` throws
-on unparseable strings, so validate first when input is untrusted.
+check. `isValid` is safe as a guard for untrusted input; `deconstruct` throws a
+`SyntaxError` on non-canonical strings and a `RangeError` on out-of-domain
+values, so validate first when input is untrusted.
 
 ---
 

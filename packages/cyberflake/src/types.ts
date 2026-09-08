@@ -23,8 +23,11 @@ export interface DeconstructedCyberflake {
   /**
    * Absolute timestamp in milliseconds since the Unix epoch.
    *
-   * This value corresponds to the physical time (plus any logical offset) used
-   * during ID generation.
+   * This is the generator's logical time: the physical clock plus the logical
+   * offset accumulated by sequence overflows and clock regressions. That offset
+   * never decays, so after a burst or a regression the decoded value stays
+   * ahead of wall-clock time by the accumulated amount. Treat it as an ordering
+   * key, not as an exact wall-clock reading.
    */
   timestamp: number;
 
@@ -88,18 +91,18 @@ export interface CyberflakeConfig {
    * Optional process identifier.
    *
    * When provided, allows multiple processes under the same worker to safely
-   * generate IDs concurrently. If omitted, a default process identifier is
-   * used.
+   * generate IDs concurrently. Defaults to `0` when omitted.
    */
   processId?: number;
 
   /**
-   * Enables deterministic behavior for controlled environments.
+   * Asserts that the generator runs on an injected clock.
    *
    * When set to `true`, an explicit {@link CyberflakeConfig.now} time source
-   * MUST be provided; otherwise the constructor throws a `RangeError`. This
-   * makes the intent explicit and prevents silently falling back to
-   * `Date.now`.
+   * MUST be provided; otherwise the constructor throws a `RangeError`. The flag
+   * has no effect on ID generation itself: behavior is fully determined by
+   * `now`. It exists so that a test or benchmark cannot silently fall back to
+   * `Date.now` when the injected clock is forgotten.
    *
    * Intended primarily for:
    * - Unit and integration testing

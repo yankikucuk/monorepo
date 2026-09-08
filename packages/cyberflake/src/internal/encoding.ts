@@ -25,18 +25,19 @@ export const assembleId = (timestamp: bigint, workerId: bigint, processId: bigin
   (timestamp << SHIFTS.TIMESTAMP) | (workerId << SHIFTS.WORKER) | (processId << SHIFTS.PROCESS) | sequence;
 
 /**
- * Safely parses a string into a `bigint`.
+ * Canonical decimal form of an identifier: no sign, no whitespace, no radix
+ * prefix, no leading zeros. `BigInt()` alone would also accept `'0x1F'`,
+ * `' 42 '`, `'+5'` or `'007'`, none of which a generator ever emits.
+ */
+const CANONICAL_DECIMAL = /^(?:0|[1-9]\d*)$/u;
+
+/**
+ * Parses a canonical decimal string into a `bigint`.
  * @param {string} id - Candidate Cyberflake identifier.
  * @returns {bigint | null} The parsed value, or `null` if the string is not a
- * valid integer literal.
+ * canonical decimal integer literal.
  */
-export const parseId = (id: string): bigint | null => {
-  try {
-    return BigInt(id);
-  } catch {
-    return null;
-  }
-};
+export const parseId = (id: string): bigint | null => (CANONICAL_DECIMAL.test(id) ? BigInt(id) : null);
 
 /**
  * Decodes a Cyberflake identifier into its constituent components.
