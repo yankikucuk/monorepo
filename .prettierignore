@@ -11,3 +11,4 @@ docs/guide/contributing.md
 docs/.vitepress/generated
 docs/.vitepress/cache
 docs/.vitepress/dist
+.gstack
