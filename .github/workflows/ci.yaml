@@ -34,16 +34,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Restore Turborepo cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Lint (packages)
-        run: pnpm lint
-
-      - name: Lint (repository-wide)
+      - name: Lint
         run: pnpm lint:build
 
       - name: Test (with coverage)
+        # `shell: bash` gives `-o pipefail`, so a failing suite is not masked by `tee`.
+        shell: bash
         run: pnpm test:coverage | tee coverage-output.txt
 
       - name: Coverage summary

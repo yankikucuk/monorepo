@@ -32,10 +32,17 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          REGEX="^(revert: )?(feat|fix|docs|style|refactor|perf|test|build|ci|chore|types)(\\(.+\\))?!?: .{1,72}$"
+          # Same vocabulary and length limit as .commitlintrc.json (Angular convention).
+          REGEX="^(chore|build|ci|docs|feat|fix|perf|refactor|revert|style|test)(\\([^)]+\\))?!?: .+$"
 
           echo "Title: \"$TITLE\""
 
           if [[ ! "$TITLE" =~ $REGEX ]]; then
+            echo "::error::Title must look like 'type(scope): subject' with a type from .commitlintrc.json"
+            exit 1
+          fi
+
+          if (( ${#TITLE} > 72 )); then
+            echo "::error::Title must be at most 72 characters (currently ${#TITLE})"
             exit 1
           fi
