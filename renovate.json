@@ -14,9 +14,9 @@
       "groupName": "dev dependencies"
     },
     {
-      "description": "TypeScript majors are handled by hand: typescript-eslint caps TypeScript below 6.1",
+      "description": "TypeScript is pinned below 6.1 by hand: typescript-eslint and @april/eslint-config cap it there, so majors and minors both need coordinating",
       "matchPackageNames": ["typescript"],
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": ["major", "minor"],
       "enabled": false
     },
     {

@@ -13,14 +13,14 @@
     "typescript",
     "flat-config"
   ],
-  "homepage": "https://github.com/playerberry/april/tree/stage/packages/shared/import-sort#readme",
+  "homepage": "https://github.com/yankikucuk/monorepo/tree/stage/packages/shared/import-sort#readme",
   "bugs": {
-    "url": "https://github.com/playerberry/april/issues",
+    "url": "https://github.com/yankikucuk/monorepo/issues",
     "email": "bugs@playerberry.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/playerberry/april.git",
+    "url": "https://github.com/yankikucuk/monorepo.git",
     "directory": "packages/shared/import-sort"
   },
   "license": "Apache-2.0",

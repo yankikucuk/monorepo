@@ -10,6 +10,7 @@ body:
       options:
         - Cyberflake
         - ESLint config
+        - Import sort
         - Prettier config
         - Stylelint config
         - TSConfig
