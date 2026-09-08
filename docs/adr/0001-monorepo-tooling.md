@@ -11,9 +11,13 @@ package management, and shared configuration that scales without ceremony.
 ## Decision
 
 - **pnpm workspaces** for package management (`linkWorkspacePackages`, workspace
-  protocol). pnpm is pinned via `packageManager` / Corepack.
+  protocol). pnpm is pinned via `packageManager` (Corepack is no longer
+  bundled with Node 26, so it is installed separately).
 - **Turborepo** for task orchestration and caching (`build`, `typecheck`,
-  `lint`, `test`, `format`, `clean`). Build outputs are declared for caching.
+  `lint`, `format`, `clean`). Build outputs and task inputs are declared for
+  caching, and the shared configuration packages are global hash inputs
+  because every task reads them. Tests run once at the root through Vitest
+  rather than as a Turborepo task (see [ADR 0006](0006-quality-gates.md)).
 - **Shared config packages** rather than duplicated root config, grouped under
   `packages/shared/`: `@april/tsconfig` (TS presets), `@april/eslint-config`
   (flat ESLint presets), `@april/prettier-config` (Prettier), and
@@ -25,9 +29,11 @@ package management, and shared configuration that scales without ceremony.
   The shared configuration packages are the exception: they ship their sources
   and have no build step — see [ADR 0004](0004-config-packages-ship-sources.md).
 - **No TypeScript project references.** Turborepo already orchestrates build
-  order and caching, and there are no cross-package type dependencies today, so
-  project references would add complexity with no benefit. Revisit if packages
-  begin depending on each other's types.
+  order and caching. The only cross-package type dependency today is
+  `@april/eslint-config` importing `@april/import-sort`, which resolves to
+  sources (ADR 0004) and needs no build, so project references would add
+  complexity with no benefit. Revisit if packages begin depending on each
+  other's emitted types.
 - Quality/release tooling: Vitest (+ v8 coverage thresholds), Changesets,
   Renovate, Husky + lint-staged + commitlint, Knip, manypkg, dependency-cruiser,
   and TypeDoc — all wired into CI. What each gate covers, and what it

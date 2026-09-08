@@ -6,7 +6,8 @@ conventions enforced by CI.
 ## Prerequisites
 
 - Node.js `>=26` (`nvm use` reads [`.nvmrc`](.nvmrc))
-- pnpm `>=11` (via Corepack — the `packageManager` field pins the exact version)
+- pnpm `>=11` (the `packageManager` field pins the exact version; Node 26 no
+  longer bundles Corepack, so `npm i -g pnpm` or enable Corepack separately)
 
 ```bash
 pnpm install

@@ -43,8 +43,8 @@ versions are not always mutually compatible.
 - **`eslint-plugin-import-x`** (not the legacy `eslint-plugin-import`) because
   `eslint-plugin-unicorn` requires ESLint ≥10.4 while the legacy plugin caps at
   ESLint ≤9.
-- **`@eslint/js` is versioned independently of ESLint** (latest 10.0.1, not
-  tracking `eslint@10.7`).
+- **`@eslint/js` is versioned independently of ESLint** (its 10.0.x line does
+  not track ESLint's 10.x minors).
 
 ## Consequences
 

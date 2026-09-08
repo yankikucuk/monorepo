@@ -39,9 +39,11 @@ to an `overrides` entry is to leave it there forever.
   resolving something else.
 - **Renovate owns routine updates**, with three deliberate exceptions recorded
   in `renovate.json`: devDependencies are grouped into one pull request,
-  GitHub Action digests are pinned (`helpers:pinGitHubActionDigests`), and
-  TypeScript and ESLint **majors** are disabled because their peer ranges have to
-  be coordinated by hand (see [ADR 0002](0002-strict-typechecked-eslint.md)).
+  GitHub Action digests are pinned by Renovate (`helpers:pinGitHubActionDigests`;
+  the workflows are written against major tags and Renovate rewrites them to
+  digests as it runs), ESLint **majors** and TypeScript **majors and minors**
+  are disabled because their peer ranges have to be coordinated by hand (see
+  [ADR 0002](0002-strict-typechecked-eslint.md)).
   `lockFileMaintenance` is enabled so the lockfile does not drift.
 - **Two scanners complement the audit:** CodeQL analyses our own source, and
   `dependency-review` fails a pull request that _introduces_ a dependency with a
