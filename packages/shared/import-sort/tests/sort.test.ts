@@ -235,6 +235,29 @@ describe('createRecordComparator', () => {
     expect(block?.records.map(item => item.source)).toEqual(['aaaa', 'mmm', 'zz']);
   });
 
+  it('keeps mixed kinds and shapes in source order with the unsorted algorithm', () => {
+    const records = [
+      record('x', { kind: 'type', style: 'named' }),
+      record('y', { style: 'namespace' }),
+      record('z', { style: 'default' }),
+      record('a', { style: 'named' }),
+    ];
+    const [block] = sortImports(records, { groups: ['external'], algorithm: 'unsorted' });
+    expect(block?.records.map(item => item.source)).toEqual(['x', 'y', 'z', 'a']);
+  });
+
+  it('breaks line-length ties with the fallback pass, never with the source length', () => {
+    const records = [record('zz', { length: 30 }), record('aaa', { length: 30 }), record('b', { length: 10 })];
+    const natural = sortImports(records, {
+      groups: ['external'],
+      algorithm: 'line-length',
+      fallbackSort: { algorithm: 'natural' },
+    });
+    expect(natural[0]?.records.map(item => item.source)).toEqual(['b', 'aaa', 'zz']);
+    const plain = sortImports(records, { groups: ['external'], algorithm: 'line-length' });
+    expect(plain[0]?.records.map(item => item.source)).toEqual(['b', 'aaa', 'zz']);
+  });
+
   it('keeps the source order inside a group with the unsorted algorithm', () => {
     expect(sortSources(['react', 'axios', 'node:fs'], { algorithm: 'unsorted' })).toEqual([
       [['builtin'], ['node:fs']],

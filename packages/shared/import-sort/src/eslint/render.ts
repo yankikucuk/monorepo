@@ -22,6 +22,8 @@ export interface RenderOptions {
   readonly newlinesBetween: NewlinesBetween;
   /** What follows the chunk on its last line; non-empty means code shares that line. */
   readonly restOfLine: string;
+  /** Every configured group comment, so a label an earlier fix left above any entry is recognised. */
+  readonly groupComments: ReadonlySet<string>;
 }
 
 /** The rendered text plus the data needed to explain a mismatch. */
@@ -33,6 +35,10 @@ export interface RenderedChunk {
   readonly separators: readonly string[];
   /** Group comments the source is missing, keyed by the entry that opens the block. */
   readonly missingComments: ReadonlyMap<ImportEntry, string>;
+  /** Group comments found above an entry that does not open the block they label, keyed by that entry. */
+  readonly strayComments: ReadonlyMap<ImportEntry, string>;
+  /** Entries whose own group comment was present but not written exactly as it is rendered. */
+  readonly rewrittenComments: ReadonlySet<ImportEntry>;
 }
 
 /** Leading whitespace of a line. */
@@ -82,19 +88,34 @@ export const commentLine = (commentAbove: string | null): string | null => {
   return commentAbove.startsWith('//') || commentAbove.startsWith('/*') ? commentAbove : `// ${commentAbove}`;
 };
 
+/** An entry's text split into the group comments it carried and the rest. */
+interface SplitText {
+  /** The text without its leading group comments. */
+  readonly body: string;
+  /** The removed lines, exactly as written (indentation and any `\r` included). */
+  readonly removed: readonly string[];
+}
+
 /**
- * Drops a group comment the previous run already inserted, so that rendering
- * the same chunk twice does not stack copies of it.
- * @param {string} text - The first entry's text.
- * @param {string} comment - The comment the block renders above itself.
- * @returns {string} The text without its leading copy of the comment.
+ * Strips every group comment an earlier run left at the top of an entry, so
+ * that rendering never stacks copies of a label and a label travelling with an
+ * import that moved to another block is dropped rather than duplicated.
+ * @param {string} text - The entry's text.
+ * @param {ReadonlySet<string>} groupComments - Every configured group comment.
+ * @returns {SplitText} The body and the removed lines.
  */
-const withoutLeadingComment = (text: string, comment: string): string => {
-  const breakIndex = text.indexOf('\n');
-  if (breakIndex === -1) {
-    return text;
+const splitGroupComments = (text: string, groupComments: ReadonlySet<string>): SplitText => {
+  const removed: string[] = [];
+  let body = text;
+  for (let breakIndex = body.indexOf('\n'); breakIndex !== -1; breakIndex = body.indexOf('\n')) {
+    const line = body.slice(0, breakIndex);
+    if (!groupComments.has(line.trim())) {
+      break;
+    }
+    removed.push(line);
+    body = body.slice(breakIndex + 1);
   }
-  return text.slice(0, breakIndex).trim() === comment ? text.slice(breakIndex + 1) : text;
+  return { body, removed };
 };
 
 /** One entry's contribution to the rendered chunk. */
@@ -103,10 +124,14 @@ interface RenderedEntry {
   readonly gap: string;
   /** Group comment line rendered above the entry, or `''`. */
   readonly header: string;
-  /** The entry's own text, minus a group comment it already carried. */
+  /** The entry's own text, minus any group comments it carried. */
   readonly body: string;
   /** The group comment the source is missing, or `null`. */
   readonly missing: string | null;
+  /** A group comment the entry carried without opening the block it labels, or `null`. */
+  readonly stray: string | null;
+  /** Whether the entry's own group comment was present but not written as rendered. */
+  readonly rewritten: boolean;
 }
 
 /** Where an entry sits in the chunk. */
@@ -144,37 +169,90 @@ const gapFor = (position: EntryPosition, between: string, inside: string): strin
  * @param {ImportEntry} entry - The entry to render.
  * @param {EntryPosition} position - Where it sits in the chunk.
  * @param {BlockLayout} layout - The block's separators and comment.
- * @param {string} eol - Line terminator.
+ * @param {RenderOptions} options - Render options.
  * @returns {RenderedEntry} The pieces to append.
  */
-const renderEntry = (entry: ImportEntry, position: EntryPosition, layout: BlockLayout, eol: string): RenderedEntry => {
+const renderEntry = (
+  entry: ImportEntry,
+  position: EntryPosition,
+  layout: BlockLayout,
+  options: RenderOptions
+): RenderedEntry => {
   const gap = gapFor(position, layout.between, layout.inside);
-  const { comment } = layout;
-  if (!position.opensBlock || comment === null) {
-    return { gap, header: '', body: entry.text, missing: null };
-  }
+  const { body, removed } = splitGroupComments(entry.text, options.groupComments);
+  const comment = position.opensBlock ? layout.comment : null;
+  const header = comment === null ? '' : `${INDENTATION.exec(body)?.[0] ?? ''}${comment}${options.eol}`;
+  const ownIndex = comment === null ? -1 : removed.findIndex(line => line.trim() === comment);
+  const stray = removed.find((_line, index) => index !== ownIndex) ?? null;
 
-  const body = withoutLeadingComment(entry.text, comment);
   return {
     gap,
-    header: `${INDENTATION.exec(body)?.[0] ?? ''}${comment}${eol}`,
+    header,
     body,
-    missing: body === entry.text ? comment : null,
+    missing: comment !== null && ownIndex === -1 ? comment : null,
+    stray,
+    rewritten: ownIndex !== -1 && stray === null && `${removed[ownIndex] ?? ''}${options.eol}` !== header,
   };
+};
+
+/** Mutable accumulator for {@link renderChunk}. */
+interface ChunkState {
+  text: string;
+  readonly order: ImportEntry[];
+  readonly separators: string[];
+  readonly missingComments: Map<ImportEntry, string>;
+  readonly strayComments: Map<ImportEntry, string>;
+  readonly rewrittenComments: Set<ImportEntry>;
+}
+
+/**
+ * Renders one entry and records it in the chunk state.
+ * @param {ChunkState} state - The chunk being built.
+ * @param {ImportEntry} entry - The entry to append.
+ * @param {EntryPosition} position - Where it sits in the chunk.
+ * @param {BlockLayout} layout - The block's separators and comment.
+ * @param {RenderOptions} options - Render options.
+ * @returns {void} Nothing; the state is updated in place.
+ */
+const appendEntry = (
+  state: ChunkState,
+  entry: ImportEntry,
+  position: EntryPosition,
+  layout: BlockLayout,
+  options: RenderOptions
+): void => {
+  const { gap, header, body, missing, stray, rewritten } = renderEntry(entry, position, layout, options);
+
+  if (missing !== null) {
+    state.missingComments.set(entry, missing);
+  }
+  if (stray !== null) {
+    state.strayComments.set(entry, stray.trim());
+  }
+  if (rewritten) {
+    state.rewrittenComments.add(entry);
+  }
+  state.order.push(entry);
+  state.separators.push(gap);
+  state.text += gap + header + body;
 };
 
 /**
  * Renders sorted blocks into the canonical chunk text.
  * @param {readonly SortedGroup<ImportEntry>[]} blocks - Output of `sortImports`.
  * @param {RenderOptions} options - Render options.
- * @returns {RenderedChunk} The text, its per-entry separators, and any missing group comments.
+ * @returns {RenderedChunk} The text, its per-entry separators, and any missing, stray or misspaced group comments.
  */
 export const renderChunk = (blocks: readonly SortedGroup<ImportEntry>[], options: RenderOptions): RenderedChunk => {
-  const order: ImportEntry[] = [];
-  const separators: string[] = [];
-  const missingComments = new Map<ImportEntry, string>();
+  const state: ChunkState = {
+    text: '',
+    order: [],
+    separators: [],
+    missingComments: new Map(),
+    strayComments: new Map(),
+    rewrittenComments: new Set(),
+  };
   const between = separatorFor(blankLinesBetween(options.newlinesBetween), options.eol);
-  let text = '';
 
   for (const [blockIndex, block] of blocks.entries()) {
     const layout: BlockLayout = {
@@ -185,15 +263,7 @@ export const renderChunk = (blocks: readonly SortedGroup<ImportEntry>[], options
 
     for (const [entryIndex, entry] of block.records.entries()) {
       const opensBlock = entryIndex === 0;
-      const position = { isFirst: blockIndex === 0 && opensBlock, opensBlock };
-      const { gap, header, body, missing } = renderEntry(entry, position, layout, options.eol);
-
-      if (missing !== null) {
-        missingComments.set(entry, missing);
-      }
-      order.push(entry);
-      separators.push(gap);
-      text += gap + header + body;
+      appendEntry(state, entry, { isFirst: blockIndex === 0 && opensBlock, opensBlock }, layout, options);
     }
   }
 
@@ -201,7 +271,8 @@ export const renderChunk = (blocks: readonly SortedGroup<ImportEntry>[], options
    * An entry that ends in a line comment must not end up in front of code that
    * stayed on the chunk's last line — the comment would swallow it.
    */
-  const closing = order.at(-1)?.endsWithLineComment === true && options.restOfLine.trim() !== '' ? options.eol : '';
+  const closing =
+    state.order.at(-1)?.endsWithLineComment === true && options.restOfLine.trim() !== '' ? options.eol : '';
 
-  return { text: text + closing, order, separators, missingComments };
+  return { ...state, text: state.text + closing };
 };

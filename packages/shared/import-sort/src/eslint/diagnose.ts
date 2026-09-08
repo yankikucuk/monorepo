@@ -3,8 +3,8 @@
  *
  * The rule reports exactly one problem per chunk (with one fix that rewrites
  * the whole chunk). This module picks the most useful message for that single
- * report, checking in order: statement order, specifier order, group comments,
- * blank lines.
+ * report, checking in order: statement order, specifier order, missing, stray
+ * or misspaced group comments, blank lines.
  * @packageDocumentation
  */
 
@@ -14,6 +14,7 @@ import type { RenderedChunk } from './render.js';
 
 /** Message ids of the `order` rule. */
 export type OrderMessageId =
+  | 'duplicateGroupComment'
   | 'missingBlankLine'
   | 'missingGroupComment'
   | 'sameLine'
@@ -113,6 +114,39 @@ const diagnoseGroupComments = (rendered: RenderedChunk): Diagnosis | null => {
 };
 
 /**
+ * Finds the first entry carrying a group comment that does not belong above
+ * it — a label left behind when an earlier fix moved a different import to
+ * the top of its block.
+ * @param {RenderedChunk} rendered - The canonical rendering.
+ * @returns {Diagnosis | null} A `duplicateGroupComment` diagnosis, or `null`.
+ */
+const diagnoseStrayComments = (rendered: RenderedChunk): Diagnosis | null => {
+  for (const entry of rendered.order) {
+    const comment = rendered.strayComments.get(entry);
+    if (typeof comment === 'string') {
+      return { messageId: 'duplicateGroupComment', node: entry.node, data: { comment, source: entry.source } };
+    }
+  }
+  return null;
+};
+
+/**
+ * Finds the first block whose group comment is present but written with
+ * different whitespace than the renderer emits (trailing spaces, other
+ * indentation).
+ * @param {RenderedChunk} rendered - The canonical rendering.
+ * @returns {Diagnosis | null} An `unexpectedWhitespace` diagnosis, or `null`.
+ */
+const diagnoseRewrittenComments = (rendered: RenderedChunk): Diagnosis | null => {
+  for (const entry of rendered.order) {
+    if (rendered.rewrittenComments.has(entry)) {
+      return { messageId: 'unexpectedWhitespace', node: entry.node, data: { source: entry.source } };
+    }
+  }
+  return null;
+};
+
+/**
  * Finds the first gap between adjacent entries that differs from the expected
  * separator. Only meaningful once statement order is known to match.
  * @param {ImportChunk} chunk - The chunk as written.
@@ -137,9 +171,9 @@ const diagnoseWhitespace = (chunk: ImportChunk, rendered: RenderedChunk): Diagno
 /**
  * Produces the diagnosis for a chunk whose text differs from its rendering.
  *
- * Statement order, specifier order and whitespace are the only three ways a
- * rendering can differ from its source, so one of them always explains the
- * difference. Calling this for a chunk that already matches its rendering is a
+ * Statement order, specifier order, group comments and whitespace are the only
+ * ways a rendering can differ from its source, so one of them always explains
+ * the difference. Calling this for a chunk that already matches its rendering is a
  * programming error and is reported as one rather than guessed at.
  * @param {ImportChunk} chunk - The chunk as written.
  * @param {RenderedChunk} rendered - The canonical rendering (must differ from `chunk.text`).
@@ -151,6 +185,8 @@ export const diagnoseChunk = (chunk: ImportChunk, rendered: RenderedChunk): Diag
     diagnoseOrder(chunk, rendered) ??
     diagnoseSpecifiers(chunk) ??
     diagnoseGroupComments(rendered) ??
+    diagnoseStrayComments(rendered) ??
+    diagnoseRewrittenComments(rendered) ??
     diagnoseWhitespace(chunk, rendered);
   if (!diagnosis) {
     throw new Error(`The import block at offset ${chunk.start} already matches its rendering; nothing to diagnose.`);

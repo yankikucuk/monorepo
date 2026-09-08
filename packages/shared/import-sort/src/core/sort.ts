@@ -5,7 +5,7 @@
  */
 
 import { isOrderSensitive, resolveGroup } from './classify.js';
-import { createComparator } from './compare.js';
+import { applyOrder, compareCodeUnits, createComparator } from './compare.js';
 import { isResolvedOptions, resolveOptions } from './options.js';
 
 import type { ImportKind, ImportRecord, ImportStyle, ResolvedSortOptions, SortedGroup, SortOptions } from './types.js';
@@ -70,6 +70,61 @@ const valueRank = (record: ImportRecord, options: ResolvedSortOptions): number =
   resolveGroup({ source: record.source, kind: 'value', sideEffect: false }, options).index;
 
 /**
+ * Memoised `valueRank`: a comparator runs O(n log n) times and ranking walks
+ * the whole candidate chain.
+ * @param {ResolvedSortOptions} options - Resolved options.
+ * @returns {(record: ImportRecord) => number} The record's value-import block index.
+ */
+const memoisedRank = (options: ResolvedSortOptions): ((record: ImportRecord) => number) => {
+  const ranks = new WeakMap<ImportRecord, number>();
+  return record => {
+    const cached = ranks.get(record);
+    if (typeof cached === 'number') {
+      return cached;
+    }
+    const rank = valueRank(record, options);
+    ranks.set(record, rank);
+    return rank;
+  };
+};
+
+/**
+ * The length key, only meaningful for the `line-length` algorithm.
+ * @param {ImportRecord} left - First record.
+ * @param {ImportRecord} right - Second record.
+ * @param {ResolvedSortOptions} options - Resolved options.
+ * @returns {number} Comparator result, already in the configured direction.
+ */
+const byLength = (left: ImportRecord, right: ImportRecord, options: ResolvedSortOptions): number => {
+  if (options.algorithm !== 'line-length') {
+    return 0;
+  }
+  const result = Math.sign(lengthOf(left) - lengthOf(right));
+  return options.order === 'desc' ? -result : result;
+};
+
+/**
+ * The source comparator used once `line-length` has compared declaration
+ * lengths: the fallback pass decides ties, never the length of the source
+ * string itself. Without a fallback, ties are broken by code unit so the
+ * result stays independent of input order.
+ * @param {ResolvedSortOptions} options - Resolved options with `algorithm: 'line-length'`.
+ * @returns {(left: string, right: string) => number} The tie-breaking source comparator.
+ */
+const afterLengthComparator = (options: ResolvedSortOptions): ((left: string, right: string) => number) => {
+  if (options.fallback.algorithm === 'unsorted') {
+    return (left, right) => applyOrder(compareCodeUnits(left, right), options.order);
+  }
+  return createComparator({
+    ...options,
+    algorithm: options.fallback.algorithm,
+    order: options.fallback.order,
+    collator: options.fallbackCollator,
+    fallback: { algorithm: 'unsorted', order: options.fallback.order },
+  });
+};
+
+/**
  * Builds the comparator used inside a block.
  *
  * Keys, in order:
@@ -84,9 +139,11 @@ const valueRank = (record: ImportRecord, options: ResolvedSortOptions): number =
  *    (`groups: [['external', 'type']]`), and `Array.prototype.toSorted`
  *    requires a total order to produce a stable, meaningful result.
  * 3. The declaration length, when the algorithm is `line-length`.
- * 4. The module source.
- * 5. The import kind (see `kindOrder`), then the declaration shape, so two
- *    imports of the same module are still ordered predictably.
+ * 4. The module source (under `line-length`, only the fallback pass — see
+ *    {@link afterLengthComparator}).
+ * 5. For two imports of the *same* module: the import kind (see `kindOrder`),
+ *    then the declaration shape. Different modules that tie — which only
+ *    happens with the `unsorted` algorithm — keep their source order.
  *
  * `Array.prototype.toSorted` is stable, which preserves source order for
  * every tie.
@@ -96,38 +153,9 @@ const valueRank = (record: ImportRecord, options: ResolvedSortOptions): number =
 export const createRecordComparator = (
   options: ResolvedSortOptions
 ): ((left: ImportRecord, right: ImportRecord) => number) => {
-  const compareSources = createComparator(options);
-  const ranks = new WeakMap<ImportRecord, number>();
-
-  /**
-   * Memoised `valueRank`: a comparator runs O(n log n) times and ranking
-   * walks the whole candidate chain.
-   * @param {ImportRecord} record - The record to rank.
-   * @returns {number} Its value-import block index.
-   */
-  const rankOf = (record: ImportRecord): number => {
-    const cached = ranks.get(record);
-    if (typeof cached === 'number') {
-      return cached;
-    }
-    const rank = valueRank(record, options);
-    ranks.set(record, rank);
-    return rank;
-  };
-
-  /**
-   * The length key, only meaningful for the `line-length` algorithm.
-   * @param {ImportRecord} left - First record.
-   * @param {ImportRecord} right - Second record.
-   * @returns {number} Comparator result, already in the configured direction.
-   */
-  const byLength = (left: ImportRecord, right: ImportRecord): number => {
-    if (options.algorithm !== 'line-length') {
-      return 0;
-    }
-    const result = Math.sign(lengthOf(left) - lengthOf(right));
-    return options.order === 'desc' ? -result : result;
-  };
+  const compareSources =
+    options.algorithm === 'line-length' ? afterLengthComparator(options) : createComparator(options);
+  const rankOf = memoisedRank(options);
 
   return (left, right) => {
     const leftPinned = isOrderSensitive(left, options);
@@ -143,19 +171,15 @@ export const createRecordComparator = (
     if (byRank !== 0) {
       return byRank;
     }
-    const byDeclarationLength = byLength(left, right);
+    const byDeclarationLength = byLength(left, right, options);
     if (byDeclarationLength !== 0) {
       return byDeclarationLength;
     }
     const bySource = compareSources(left.source, right.source);
-    if (bySource !== 0) {
+    if (bySource !== 0 || left.source !== right.source) {
       return bySource;
     }
-    const byKind = compareKinds(left.kind, right.kind, options);
-    if (byKind !== 0) {
-      return byKind;
-    }
-    return compareStyles(left, right);
+    return compareKinds(left.kind, right.kind, options) || compareStyles(left, right);
   };
 };
 
@@ -163,8 +187,9 @@ export const createRecordComparator = (
  * Sorts a list of import records into ordered, non-empty blocks.
  *
  * The input is treated as one contiguous run of imports; hosts decide what a
- * run is (the ESLint rule splits at non-import statements and, unless
- * `side-effect` is a configured group, at side-effect imports).
+ * run is (the ESLint rule splits at non-import statements and at side-effect
+ * imports, unless `side-effect` is a configured group or the import matches
+ * `safeSideEffects`).
  * @example
  * ```ts
  * sortImports(

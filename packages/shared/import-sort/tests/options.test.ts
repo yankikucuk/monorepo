@@ -111,6 +111,17 @@ describe('resolveOptions', () => {
     });
     expect(resolved.groups[1]?.commentAbove).toBeNull();
 
+    expect(() => resolveOptions({ groups: [{ group: 'external', commentAbove: 'a\nb' }] })).toThrow(
+      /"groups\[0\]\.commentAbove" must be a single line/u
+    );
+    expect(() => resolveOptions({ groups: [{ group: 'external', commentAbove: '/* Packages' }] })).toThrow(
+      /"groups\[0\]\.commentAbove" must be a complete block comment/u
+    );
+    expect(() => resolveOptions({ groups: [{ group: 'external', commentAbove: '/* a */ b */' }] })).toThrow(
+      /"groups\[0\]\.commentAbove" must be a complete block comment/u
+    );
+    expect(() => resolveOptions({ groups: [{ group: 'external', commentAbove: '/* Packages */' }] })).not.toThrow();
+    expect(() => resolveOptions({ locales: 'not a language tag' })).toThrow(/Invalid "locales"/u);
     expect(() => resolveOptions({ groups: [{ group: 'external', commentAbove: '  ' }] })).toThrow(
       /"groups\[0\]\.commentAbove" must not be empty/u
     );

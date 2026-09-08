@@ -13,11 +13,15 @@ import type { ComparePass, ResolvedSortOptions, SortOrder, SpecialCharacters } f
 
 /** The comparison settings {@link compareStrings} needs. */
 export interface CompareOptions extends ComparePass {
+  /** Fold case: the collators are built with it, and the `custom` alphabet is looked up in lower case. */
   readonly ignoreCase: boolean;
   readonly specialCharacters: SpecialCharacters;
   readonly alphabet: string;
   readonly fallback: ComparePass;
+  /** Collator of the primary pass. */
   readonly collator: Intl.Collator;
+  /** Collator of the fallback pass (numeric collation follows the fallback algorithm, not the primary one). */
+  readonly fallbackCollator: Intl.Collator;
 }
 
 /** A path segment made only of dots: `.` or `..`. */
@@ -34,7 +38,7 @@ const SPECIALS = /[^\p{L}\p{N}]+/gu;
  * @param {string} right - Second operand.
  * @returns {number} Negative, zero, or positive per the usual comparator contract.
  */
-const compareCodeUnits = (left: string, right: string): number => {
+export const compareCodeUnits = (left: string, right: string): number => {
   if (left < right) {
     return -1;
   }
@@ -91,9 +95,16 @@ const withoutSpecials = (value: string, mode: SpecialCharacters): string => {
  * @param {string} right - Second operand.
  * @param {CompareOptions} options - Comparison settings.
  * @param {ComparePass} pass - The algorithm and direction of this pass.
+ * @param {Intl.Collator} collator - The collator built for this pass.
  * @returns {number} Comparator result, before the direction is applied.
  */
-const runPass = (left: string, right: string, options: CompareOptions, pass: ComparePass): number => {
+const runPass = (
+  left: string,
+  right: string,
+  options: CompareOptions,
+  pass: ComparePass,
+  collator: Intl.Collator
+): number => {
   if (pass.algorithm === 'unsorted') {
     return 0;
   }
@@ -101,9 +112,11 @@ const runPass = (left: string, right: string, options: CompareOptions, pass: Com
     return Math.sign(left.length - right.length);
   }
   if (pass.algorithm === 'custom') {
-    return compareByAlphabet(left, right, options.alphabet);
+    return options.ignoreCase
+      ? compareByAlphabet(left.toLowerCase(), right.toLowerCase(), options.alphabet)
+      : compareByAlphabet(left, right, options.alphabet);
   }
-  return Math.sign(options.collator.compare(left, right));
+  return Math.sign(collator.compare(left, right));
 };
 
 /**
@@ -149,7 +162,9 @@ export const createCollator = ({
 
 /**
  * Compares two strings with the configured algorithm, case handling, direction
- * and fallback.
+ * and fallback. With the `custom` algorithm, `ignoreCase` lower-cases both
+ * operands before the alphabet lookup, so a case-insensitive alphabet should be
+ * written in lower case.
  *
  * The result is a total order: when every configured pass ties, the original
  * strings are compared by character code so the outcome never depends on input
@@ -172,12 +187,15 @@ export const compareStrings = (left: string, right: string, options: CompareOpti
   const leftKey = withoutSpecials(left, options.specialCharacters);
   const rightKey = withoutSpecials(right, options.specialCharacters);
 
-  const primary = applyOrder(runPass(leftKey, rightKey, options, options), options.order);
+  const primary = applyOrder(runPass(leftKey, rightKey, options, options, options.collator), options.order);
   if (primary !== 0) {
     return primary;
   }
 
-  const fallback = applyOrder(runPass(leftKey, rightKey, options, options.fallback), options.fallback.order);
+  const fallback = applyOrder(
+    runPass(leftKey, rightKey, options, options.fallback, options.fallbackCollator),
+    options.fallback.order
+  );
   if (fallback !== 0) {
     return fallback;
   }

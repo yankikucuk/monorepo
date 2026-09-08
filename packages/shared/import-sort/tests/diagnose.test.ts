@@ -7,7 +7,14 @@ describe('diagnoseChunk', () => {
     expect(() =>
       diagnoseChunk(
         { entries: [], start: 12, end: 12, text: '', restOfLine: '' },
-        { text: '', order: [], separators: [], missingComments: new Map() }
+        {
+          text: '',
+          order: [],
+          separators: [],
+          missingComments: new Map(),
+          strayComments: new Map(),
+          rewrittenComments: new Set(),
+        }
       )
     ).toThrow(/offset 12/u);
   });

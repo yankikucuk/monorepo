@@ -35,6 +35,22 @@ function sortWith(values: readonly string[], options: CompareOptions): string[] 
 }
 
 describe('compareStrings', () => {
+  it('keeps the primary pass alphabetical when only the fallback is natural', () => {
+    const options = compareOptions({ algorithm: 'alphabetical', fallbackSort: { algorithm: 'natural' } });
+    expect(compareStrings('v10', 'v2', options)).toBeLessThan(0);
+    const reversed = compareOptions({ algorithm: 'natural', fallbackSort: { algorithm: 'alphabetical' } });
+    expect(compareStrings('v2', 'v10', reversed)).toBeLessThan(0);
+  });
+
+  it('folds case for the custom alphabet when ignoreCase is on', () => {
+    const folded = compareOptions({ algorithm: 'custom', alphabet: 'ab', ignoreCase: true });
+    expect(compareStrings('B', 'a', folded)).toBeGreaterThan(0);
+    const exact = compareOptions({ algorithm: 'custom', alphabet: 'ab', ignoreCase: false });
+    // 'B' is outside the alphabet, so it sorts after every alphabet character.
+    expect(compareStrings('B', 'a', exact)).toBeGreaterThan(0);
+    expect(compareStrings('a', 'B', exact)).toBeLessThan(0);
+  });
+
   it('compares character by character with the alphabetical algorithm', () => {
     expect(compareStrings('a', 'b', alphabetical)).toBeLessThan(0);
     expect(compareStrings('b', 'a', alphabetical)).toBeGreaterThan(0);
