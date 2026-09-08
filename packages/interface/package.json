@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@april/interface",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Component-oriented CSS framework for April: a compiled stylesheet authored in Less with a small behaviour layer, Apple-derived design language and liquid-glass surfaces.",
   "keywords": [
