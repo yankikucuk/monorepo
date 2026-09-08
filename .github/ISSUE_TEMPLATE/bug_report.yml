@@ -11,6 +11,7 @@ body:
         - Cyberflake
         - ESLint config
         - Import sort
+        - Interface
         - Prettier config
         - Stylelint config
         - TSConfig

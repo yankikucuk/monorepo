@@ -10,6 +10,10 @@ packages:import-sort:
   - '### Which (application|package|application or package) is this (bug
     report|feature request) for\?\n\nImport sort\n'
 
+packages:interface:
+  - '### Which (application|package|application or package) is this (bug
+    report|feature request) for\?\n\nInterface\n'
+
 packages:prettier-config:
   - '### Which (application|package|application or package) is this (bug
     report|feature request) for\?\n\nPrettier config\n'

@@ -1,6 +1,6 @@
 import tseslint from 'typescript-eslint';
 
-import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
+import { backend, frontend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
 
 /**
  * Root ESLint configuration for the April monorepo.
@@ -39,9 +39,20 @@ export default tseslint.config(
     },
   },
   {
+    // The interface behaviour layer runs in the browser: same strictness, browser globals.
+    files: ['packages/interface/src/behavior/**/*.ts'],
+    extends: [frontend],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
     files: [
       '*.config.ts',
       'scripts/**/*.mjs',
+      'packages/*/scripts/**/*.mjs',
       'docs/.vitepress/**/*.ts',
       'packages/shared/{eslint-config,prettier-config,stylelint-config}/src/**/*.{ts,js}',
       'packages/*/benchmarks/**/*.ts',
@@ -63,7 +74,7 @@ export default tseslint.config(
   },
   {
     // Plain JavaScript has no compiler enforcing types, so JSDoc must carry them.
-    files: ['scripts/**/*.mjs', 'packages/shared/*/src/**/*.js'],
+    files: ['scripts/**/*.mjs', 'packages/*/scripts/**/*.mjs', 'packages/shared/*/src/**/*.js'],
     rules: JSDOC_JS_TYPE_RULES,
   },
   {

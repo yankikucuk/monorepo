@@ -1,0 +1,41 @@
+// Reset: the normalisations where Safari and Chromium actually diverge.
+// Everything else is left to the browser defaults on purpose; component
+// styles set what they need explicitly.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ai-font-sans);
+  font-size: var(--ai-text-body);
+  line-height: var(--ai-leading-body);
+  color: var(--ai-text-primary);
+  background: var(--ai-surface-base);
+}
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-inline-size: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}

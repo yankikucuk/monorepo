@@ -4,6 +4,12 @@ packages:cyberflake:
           - packages/cyberflake/*
           - packages/cyberflake/**/*
 
+packages:interface:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/interface/*
+          - packages/interface/**/*
+
 packages:shared:
   - changed-files:
       - any-glob-to-any-file:

@@ -1,0 +1,10 @@
+{
+  "extends": "@april/tsconfig/library.json",
+  "compilerOptions": {
+    "rootDir": "./src/behavior",
+    "outDir": "./dist/behavior",
+    // The first browser-targeting package in April: base.json ships lib: ["ESNext"] with no DOM.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/behavior"]
+}

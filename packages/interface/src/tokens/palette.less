@@ -1,0 +1,27 @@
+// Primitive tokens: Less variables, never emitted on their own.
+// Values are Apple's published site colours converted to oklch(); the source
+// hex is kept beside each value. Perceptual derivations (hover, active) use
+// color-mix() in oklch so steps stay even across hues.
+
+// Neutrals
+@ai-white: oklch(100% 0 0); // #ffffff
+@ai-gray-050: oklch(97.1% 0.002 286); // #f5f5f7
+@ai-gray-500: oklch(52.4% 0.008 286); // #6e6e73
+@ai-gray-400: oklch(70.5% 0.006 286); // #a1a1a6
+@ai-gray-950: oklch(21.8% 0.003 286); // #1d1d1f
+@ai-black: oklch(0% 0 0); // #000000
+
+// Accents
+@ai-blue-600: oklch(55.7% 0.19 251); // #0071e3 — action, light
+@ai-blue-500: oklch(62.7% 0.2 254); // #0a84ff — action, dark
+@ai-link-600: oklch(52.6% 0.18 253); // #0066cc — link, light
+@ai-link-400: oklch(66.2% 0.16 249); // #2997ff — link, dark
+
+// Breakpoints — rem against the browser default of 16px; only ever consumed
+// through the .mq() mixin so no literal is repeated in a media query.
+@ai-bp-md: 48rem; // 768px — tablet
+@ai-bp-lg: 64rem; // 1024px — desktop
+@ai-bp-xl: 90rem; // 1440px — wide desktop
+
+// Glass
+@ai-blur-glass: 20px;
