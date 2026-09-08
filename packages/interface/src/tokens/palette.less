@@ -1,27 +1,35 @@
 // Primitive tokens: Less variables, never emitted on their own.
-// Values are Apple's published site colours converted to oklch(); the source
-// hex is kept beside each value. Perceptual derivations (hover, active) use
-// color-mix() in oklch so steps stay even across hues.
+// Colours are the owner's values; everything derived from them lives in
+// semantic.less via the .ai-role() mixin (derive.less).
 
-// Neutrals
-@ai-white: oklch(100% 0 0); // #ffffff
-@ai-gray-050: oklch(97.1% 0.002 286); // #f5f5f7
-@ai-gray-500: oklch(52.4% 0.008 286); // #6e6e73
-@ai-gray-400: oklch(70.5% 0.006 286); // #a1a1a6
-@ai-gray-950: oklch(21.8% 0.003 286); // #1d1d1f
-@ai-black: oklch(0% 0 0); // #000000
+// Surfaces and text
+@ai-light-bg: #fcfcfc;
+@ai-light-bg-raised: #ffffff;
+@ai-light-text: #1d1d1e;
+@ai-light-text-secondary: #5f5f63;
+@ai-light-border: fade(#1d1d1e, 12%);
 
-// Accents
-@ai-blue-600: oklch(55.7% 0.19 251); // #0071e3 — action, light
-@ai-blue-500: oklch(62.7% 0.2 254); // #0a84ff — action, dark
-@ai-link-600: oklch(52.6% 0.18 253); // #0066cc — link, light
-@ai-link-400: oklch(66.2% 0.16 249); // #2997ff — link, dark
+@ai-dark-bg: #1d1d1e;
+@ai-dark-bg-raised: #262628;
+@ai-dark-text: #fcfcfc;
+@ai-dark-text-secondary: #a8a8ad;
+@ai-dark-border: fade(#fcfcfc, 14%);
 
-// Breakpoints — rem against the browser default of 16px; only ever consumed
-// through the .mq() mixin so no literal is repeated in a media query.
-@ai-bp-md: 48rem; // 768px — tablet
-@ai-bp-lg: 64rem; // 1024px — desktop
-@ai-bp-xl: 90rem; // 1440px — wide desktop
+// Colour roles, shared by every component and both themes
+@ai-primary: #1a9cff;
+@ai-secondary: #fde04c;
+@ai-success: #50ff38;
+@ai-danger: #ff3d3d;
+@ai-info: #ffcf10;
+@ai-warn: #ff7a1a;
+@ai-neutral-light: #6b6b70;
+@ai-neutral-dark: #9a9aa0;
 
-// Glass
-@ai-blur-glass: 20px;
+// Text placed on top of a role colour; contrast() picks one of these.
+@ai-text-on-light: @ai-light-text;
+@ai-text-on-dark: @ai-dark-text;
+
+// Breakpoints — rem against the browser default of 16px; consumed only through .mq().
+@ai-bp-md: 48rem; // 768px
+@ai-bp-lg: 64rem; // 1024px
+@ai-bp-xl: 90rem; // 1440px

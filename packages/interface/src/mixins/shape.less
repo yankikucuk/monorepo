@@ -1,0 +1,21 @@
+// Global shape modifiers. Any component calls .ai-shape(@default) once and
+// gains the same four words with the same meaning: square, soft, rounded, pill.
+.ai-shape(@default: rounded) {
+  border-radius: ~'var(--ai-radius-@{default})';
+
+  &.square {
+    border-radius: 0;
+  }
+
+  &.soft {
+    border-radius: var(--ai-radius-soft);
+  }
+
+  &.rounded {
+    border-radius: var(--ai-radius-rounded);
+  }
+
+  &.pill {
+    border-radius: var(--ai-radius-pill);
+  }
+}

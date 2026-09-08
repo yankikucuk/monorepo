@@ -1,66 +1,96 @@
-// Semantic tokens: CSS custom properties on :root, light theme first.
-// Rule: a value that changes with the theme is a custom property; a value that
-// never changes, or is used inside a media query condition, is a Less variable.
+// Semantic tokens: custom properties on :root. Light first, dark as a mixin
+// applied to the system preference and to an explicit choice.
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
-  // Surfaces
-  --ai-surface-base: @ai-white;
-  --ai-surface-raised: @ai-gray-050;
-  --ai-surface-solid: @ai-white;
-  --ai-surface-glass: rgb(255 255 255 / 60%);
-  --ai-glass-rim-top: rgb(255 255 255 / 80%);
-  --ai-glass-rim-bottom: rgb(0 0 0 / 6%);
-  --ai-shadow-ambient: rgb(0 0 0 / 12%);
+  // Surfaces, text, lines
+  --ai-bg: @ai-light-bg;
+  --ai-bg-raised: @ai-light-bg-raised;
+  --ai-bg-sunken: darken(@ai-light-bg, 3%);
+  --ai-text: @ai-light-text;
+  --ai-text-secondary: @ai-light-text-secondary;
+  --ai-border: @ai-light-border;
+  --ai-border-strong: fade(@ai-light-text, 24%);
+  --ai-shadow: 0 1px 2px fade(#000, 6%), 0 8px 24px fade(#000, 8%);
 
-  // Text
-  --ai-text-primary: @ai-gray-950;
-  --ai-text-secondary: @ai-gray-500;
+  .ai-roles(false);
 
-  // Actions
-  --ai-action-primary: @ai-blue-600;
-  --ai-link: @ai-link-600;
+  // Links
+  --ai-link: var(--ai-primary);
+  --ai-link-hover: var(--ai-primary-hover);
+  --ai-link-visited: var(--ai-primary-active);
 
-  // Typography — system stack resolves to SF Pro on Apple platforms.
+  // Focus
+  --ai-focus-ring: var(--ai-primary);
+  --ai-focus-ring-offset: var(--ai-bg);
+
+  // Typography
   --ai-font-sans:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
-  --ai-text-body: 1.0625rem; // 17px, Apple's body size
-  --ai-leading-body: 1.47059;
+    'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ai-font-mono: 'Roboto Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --ai-text-xs: 0.75rem;
+  --ai-text-sm: 0.875rem;
+  --ai-text-md: 1rem;
+  --ai-text-lg: 1.125rem;
+  --ai-text-xl: 1.25rem;
+  --ai-leading-tight: 1.25;
+  --ai-leading-body: 1.6;
+  --ai-weight-regular: 400;
+  --ai-weight-medium: 500;
+  --ai-weight-semibold: 600;
+  --ai-weight-bold: 700;
 
-  // Spacing (4px base) and radius
+  // Headings, fluid between 360px and 1280px viewports
+  --ai-h1: clamp(2rem, 1.4rem + 2.6vw, 3rem);
+  --ai-h2: clamp(1.625rem, 1.25rem + 1.6vw, 2.25rem);
+  --ai-h3: clamp(1.375rem, 1.15rem + 1vw, 1.75rem);
+  --ai-h4: 1.25rem;
+  --ai-h5: 1.125rem;
+  --ai-h6: 1rem;
+
+  // Spacing, 4px base
   --ai-space-1: 0.25rem;
   --ai-space-2: 0.5rem;
   --ai-space-3: 0.75rem;
   --ai-space-4: 1rem;
+  --ai-space-5: 1.25rem;
   --ai-space-6: 1.5rem;
   --ai-space-8: 2rem;
-  --ai-radius-sm: 6px;
-  --ai-radius-md: 12px;
-  --ai-radius-lg: 18px;
-  --ai-radius-pill: 980px;
+  --ai-space-10: 2.5rem;
+  --ai-space-12: 3rem;
+  --ai-space-16: 4rem;
+
+  // Shape: the global modifiers square / soft / rounded / pill read these
+  --ai-radius-soft: 6px;
+  --ai-radius-rounded: 12px;
+  --ai-radius-pill: 9999px;
+
+  // Control sizes: sm / md / lg
+  --ai-control-sm: 2rem;
+  --ai-control-md: 2.5rem;
+  --ai-control-lg: 3rem;
 
   // Motion
-  --ai-duration-fast: 200ms;
-  --ai-duration-base: 300ms;
-  --ai-duration-slow: 500ms;
-  --ai-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --ai-duration-fast: 120ms;
+  --ai-duration-base: 200ms;
+  --ai-duration-slow: 320ms;
+  --ai-ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
-// Dark theme: written once, applied twice (OS preference without an explicit
-// light choice, and an explicit dark choice).
 .ai-tokens-dark() {
-  --ai-surface-base: @ai-black;
-  --ai-surface-raised: @ai-gray-950;
-  --ai-surface-solid: @ai-gray-950;
-  --ai-surface-glass: rgb(255 255 255 / 8%);
-  --ai-glass-rim-top: rgb(255 255 255 / 18%);
-  --ai-glass-rim-bottom: rgb(0 0 0 / 40%);
-  --ai-shadow-ambient: rgb(0 0 0 / 50%);
-  --ai-text-primary: @ai-gray-050;
-  --ai-text-secondary: @ai-gray-400;
-  --ai-action-primary: @ai-blue-500;
-  --ai-link: @ai-link-400;
+  color-scheme: dark;
+
+  --ai-bg: @ai-dark-bg;
+  --ai-bg-raised: @ai-dark-bg-raised;
+  --ai-bg-sunken: darken(@ai-dark-bg, 3%);
+  --ai-text: @ai-dark-text;
+  --ai-text-secondary: @ai-dark-text-secondary;
+  --ai-border: @ai-dark-border;
+  --ai-border-strong: fade(@ai-dark-text, 28%);
+  --ai-shadow: 0 1px 2px fade(#000, 40%), 0 8px 24px fade(#000, 45%);
+
+  .ai-roles(true);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -69,7 +99,7 @@
   }
 }
 
-[data-ai-theme='dark'] {
+:root[data-ai-theme='dark'] {
   .ai-tokens-dark();
 }
 

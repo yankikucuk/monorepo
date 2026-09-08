@@ -6,8 +6,10 @@ behaviour layer for the components that need state. The design language is
 Apple-derived: restrained, generous whitespace, liquid-glass surfaces that
 render identically in Safari, Chrome and Opera.
 
-> The package is scaffolded; the token layer and reset ship today, components
-> follow. See the design spec under `docs/specs` for the agreed scope.
+> In progress. Shipping today: tokens with light and dark themes, base
+> element styles, typography utilities, links, buttons, layout primitives
+> (container, stack, cluster) and the application shell used by the demo. See
+> `docs/specs/2026-09-08-interface-design.md` for the agreed scope and order.
 
 ## Usage
 
@@ -15,12 +17,35 @@ render identically in Safari, Chrome and Opera.
 import '@april/interface/styles.css';
 import { initAll } from '@april/interface';
 
-const teardown = initAll();
+const teardown = initAll(); // theme toggle today; stateful components as they land
 ```
 
 `styles.min.css` is the minified build. Every initialiser returns a teardown
 function, so React effects and Vue lifecycle hooks use the same contract as
-plain HTML.
+plain HTML. Load Montserrat and Roboto Mono yourself (the demo uses Google
+Fonts); the stylesheet only declares the font stacks.
+
+### Conventions
+
+- Component classes carry the `ai-` prefix; variants are short words stacked
+  after it: `class="ai-button ghost primary lg pill"`. Variant words only take
+  effect inside a component selector, so they never leak.
+- Shape words mean the same on every component: `square`, `soft`, `rounded`,
+  `pill`. Sizes: `sm`, `md` (default), `lg`.
+- Colour roles are shared by every component: `primary`, `secondary`,
+  `success`, `danger`, `info`, `warn`, `neutral`. Hover, active, soft and
+  contrast values are derived at build time from one colour per role.
+- State is read from attributes where the platform has one (`[disabled]`,
+  `[aria-current="page"]`), from a class only where it has none (`active`,
+  `loading`).
+
+### Themes
+
+The stylesheet follows the system preference. `data-ai-theme="light|dark"` on
+`<html>` overrides it; `initAll()` wires any `[data-ai-theme-toggle]` element
+to cycle auto → light → dark and remembers the choice in `localStorage`. To
+avoid a flash on load, inline `THEME_BOOT_SCRIPT` (exported from the package)
+in `<head>` before the stylesheet.
 
 ## How it is built
 

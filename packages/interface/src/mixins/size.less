@@ -1,0 +1,20 @@
+// Global size modifiers for controls (buttons, inputs, tags): sm / md / lg
+// set height, horizontal padding and font size through component variables
+// so a component decides how each value is used.
+.ai-size-vars(@height, @padding, @font) {
+  --ai-control-height: @height;
+  --ai-control-padding: @padding;
+  --ai-control-font: @font;
+}
+
+.ai-size() {
+  .ai-size-vars(var(--ai-control-md), var(--ai-space-4), var(--ai-text-md));
+
+  &.sm {
+    .ai-size-vars(var(--ai-control-sm), var(--ai-space-3), var(--ai-text-sm));
+  }
+
+  &.lg {
+    .ai-size-vars(var(--ai-control-lg), var(--ai-space-5), var(--ai-text-lg));
+  }
+}

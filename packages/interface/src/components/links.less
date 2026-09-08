@@ -1,0 +1,146 @@
+// Links: every anchor pattern. Plain anchors are styled in base.less;
+// `.ai-link` adds the variants and the colour roles.
+
+.ai-link {
+  .ai-role-vars(primary);
+  .ai-role-modifiers();
+  .ai-focus-ring();
+
+  color: var(--ai-role);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  transition:
+    color var(--ai-duration-fast) var(--ai-ease),
+    text-decoration-color var(--ai-duration-fast) var(--ai-ease);
+
+  &:hover {
+    color: var(--ai-role-hover);
+  }
+
+  &:active {
+    color: var(--ai-role-active);
+  }
+
+  // Underline only on hover.
+  &.plain {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Inherits the surrounding text colour; reveals the role colour on hover.
+  &.subtle {
+    color: inherit;
+    text-decoration-color: var(--ai-border-strong);
+
+    &:hover {
+      color: var(--ai-role);
+      text-decoration-color: currentcolor;
+    }
+  }
+
+  // Standalone call-to-action link with a trailing arrow.
+  &.arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-weight: var(--ai-weight-semibold);
+    text-decoration: none;
+
+    &::after {
+      content: '→';
+      transition: transform var(--ai-duration-fast) var(--ai-ease);
+    }
+
+    &:hover::after {
+      transform: translateX(0.2em);
+    }
+  }
+
+  // Leaves the site; the marker is decorative, use rel/target in markup.
+  &.external::after {
+    content: '↗';
+    margin-inline-start: 0.25em;
+    font-size: 0.85em;
+  }
+
+  // Navigation item: a block with hover and current-page states.
+  &.nav {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ai-space-2);
+    padding: var(--ai-space-2) var(--ai-space-3);
+    border-radius: var(--ai-radius-soft);
+    color: var(--ai-text-secondary);
+    font-weight: var(--ai-weight-medium);
+    text-decoration: none;
+    transition:
+      color var(--ai-duration-fast) var(--ai-ease),
+      background-color var(--ai-duration-fast) var(--ai-ease);
+
+    &:hover {
+      color: var(--ai-text);
+      background: var(--ai-bg-sunken);
+    }
+
+    &[aria-current='page'],
+    &.active {
+      color: var(--ai-role);
+      background: var(--ai-role-soft);
+    }
+
+    &.block {
+      display: flex;
+    }
+  }
+
+  &.disabled,
+  &[aria-disabled='true'] {
+    color: var(--ai-text-secondary);
+    opacity: 0.6;
+    text-decoration: none;
+    pointer-events: none;
+  }
+}
+
+// Breadcrumb trail; the last item carries aria-current="page".
+.ai-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ai-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ai-text-sm);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ai-space-2);
+    margin: 0;
+  }
+
+  li + li::before {
+    content: '/';
+    color: var(--ai-border-strong);
+  }
+
+  a {
+    color: var(--ai-text-secondary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--ai-text);
+      text-decoration: underline;
+    }
+  }
+
+  [aria-current='page'] {
+    color: var(--ai-text);
+    font-weight: var(--ai-weight-medium);
+  }
+}

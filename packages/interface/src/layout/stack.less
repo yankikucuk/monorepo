@@ -1,0 +1,49 @@
+// Flow primitives: vertical stack and wrapping horizontal cluster.
+.ai-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ai-space-4);
+
+  &.sm {
+    gap: var(--ai-space-2);
+  }
+
+  &.lg {
+    gap: var(--ai-space-8);
+  }
+
+  > * {
+    margin-block: 0;
+  }
+}
+
+.ai-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ai-space-3);
+
+  &.sm {
+    gap: var(--ai-space-2);
+  }
+
+  &.lg {
+    gap: var(--ai-space-6);
+  }
+
+  &.between {
+    justify-content: space-between;
+  }
+
+  &.center {
+    justify-content: center;
+  }
+
+  &.end {
+    justify-content: flex-end;
+  }
+
+  &.top {
+    align-items: flex-start;
+  }
+}

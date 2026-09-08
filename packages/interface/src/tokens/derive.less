@@ -1,0 +1,73 @@
+// Derived colour states. The percentages are the only tuning knobs: a role's
+// hover, active, soft and contrast values are computed here at compile time
+// and emitted as custom properties, so components never call a colour
+// function themselves.
+@ai-hover-shift: 8%;
+@ai-active-shift: 14%;
+@ai-soft-alpha: 14%;
+@ai-soft-alpha-strong: 24%;
+
+// Emits the custom properties of one role for one theme.
+// Light themes darken on hover, dark themes lighten, so the change reads the
+// same way against either background.
+.ai-role(@name, @color, @dark: false) {
+  --ai-@{name}: @color;
+  --ai-@{name}-hover: if(@dark, lighten(@color, @ai-hover-shift), darken(@color, @ai-hover-shift));
+  --ai-@{name}-active: if(@dark, lighten(@color, @ai-active-shift), darken(@color, @ai-active-shift));
+  --ai-@{name}-soft: fade(@color, @ai-soft-alpha);
+  --ai-@{name}-soft-hover: fade(@color, @ai-soft-alpha-strong);
+  --ai-@{name}-contrast: contrast(@color, @ai-text-on-dark, @ai-text-on-light, 55%);
+}
+
+// All seven roles for one theme.
+.ai-roles(@dark: false) {
+  .ai-role(primary, @ai-primary, @dark);
+  .ai-role(secondary, @ai-secondary, @dark);
+  .ai-role(success, @ai-success, @dark);
+  .ai-role(danger, @ai-danger, @dark);
+  .ai-role(info, @ai-info, @dark);
+  .ai-role(warn, @ai-warn, @dark);
+  .ai-role(neutral, if(@dark, @ai-neutral-dark, @ai-neutral-light), @dark);
+}
+
+// Mixins that let a component adopt a role without repeating its variables.
+// `.ai-role-vars(primary)` sets --ai-role, --ai-role-hover, ... on the element.
+.ai-role-vars(@name) {
+  --ai-role: ~'var(--ai-@{name})';
+  --ai-role-hover: ~'var(--ai-@{name}-hover)';
+  --ai-role-active: ~'var(--ai-@{name}-active)';
+  --ai-role-soft: ~'var(--ai-@{name}-soft)';
+  --ai-role-soft-hover: ~'var(--ai-@{name}-soft-hover)';
+  --ai-role-contrast: ~'var(--ai-@{name}-contrast)';
+}
+
+// The seven role modifiers on any component: `.ai-button.success`, `.ai-link.danger`.
+.ai-role-modifiers() {
+  &.primary {
+    .ai-role-vars(primary);
+  }
+
+  &.secondary {
+    .ai-role-vars(secondary);
+  }
+
+  &.success {
+    .ai-role-vars(success);
+  }
+
+  &.danger {
+    .ai-role-vars(danger);
+  }
+
+  &.info {
+    .ai-role-vars(info);
+  }
+
+  &.warn {
+    .ai-role-vars(warn);
+  }
+
+  &.neutral {
+    .ai-role-vars(neutral);
+  }
+}

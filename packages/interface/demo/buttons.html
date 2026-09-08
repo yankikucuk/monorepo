@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Buttons · April Interface</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ai-theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-ai-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="/dist/interface.css" />
+  </head>
+  <body>
+    <div class="ai-shell">
+      <aside class="ai-sidebar">
+        <a class="ai-brand" href="/"><span class="mark">A</span> April Interface</a>
+        <nav aria-label="Demo pages">
+          <a class="ai-link nav block" href="/">Overview</a>
+          <a class="ai-link nav block" href="/typography.html">Typography</a>
+          <a class="ai-link nav block" href="/links.html">Links</a>
+          <a class="ai-link nav block primary" href="/buttons.html" aria-current="page">Buttons</a>
+        </nav>
+      </aside>
+      <div>
+        <header class="ai-topbar">
+          <span class="ai-text sm muted">Buttons</span>
+          <button
+            class="ai-button ghost sm ai-theme-toggle"
+            type="button"
+            data-ai-theme-toggle
+            aria-label="Switch theme"
+          >
+            <span class="state auto">Theme: auto</span>
+            <span class="state light">Theme: light</span>
+            <span class="state dark">Theme: dark</span>
+          </button>
+        </header>
+        <main class="ai-main">
+          <div class="ai-container">
+            <p class="ai-eyebrow">Components</p>
+            <h1>Buttons</h1>
+            <p class="ai-lead">
+              Styles <code>solid</code> (default), <code>outline</code>, <code>ghost</code>, <code>tonal</code>,
+              <code>link</code> × seven roles × <code>sm md lg</code> × <code>square soft rounded pill</code>. The
+              default shape is pill.
+            </p>
+            <section class="ai-section">
+              <h2>Solid</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary" type="button">Primary</button>
+                  <button class="ai-button secondary" type="button">Secondary</button>
+                  <button class="ai-button success" type="button">Success</button>
+                  <button class="ai-button danger" type="button">Danger</button>
+                  <button class="ai-button info" type="button">Info</button>
+                  <button class="ai-button warn" type="button">Warn</button>
+                  <button class="ai-button neutral" type="button">Neutral</button>
+                </div>
+                <pre><code>&lt;button class="ai-button primary"&gt;Primary&lt;/button&gt;
+&lt;button class="ai-button danger"&gt;Danger&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Outline</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button outline primary" type="button">Primary</button>
+                  <button class="ai-button outline secondary" type="button">Secondary</button>
+                  <button class="ai-button outline success" type="button">Success</button>
+                  <button class="ai-button outline danger" type="button">Danger</button>
+                  <button class="ai-button outline info" type="button">Info</button>
+                  <button class="ai-button outline warn" type="button">Warn</button>
+                  <button class="ai-button outline neutral" type="button">Neutral</button>
+                </div>
+                <pre><code>&lt;button class="ai-button outline primary"&gt;Primary&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Ghost</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button ghost primary" type="button">Primary</button>
+                  <button class="ai-button ghost secondary" type="button">Secondary</button>
+                  <button class="ai-button ghost success" type="button">Success</button>
+                  <button class="ai-button ghost danger" type="button">Danger</button>
+                  <button class="ai-button ghost info" type="button">Info</button>
+                  <button class="ai-button ghost warn" type="button">Warn</button>
+                  <button class="ai-button ghost neutral" type="button">Neutral</button>
+                </div>
+                <pre><code>&lt;button class="ai-button ghost primary"&gt;Primary&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Tonal</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button tonal primary" type="button">Primary</button>
+                  <button class="ai-button tonal secondary" type="button">Secondary</button>
+                  <button class="ai-button tonal success" type="button">Success</button>
+                  <button class="ai-button tonal danger" type="button">Danger</button>
+                  <button class="ai-button tonal info" type="button">Info</button>
+                  <button class="ai-button tonal warn" type="button">Warn</button>
+                  <button class="ai-button tonal neutral" type="button">Neutral</button>
+                </div>
+                <pre><code>&lt;button class="ai-button tonal primary"&gt;Primary&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Link</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button link primary" type="button">Primary</button>
+                  <button class="ai-button link secondary" type="button">Secondary</button>
+                  <button class="ai-button link success" type="button">Success</button>
+                  <button class="ai-button link danger" type="button">Danger</button>
+                  <button class="ai-button link info" type="button">Info</button>
+                  <button class="ai-button link warn" type="button">Warn</button>
+                  <button class="ai-button link neutral" type="button">Neutral</button>
+                </div>
+                <pre><code>&lt;button class="ai-button link primary"&gt;Primary&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Sizes</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary sm" type="button">Small</button>
+                  <button class="ai-button primary" type="button">Medium</button>
+                  <button class="ai-button primary lg" type="button">Large</button>
+                </div>
+                <pre><code>&lt;button class="ai-button primary sm" type="button"&gt;Small&lt;/button&gt;
+                &lt;button class="ai-button primary" type="button"&gt;Medium&lt;/button&gt;
+                &lt;button class="ai-button primary lg" type="button"&gt;Large&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Shapes</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary square" type="button">Square</button>
+                  <button class="ai-button primary soft" type="button">Soft</button>
+                  <button class="ai-button primary rounded" type="button">Rounded</button>
+                  <button class="ai-button primary pill" type="button">Pill</button>
+                </div>
+                <pre><code>&lt;button class="ai-button primary square" type="button"&gt;Square&lt;/button&gt;
+                &lt;button class="ai-button primary soft" type="button"&gt;Soft&lt;/button&gt;
+                &lt;button class="ai-button primary rounded" type="button"&gt;Rounded&lt;/button&gt;
+                &lt;button class="ai-button primary pill" type="button"&gt;Pill&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>States</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary" type="button" disabled>Disabled</button>
+                  <button class="ai-button outline primary" type="button" disabled>Disabled</button>
+                  <button class="ai-button primary loading" type="button">Loading</button>
+                  <button class="ai-button outline primary loading" type="button">Loading</button>
+                  <button class="ai-button primary active" type="button">Active</button>
+                </div>
+                <pre><code>&lt;button class="ai-button primary" disabled&gt;Disabled&lt;/button&gt;
+&lt;button class="ai-button primary loading"&gt;Loading&lt;/button&gt;
+&lt;button class="ai-button primary active"&gt;Active&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Icon and block</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary icon" type="button" aria-label="Search">⌕</button>
+                  <button class="ai-button outline neutral icon sm" type="button" aria-label="Close">×</button>
+                  <button class="ai-button ghost icon lg rounded" type="button" aria-label="Menu">≡</button>
+                  <button class="ai-button secondary block" type="button">Block button</button>
+                </div>
+                <pre><code>&lt;button class="ai-button primary icon" aria-label="Search"&gt;⌕&lt;/button&gt;
+&lt;button class="ai-button secondary block"&gt;Block button&lt;/button&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Group</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <div class="ai-button-group">
+                    <button class="ai-button outline neutral" type="button">Day</button>
+                    <button class="ai-button outline neutral active" type="button">Week</button>
+                    <button class="ai-button outline neutral" type="button">Month</button>
+                  </div>
+                  <div class="ai-button-group soft">
+                    <button class="ai-button primary sm" type="button">Save</button>
+                    <button class="ai-button primary sm icon" type="button" aria-label="More">▾</button>
+                  </div>
+                </div>
+                <pre><code>&lt;div class="ai-button-group"&gt;
+  &lt;button class="ai-button outline neutral"&gt;Day&lt;/button&gt;
+  &lt;button class="ai-button outline neutral active"&gt;Week&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>As a link</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <a class="ai-button primary" href="#">Anchor styled as a button</a>
+                  <a class="ai-button ghost neutral" href="#">Ghost anchor</a>
+                </div>
+                <pre><code>&lt;a class="ai-button primary" href="#"&gt;Anchor styled as a button&lt;/a&gt;
+                &lt;a class="ai-button ghost neutral" href="#"&gt;Ghost anchor&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module">
+      import { initAll } from '/dist/behavior/index.js';
+      initAll();
+    </script>
+  </body>
+</html>

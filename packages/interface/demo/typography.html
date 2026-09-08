@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Typography · April Interface</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ai-theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-ai-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="/dist/interface.css" />
+  </head>
+  <body>
+    <div class="ai-shell">
+      <aside class="ai-sidebar">
+        <a class="ai-brand" href="/"><span class="mark">A</span> April Interface</a>
+        <nav aria-label="Demo pages">
+          <a class="ai-link nav block" href="/">Overview</a>
+          <a class="ai-link nav block primary" href="/typography.html" aria-current="page">Typography</a>
+          <a class="ai-link nav block" href="/links.html">Links</a>
+          <a class="ai-link nav block" href="/buttons.html">Buttons</a>
+        </nav>
+      </aside>
+      <div>
+        <header class="ai-topbar">
+          <span class="ai-text sm muted">Typography</span>
+          <button
+            class="ai-button ghost sm ai-theme-toggle"
+            type="button"
+            data-ai-theme-toggle
+            aria-label="Switch theme"
+          >
+            <span class="state auto">Theme: auto</span>
+            <span class="state light">Theme: light</span>
+            <span class="state dark">Theme: dark</span>
+          </button>
+        </header>
+        <main class="ai-main">
+          <div class="ai-container">
+            <p class="ai-eyebrow">Typography</p>
+            <h1>Typography</h1>
+            <p class="ai-lead">Montserrat for text, Roboto Mono for code. Headings scale fluidly with the viewport.</p>
+            <section class="ai-section">
+              <h2>Headings</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <div class="ai-stack sm" style="inline-size: 100%">
+                    <h1>Heading one</h1>
+                    <h2>Heading two</h2>
+                    <h3>Heading three</h3>
+                    <h4>Heading four</h4>
+                    <h5>Heading five</h5>
+                    <h6>Heading six</h6>
+                  </div>
+                </div>
+                <pre><code>&lt;h1&gt;Heading one&lt;/h1&gt;
+&lt;h2&gt;Heading two&lt;/h2&gt;
+&lt;p class="ai-heading h3"&gt;Any element with the heading scale&lt;/p&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Body text</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <div style="inline-size: 100%">
+                    <p class="ai-lead">Lead paragraph for introductions, slightly larger and muted.</p>
+                    <p>
+                      Regular paragraph text with a <a href="#">plain link</a>, <strong>strong emphasis</strong>,
+                      <code>inline code</code> and <kbd>⌘K</kbd>.
+                    </p>
+                    <p class="ai-text sm muted">Small muted text for captions and metadata.</p>
+                    <blockquote>A quotation set off from the flow with a soft rule.</blockquote>
+                    <ul>
+                      <li>Unordered list item</li>
+                      <li>Another item</li>
+                    </ul>
+                    <ol>
+                      <li>Ordered list item</li>
+                      <li>Another item</li>
+                    </ol>
+                  </div>
+                </div>
+                <pre><code>&lt;p class="ai-lead"&gt;Lead paragraph&lt;/p&gt;
+&lt;p&gt;Regular paragraph with &lt;code&gt;inline code&lt;/code&gt;.&lt;/p&gt;
+&lt;p class="ai-text sm muted"&gt;Small muted text&lt;/p&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Text utilities</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <span class="ai-text xs">xs</span>
+                  <span class="ai-text sm">sm</span>
+                  <span class="ai-text">md</span>
+                  <span class="ai-text lg">lg</span>
+                  <span class="ai-text mono">mono</span>
+                  <span class="ai-text semibold">semibold</span>
+                  <span class="ai-text primary">primary</span>
+                  <span class="ai-text success">success</span>
+                  <span class="ai-text danger">danger</span>
+                  <span class="ai-text warn">warn</span>
+                  <span class="ai-eyebrow">eyebrow</span>
+                </div>
+                <pre><code>&lt;span class="ai-text xs"&gt;xs&lt;/span&gt;
+                &lt;span class="ai-text sm"&gt;sm&lt;/span&gt;
+                &lt;span class="ai-text"&gt;md&lt;/span&gt;
+                &lt;span class="ai-text lg"&gt;lg&lt;/span&gt;
+                &lt;span class="ai-text mono"&gt;mono&lt;/span&gt;
+                &lt;span class="ai-text semibold"&gt;semibold&lt;/span&gt;
+                &lt;span class="ai-text primary"&gt;primary&lt;/span&gt;
+                &lt;span class="ai-text success"&gt;success&lt;/span&gt;
+                &lt;span class="ai-text danger"&gt;danger&lt;/span&gt;
+                &lt;span class="ai-text warn"&gt;warn&lt;/span&gt;
+                &lt;span class="ai-eyebrow"&gt;eyebrow&lt;/span&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Code</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <pre style="inline-size: 100%"><code>const answer = 42;
+export const twice = (n) => n * 2;</code></pre>
+                </div>
+                <pre><code>&lt;pre&gt;&lt;code&gt;const answer = 42;&lt;/code&gt;&lt;/pre&gt;</code></pre>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module">
+      import { initAll } from '/dist/behavior/index.js';
+      initAll();
+    </script>
+  </body>
+</html>
