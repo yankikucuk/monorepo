@@ -195,6 +195,10 @@ describe('CyberFlake', () => {
     for (let i = 1; i < ids.length; i += 1) {
       expect(ids[i]).toBeGreaterThan(ids[i - 1]);
     }
+
+    // Exactly 4096 sequence values fit in one logical millisecond.
+    expect(Cyberflake.deconstruct(ids[4095] ?? -1n)).toMatchObject({ timestamp: fixedNow, sequence: 4095 });
+    expect(Cyberflake.deconstruct(ids[4096] ?? -1n)).toMatchObject({ timestamp: fixedNow + 1, sequence: 0 });
   });
 
   /**
@@ -275,13 +279,16 @@ describe('CyberFlake', () => {
       cf.generate();
     }
 
+    const before = cf.generate();
+
     // Simulate a backwards jump in the system clock
     now -= 100;
 
-    const id = BigInt(cf.generate());
+    const after = cf.generate();
 
     // The generator must continue producing valid, ordered IDs
-    expect(id).toBeGreaterThan(0n);
+    expect(BigInt(after)).toBeGreaterThan(BigInt(before));
+    expect(Cyberflake.deconstruct(after).timestamp).toBeGreaterThanOrEqual(Cyberflake.deconstruct(before).timestamp);
   });
 
   /**
@@ -348,7 +355,7 @@ describe('CyberFlake', () => {
     expect(data.processId).toBe(3);
     expect(data.timestamp).toBe(now);
     expect(data.sequence).toBe(0);
-    expect(data.binary.length).toBeLessThanOrEqual(63);
+    expect(data.binary).toHaveLength(63);
   });
 
   /**
@@ -725,7 +732,7 @@ describe('CyberFlake', () => {
    * decoding contract total over its valid domain.
    */
   it('rejects out-of-domain values in deconstruct', () => {
-    expect(() => Cyberflake.deconstruct('-5')).toThrow(RangeError);
+    expect(() => Cyberflake.deconstruct('-5')).toThrow(SyntaxError);
     expect(() => Cyberflake.deconstruct(-5n)).toThrow(RangeError);
     expect(() => Cyberflake.deconstruct(1n << 70n)).toThrow(RangeError);
   });
@@ -751,5 +758,75 @@ describe('CyberFlake', () => {
     expect(fromBigint).toStrictEqual(fromString);
     expect(fromBigint.workerId).toBe(9);
     expect(fromBigint.processId).toBe(4);
+  });
+  /**
+   * Ensures `isValid` only accepts the canonical decimal form a generator can
+   * emit. `BigInt()` alone would happily parse radix prefixes, whitespace,
+   * signs and leading zeros, and `isValid` used to inherit that leniency.
+   */
+  it('rejects non-canonical decimal strings with isValid()', () => {
+    for (const input of ['0x1F', '0b101', '0o17', ' 42 ', '+5', '007', '1_000', '1e3', '42n']) {
+      expect(Cyberflake.isValid(input)).toBe(false);
+    }
+
+    expect(Cyberflake.isValid('0')).toBe(true);
+  });
+
+  /**
+   * `isValid` is documented as a guard that never throws, which must hold for
+   * untyped callers passing something other than a string.
+   */
+  it('returns false instead of throwing for non-string input to isValid()', () => {
+    for (const input of [null, 42, 42n, {}, []]) {
+      expect(Cyberflake.isValid(input as unknown as string)).toBe(false);
+    }
+  });
+
+  /**
+   * `deconstruct` must reject strings that are not canonical decimal IDs
+   * instead of silently decoding them (`BigInt('')` is `0n`).
+   */
+  it('throws SyntaxError for non-canonical strings in deconstruct', () => {
+    for (const input of ['', '   ', '0x1F', ' 42 ', '+5', '007', 'not-a-number']) {
+      expect(() => Cyberflake.deconstruct(input)).toThrow(SyntaxError);
+    }
+  });
+
+  /**
+   * Pins the documented example: the ID quoted in the README and JSDoc must
+   * decode to the fields it is described with.
+   */
+  it('decodes the documented example ID', () => {
+    expect(Cyberflake.deconstruct('1174109840998531072')).toMatchObject({
+      timestamp: 1_700_000_000_000,
+      workerId: 1,
+      processId: 0,
+      sequence: 0,
+    });
+  });
+
+  /**
+   * Covers both ends of the timestamp field: the epoch itself (field value 0)
+   * and the last millisecond that still fits the 41-bit layout.
+   */
+  it('accepts the epoch and the last millisecond of the timestamp field', () => {
+    const epoch = 1_420_070_400_000;
+
+    const atEpoch = new Cyberflake({ workerId: 1, now: () => epoch });
+    expect(Cyberflake.deconstruct(atEpoch.generate()).timestamp).toBe(epoch);
+
+    const lastMs = epoch + 2 ** 41 - 1;
+    const atLimit = new Cyberflake({ workerId: 1, now: () => lastMs });
+    expect(Cyberflake.deconstruct(atLimit.generate()).timestamp).toBe(lastMs);
+    expect(() => atLimit.generate()).not.toThrow();
+  });
+
+  /**
+   * A time source that returns `NaN` or `Infinity` must fail fast rather than
+   * feed garbage into the bit layout.
+   */
+  it('throws RangeError when the time source returns a non-finite value', () => {
+    expect(() => new Cyberflake({ workerId: 1, now: () => Number.NaN }).generate()).toThrow(RangeError);
+    expect(() => new Cyberflake({ workerId: 1, now: () => Number.POSITIVE_INFINITY }).generate()).toThrow(RangeError);
   });
 });

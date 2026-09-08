@@ -18,7 +18,7 @@
 
 import { DEFAULTS, INITIAL } from './constants.js';
 import { handleClockRegression } from './internal/clock.js';
-import { assembleId, deconstructId } from './internal/encoding.js';
+import { assembleId, deconstructId, parseId } from './internal/encoding.js';
 import { handleSequence } from './internal/sequence.js';
 import { calculateLogicalTimestamp, readCurrentTime } from './internal/time.js';
 import {
@@ -42,7 +42,7 @@ import type { CyberflakeConfig, DeconstructedCyberflake } from './types.js';
  * const generator = new Cyberflake({ workerId: 1, processId: 0 });
  *
  * const id = generator.generate();
- * // => '158110629309382656'
+ * // => '1174109840998531072'
  *
  * Cyberflake.deconstruct(id).workerId;
  * // => 1
@@ -106,7 +106,7 @@ export class Cyberflake {
    * @example
    * ```ts
    * const id = generator.generate();
-   * // => '158110629309382656' (safe for DB keys, logs, JSON)
+   * // => '1174109840998531072' (safe for DB keys, logs, JSON)
    * ```
    * @throws {RangeError} If the system time precedes the Cyberflake epoch, or
    * if the 41-bit timestamp space is exhausted (~year 2084, earlier when the
@@ -136,22 +136,26 @@ export class Cyberflake {
    * generator state — any ID can be decoded without an instance.
    * @example
    * ```ts
-   * const parts = Cyberflake.deconstruct('158110629309382656');
+   * const parts = Cyberflake.deconstruct('1174109840998531072');
    * parts.timestamp; // 1_700_000_000_000
    * parts.workerId; // 1
    * parts.processId; // 0
    * parts.sequence; // 0
    * ```
    * @param {string | bigint} id - Cyberflake ID to decode.
-   * @throws {SyntaxError} If `id` is a string that cannot be parsed as an
-   * integer.
+   * @throws {SyntaxError} If `id` is a string that is not a canonical decimal
+   * integer (for example `''`, `'0x1F'` or `' 42 '`).
    * @throws {RangeError} If the value is negative or exceeds the 63-bit
    * layout — decoding it would produce meaningless components. Use
    * {@link Cyberflake.isValid} first when handling untrusted input.
    * @returns {DeconstructedCyberflake} The recovered components.
    */
   static deconstruct(id: string | bigint): DeconstructedCyberflake {
-    const value = typeof id === 'bigint' ? id : BigInt(id);
+    const value = typeof id === 'bigint' ? id : parseId(id);
+
+    if (value === null) {
+      throw new SyntaxError(`Cannot deconstruct '${id}': not a canonical decimal Cyberflake ID.`);
+    }
 
     return deconstructId(value);
   }
@@ -159,11 +163,12 @@ export class Cyberflake {
   /**
    * Performs semantic validation of a Cyberflake ID.
    *
-   * Never throws: unparseable, negative, or oversized input simply returns
-   * `false`, making this safe as a guard for untrusted input.
+   * Never throws: unparseable, non-canonical, negative, oversized or even
+   * non-string input simply returns `false`, making this safe as a guard for
+   * untrusted input.
    * @example
    * ```ts
-   * Cyberflake.isValid('158110629309382656'); // true
+   * Cyberflake.isValid('1174109840998531072'); // true
    * Cyberflake.isValid('not-a-number'); // false
    * ```
    * @param {string} id - Cyberflake ID as a string.
