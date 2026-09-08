@@ -24,6 +24,11 @@
       "matchPackageNames": ["eslint"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "description": "Font Awesome Pro comes from npm.fontawesome.com; Renovate has no credentials for it, so the package is updated by hand",
+      "matchPackageNames": ["@fortawesome/**"],
+      "enabled": false
     }
   ]
 }

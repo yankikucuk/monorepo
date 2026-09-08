@@ -25,6 +25,23 @@ function, so React effects and Vue lifecycle hooks use the same contract as
 plain HTML. Load Montserrat and Roboto Mono yourself (the demo uses Google
 Fonts); the stylesheet only declares the font stacks.
 
+### Icons
+
+Icons are Font Awesome Pro (solid style) as an opt-in stylesheet, kept
+separate because of its size:
+
+```js
+import '@april/interface/icons.css';
+```
+
+```html
+<button class="ai-button primary"><i class="fa-solid fa-check"></i> Save</button>
+```
+
+`dist/icons.css` is self-contained: the build copies the solid webfont to
+`dist/webfonts/`. Font Awesome Pro is licensed to this workspace; the compiled
+output stays inside private projects and is never committed or published.
+
 ### Conventions
 
 - Component classes carry the `ai-` prefix; variants are short words stacked

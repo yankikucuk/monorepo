@@ -9,7 +9,9 @@
     "less",
     "design-system",
     "components",
-    "glass"
+    "glass",
+    "icons",
+    "font-awesome"
   ],
   "homepage": "https://github.com/yankikucuk/monorepo/tree/stage/packages/interface#readme",
   "bugs": {
@@ -37,6 +39,8 @@
     },
     "./styles.css": "./dist/interface.css",
     "./styles.min.css": "./dist/interface.min.css",
+    "./icons.css": "./dist/icons.css",
+    "./icons.min.css": "./dist/icons.min.css",
     "./package.json": "./package.json"
   },
   "main": "./dist/behavior/index.js",
@@ -61,6 +65,7 @@
   "devDependencies": {
     "@april/stylelint-config": "workspace:*",
     "@april/tsconfig": "workspace:*",
+    "@fortawesome/fontawesome-pro": "^7.3.1",
     "browserslist": "^4.24.0",
     "less": "^4.9.1",
     "lightningcss": "^1.33.0",

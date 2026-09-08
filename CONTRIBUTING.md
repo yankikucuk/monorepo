@@ -13,6 +13,16 @@ conventions enforced by CI.
 pnpm install
 ```
 
+`@april/interface` depends on Font Awesome Pro from a private registry. Before
+the first install, add the token to your **user-level** `~/.npmrc` (never to
+the repository):
+
+```
+//npm.fontawesome.com/:_authToken=<token>
+```
+
+CI gets it from the `FONTAWESOME_TOKEN` secret.
+
 ## Documentation
 
 The site at [yankikucuk.github.io/monorepo](https://yankikucuk.github.io/monorepo/)
