@@ -74,6 +74,10 @@ export const DEFAULT_SORT_OPTIONS: Required<SortOptions> = {
   kindOrder: 'value-first',
 };
 
+/** Delimiters of a block comment, for validating `commentAbove`. */
+const BLOCK_COMMENT_OPEN = '/*';
+const BLOCK_COMMENT_CLOSE = '*/';
+
 /**
  * Compiles a user-supplied pattern with the `u` flag, wrapping syntax errors
  * with the option path for a readable diagnostic.
@@ -151,11 +155,17 @@ const blockLayout = (spec: GroupBlockSpec, index: number): Pick<ResolvedBlock, '
     if (/[\r\n]/u.test(commentAbove)) {
       throw new TypeError(`"groups[${index}].commentAbove" must be a single line.`);
     }
-    if (
-      commentAbove.startsWith('/*') &&
-      (!commentAbove.endsWith('*/') || commentAbove.indexOf('*/') !== commentAbove.length - 2)
-    ) {
-      throw new TypeError(`"groups[${index}].commentAbove" must be a complete block comment when it starts with "/*".`);
+    if (commentAbove.startsWith(BLOCK_COMMENT_OPEN)) {
+      const inner = commentAbove.slice(BLOCK_COMMENT_OPEN.length, -BLOCK_COMMENT_CLOSE.length);
+      const closesOnce =
+        commentAbove.length >= BLOCK_COMMENT_OPEN.length + BLOCK_COMMENT_CLOSE.length &&
+        commentAbove.endsWith(BLOCK_COMMENT_CLOSE) &&
+        !inner.includes(BLOCK_COMMENT_CLOSE);
+      if (!closesOnce) {
+        throw new TypeError(
+          `"groups[${index}].commentAbove" must be a complete block comment when it starts with "/*".`
+        );
+      }
     }
   }
   if (typeof newlinesInside === 'number' && (!Number.isInteger(newlinesInside) || newlinesInside < 0)) {
