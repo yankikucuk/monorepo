@@ -66,8 +66,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: API docs build (TypeDoc)
-        run: pnpm docs:api
+      - name: Documentation site build
+        run: pnpm docs:build
 
       - name: Workspace consistency (manypkg)
         run: pnpm manypkg

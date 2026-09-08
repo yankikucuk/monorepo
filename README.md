@@ -2,13 +2,15 @@
 
 [![CI](https://github.com/yankikucuk/monorepo/actions/workflows/ci.yaml/badge.svg?branch=stage)](https://github.com/yankikucuk/monorepo/actions/workflows/ci.yaml)
 [![CodeQL](https://github.com/yankikucuk/monorepo/actions/workflows/codeql.yaml/badge.svg?branch=stage)](https://github.com/yankikucuk/monorepo/actions/workflows/codeql.yaml)
+[![Docs](https://github.com/yankikucuk/monorepo/actions/workflows/docs.yaml/badge.svg?branch=stage)](https://yankikucuk.github.io/monorepo/)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A526-brightgreen.svg)](.nvmrc)
 [![pnpm](https://img.shields.io/badge/pnpm-11-f69220.svg)](package.json)
 [![TypeScript](https://img.shields.io/badge/typescript-strict-3178c6.svg)](packages/shared/tsconfig)
 
 A strict, type-safe TypeScript monorepo powered by **pnpm workspaces** and
-**Turborepo**.
+**Turborepo**. Documentation for every package, generated from the packages
+themselves, lives at **[yankikucuk.github.io/monorepo](https://yankikucuk.github.io/monorepo/)**.
 
 ## Packages
 
@@ -58,7 +60,8 @@ pnpm test
 | `pnpm manypkg`       | Validate workspace package.json consistency.                                            |
 | `pnpm depcruise`     | Enforce dependency boundaries (dependency-cruiser).                                     |
 | `pnpm sort:pkg`      | Sort package.json files (scripts kept logical).                                         |
-| `pnpm docs:api`      | Generate API docs for the packages (TypeDoc → `docs/api`).                              |
+| `pnpm docs:dev`      | Serve the documentation site locally, regenerated from the packages.                    |
+| `pnpm docs:build`    | Build the documentation site (`docs/.vitepress/dist`).                                  |
 | `pnpm changeset`     | Record a changeset for the next release.                                                |
 
 ## Tooling
@@ -70,7 +73,8 @@ pnpm test
 - **Repository health:** Knip (unused code), manypkg (workspace consistency),
   and dependency-cruiser (architecture boundaries).
 - **Releases & deps:** Changesets (versioning) and Renovate (dependency updates).
-- **Docs:** TypeDoc (`pnpm docs:api`).
+- **Docs:** VitePress site generated from each package's README, TSDoc
+  (TypeDoc) and changelog (`pnpm docs:dev`); published to GitHub Pages.
 - **Commits:** Husky + lint-staged + commitlint (Angular convention).
 - **CI:** GitHub Actions run all of the above, plus CodeQL and dependency-review.
 

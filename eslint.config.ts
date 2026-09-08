@@ -17,7 +17,16 @@ import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
  */
 export default tseslint.config(
   {
-    ignores: ['**/build/**', '**/coverage/**', '**/dist/**', '**/docs/api/**', '**/node_modules/**', '**/.turbo/**'],
+    ignores: [
+      '**/build/**',
+      '**/coverage/**',
+      '**/dist/**',
+      '**/docs/api/**',
+      '**/node_modules/**',
+      '**/.turbo/**',
+      'docs/packages/**',
+      'docs/.vitepress/cache/**',
+    ],
   },
   {
     // Product code and the import-sort engine: strict and fully type-checked.
@@ -33,6 +42,7 @@ export default tseslint.config(
     files: [
       '*.config.ts',
       'scripts/**/*.mjs',
+      'docs/.vitepress/**/*.ts',
       'packages/shared/{eslint-config,prettier-config,stylelint-config}/src/**/*.{ts,js}',
       'packages/*/benchmarks/**/*.ts',
     ],
