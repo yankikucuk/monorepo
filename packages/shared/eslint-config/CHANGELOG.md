@@ -1,5 +1,16 @@
 # @april/eslint-config
 
+## 1.0.0
+
+### Major Changes
+
+- ad389fb: First stable release. These presets and the import sorter have been the shared baseline of the workspace since their first versions; their public surface is now considered stable and follows semantic versioning from 1.0.0 on.
+
+### Patch Changes
+
+- Updated dependencies [ad389fb]
+  - @april/import-sort@1.0.0
+
 ## 0.3.0
 
 ### Minor Changes
