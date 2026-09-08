@@ -1,0 +1,8 @@
+// Focus ring: visible for keyboard focus, drawn outside the element so it
+// never changes layout, offset in the page background colour.
+.ai-focus-ring() {
+  &:focus-visible {
+    outline: 2px solid var(--ai-focus-ring);
+    outline-offset: 2px;
+  }
+}

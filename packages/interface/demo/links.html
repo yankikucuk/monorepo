@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Links · April Interface</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ai-theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-ai-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="/dist/interface.css" />
+  </head>
+  <body>
+    <div class="ai-shell">
+      <aside class="ai-sidebar">
+        <a class="ai-brand" href="/"><span class="mark">A</span> April Interface</a>
+        <nav aria-label="Demo pages">
+          <a class="ai-link nav block" href="/">Overview</a>
+          <a class="ai-link nav block" href="/typography.html">Typography</a>
+          <a class="ai-link nav block primary" href="/links.html" aria-current="page">Links</a>
+          <a class="ai-link nav block" href="/buttons.html">Buttons</a>
+        </nav>
+      </aside>
+      <div>
+        <header class="ai-topbar">
+          <span class="ai-text sm muted">Links</span>
+          <button
+            class="ai-button ghost sm ai-theme-toggle"
+            type="button"
+            data-ai-theme-toggle
+            aria-label="Switch theme"
+          >
+            <span class="state auto">Theme: auto</span>
+            <span class="state light">Theme: light</span>
+            <span class="state dark">Theme: dark</span>
+          </button>
+        </header>
+        <main class="ai-main">
+          <div class="ai-container">
+            <p class="ai-eyebrow">Components</p>
+            <h1>Links</h1>
+            <p class="ai-lead">
+              Every anchor pattern lives in <code>links.less</code>: inline, plain, subtle, arrow, external, navigation,
+              breadcrumb, disabled, and the colour roles.
+            </p>
+            <section class="ai-section">
+              <h2>Inline</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <p style="margin: 0">
+                    Text with an <a class="ai-link" href="#">inline link</a>, a
+                    <a class="ai-link plain" href="#">plain link</a> that underlines on hover, and a
+                    <a class="ai-link subtle" href="#">subtle link</a> that keeps the text colour.
+                  </p>
+                </div>
+                <pre><code>&lt;a class="ai-link" href="#"&gt;inline link&lt;/a&gt;
+&lt;a class="ai-link plain" href="#"&gt;plain link&lt;/a&gt;
+&lt;a class="ai-link subtle" href="#"&gt;subtle link&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Standalone</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <a class="ai-link arrow" href="#">Read the guide</a>
+                  <a class="ai-link arrow secondary" href="#">Secondary arrow</a>
+                  <a class="ai-link external" href="https://example.com" target="_blank" rel="noreferrer"
+                    >External link</a
+                  >
+                  <a class="ai-link disabled" href="#" aria-disabled="true">Disabled link</a>
+                </div>
+                <pre><code>&lt;a class="ai-link arrow" href="#"&gt;Read the guide&lt;/a&gt;
+                &lt;a class="ai-link arrow secondary" href="#"&gt;Secondary arrow&lt;/a&gt;
+                &lt;a class="ai-link external" href="https://example.com" target="_blank" rel="noreferrer"&gt;External link&lt;/a&gt;
+                &lt;a class="ai-link disabled" href="#" aria-disabled="true"&gt;Disabled link&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Colour roles</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <a class="ai-link primary" href="#">primary</a>
+                  <a class="ai-link secondary" href="#">secondary</a>
+                  <a class="ai-link success" href="#">success</a>
+                  <a class="ai-link danger" href="#">danger</a>
+                  <a class="ai-link info" href="#">info</a>
+                  <a class="ai-link warn" href="#">warn</a>
+                  <a class="ai-link neutral" href="#">neutral</a>
+                </div>
+                <pre><code>&lt;a class="ai-link primary" href="#"&gt;primary&lt;/a&gt;
+                &lt;a class="ai-link secondary" href="#"&gt;secondary&lt;/a&gt;
+                &lt;a class="ai-link success" href="#"&gt;success&lt;/a&gt;
+                &lt;a class="ai-link danger" href="#"&gt;danger&lt;/a&gt;
+                &lt;a class="ai-link info" href="#"&gt;info&lt;/a&gt;
+                &lt;a class="ai-link warn" href="#"&gt;warn&lt;/a&gt;
+                &lt;a class="ai-link neutral" href="#"&gt;neutral&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Navigation</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <nav class="ai-cluster sm" aria-label="Example">
+                    <a class="ai-link nav" href="#" aria-current="page">Overview</a>
+                    <a class="ai-link nav" href="#">Guides</a>
+                    <a class="ai-link nav" href="#">API</a>
+                    <a class="ai-link nav danger" href="#">Danger zone</a>
+                  </nav>
+                </div>
+                <pre><code>&lt;a class="ai-link nav" href="#" aria-current="page"&gt;Overview&lt;/a&gt;
+&lt;a class="ai-link nav" href="#"&gt;Guides&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Breadcrumb</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <ol class="ai-breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Components</a></li>
+                    <li aria-current="page">Links</li>
+                  </ol>
+                </div>
+                <pre><code>&lt;ol class="ai-breadcrumb"&gt;
+                  &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;a href="#"&gt;Components&lt;/a&gt;&lt;/li&gt;
+                  &lt;li aria-current="page"&gt;Links&lt;/li&gt;
+                &lt;/ol&gt;</code></pre>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module">
+      import { initAll } from '/dist/behavior/index.js';
+      initAll();
+    </script>
+  </body>
+</html>

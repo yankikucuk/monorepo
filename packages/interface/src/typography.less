@@ -1,0 +1,108 @@
+// Typography utilities. Element defaults live in base.less; these classes
+// apply the same scale to any element and add the roles' text colours.
+
+.ai-heading {
+  font-weight: var(--ai-weight-bold);
+  line-height: var(--ai-leading-tight);
+  letter-spacing: -0.01em;
+
+  &.h1 {
+    font-size: var(--ai-h1);
+  }
+
+  &.h2 {
+    font-size: var(--ai-h2);
+  }
+
+  &.h3 {
+    font-size: var(--ai-h3);
+  }
+
+  &.h4 {
+    font-size: var(--ai-h4);
+  }
+
+  &.h5 {
+    font-size: var(--ai-h5);
+  }
+
+  &.h6 {
+    font-size: var(--ai-h6);
+  }
+}
+
+.ai-lead {
+  font-size: var(--ai-text-xl);
+  line-height: 1.5;
+  color: var(--ai-text-secondary);
+}
+
+.ai-text {
+  &.xs {
+    font-size: var(--ai-text-xs);
+  }
+
+  &.sm {
+    font-size: var(--ai-text-sm);
+  }
+
+  &.lg {
+    font-size: var(--ai-text-lg);
+  }
+
+  &.muted {
+    color: var(--ai-text-secondary);
+  }
+
+  &.mono {
+    font-family: var(--ai-font-mono);
+  }
+
+  &.medium {
+    font-weight: var(--ai-weight-medium);
+  }
+
+  &.semibold {
+    font-weight: var(--ai-weight-semibold);
+  }
+
+  &.bold {
+    font-weight: var(--ai-weight-bold);
+  }
+
+  &.primary {
+    color: var(--ai-primary);
+  }
+
+  &.secondary {
+    color: var(--ai-secondary);
+  }
+
+  &.success {
+    color: var(--ai-success);
+  }
+
+  &.danger {
+    color: var(--ai-danger);
+  }
+
+  &.info {
+    color: var(--ai-info);
+  }
+
+  &.warn {
+    color: var(--ai-warn);
+  }
+
+  &.neutral {
+    color: var(--ai-neutral);
+  }
+}
+
+.ai-eyebrow {
+  font-size: var(--ai-text-xs);
+  font-weight: var(--ai-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ai-text-secondary);
+}

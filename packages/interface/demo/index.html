@@ -3,34 +3,141 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>April Interface — demo</title>
+    <title>Overview · April Interface</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ai-theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-ai-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+    />
     <link rel="stylesheet" href="/dist/interface.css" />
   </head>
   <body>
-    <main style="padding: var(--ai-space-8)">
-      <p style="color: var(--ai-text-secondary)">
-        Theme:
-        <button type="button" data-theme="auto">auto</button>
-        <button type="button" data-theme="light">light</button>
-        <button type="button" data-theme="dark">dark</button>
-      </p>
-      <h1>April Interface</h1>
-      <p>
-        Every component lands on this page with theme and contrast switches, so all modes can be swept in one pass per
-        browser. Nothing is styled yet beyond the reset and the token layer.
-      </p>
-    </main>
+    <div class="ai-shell">
+      <aside class="ai-sidebar">
+        <a class="ai-brand" href="/"><span class="mark">A</span> April Interface</a>
+        <nav aria-label="Demo pages">
+          <a class="ai-link nav block primary" href="/" aria-current="page">Overview</a>
+          <a class="ai-link nav block" href="/typography.html">Typography</a>
+          <a class="ai-link nav block" href="/links.html">Links</a>
+          <a class="ai-link nav block" href="/buttons.html">Buttons</a>
+        </nav>
+      </aside>
+      <div>
+        <header class="ai-topbar">
+          <span class="ai-text sm muted">Overview</span>
+          <button
+            class="ai-button ghost sm ai-theme-toggle"
+            type="button"
+            data-ai-theme-toggle
+            aria-label="Switch theme"
+          >
+            <span class="state auto">Theme: auto</span>
+            <span class="state light">Theme: light</span>
+            <span class="state dark">Theme: dark</span>
+          </button>
+        </header>
+        <main class="ai-main">
+          <div class="ai-container">
+            <p class="ai-eyebrow">Overview</p>
+            <h1>April Interface</h1>
+            <p class="ai-lead">
+              A CSS framework authored in Less: prefixed components, stacked variant words, shared colour roles, light
+              and dark themes. This demo is built with the framework itself.
+            </p>
+            <section class="ai-section">
+              <h2>Colour roles</h2>
+              <p>
+                Seven roles shared by every component. Hover, active, soft and contrast values are derived at build
+                time.
+              </p>
+              <div class="ai-swatch-grid">
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-primary)"></div>
+                  <strong>primary</strong><code>--ai-primary</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-secondary)"></div>
+                  <strong>secondary</strong><code>--ai-secondary</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-success)"></div>
+                  <strong>success</strong><code>--ai-success</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-danger)"></div>
+                  <strong>danger</strong><code>--ai-danger</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-info)"></div>
+                  <strong>info</strong><code>--ai-info</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-warn)"></div>
+                  <strong>warn</strong><code>--ai-warn</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-neutral)"></div>
+                  <strong>neutral</strong><code>--ai-neutral</code>
+                </div>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Surfaces</h2>
+              <div class="ai-swatch-grid">
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-bg); border: 1px solid var(--ai-border)"></div>
+                  <strong>bg</strong><code>--ai-bg</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-bg-raised); border: 1px solid var(--ai-border)"></div>
+                  <strong>raised</strong><code>--ai-bg-raised</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-bg-sunken)"></div>
+                  <strong>sunken</strong><code>--ai-bg-sunken</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-text)"></div>
+                  <strong>text</strong><code>--ai-text</code>
+                </div>
+                <div class="ai-swatch">
+                  <div class="color" style="background: var(--ai-text-secondary)"></div>
+                  <strong>text secondary</strong><code>--ai-text-secondary</code>
+                </div>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Conventions</h2>
+              <ul>
+                <li>
+                  Component classes carry the <code>ai-</code> prefix; variants are short words stacked after it:
+                  <code>ai-button ghost primary lg pill</code>.
+                </li>
+                <li>
+                  Shape words mean the same everywhere: <code>square</code>, <code>soft</code>, <code>rounded</code>,
+                  <code>pill</code>. Sizes: <code>sm</code>, <code>md</code>, <code>lg</code>.
+                </li>
+                <li>Theme follows the system; the toggle in the top bar pins light or dark and remembers it.</li>
+              </ul>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
     <script type="module">
-      for (const button of document.querySelectorAll('[data-theme]')) {
-        button.addEventListener('click', () => {
-          const theme = button.dataset.theme;
-          if (theme === 'auto') {
-            delete document.documentElement.dataset.aiTheme;
-          } else {
-            document.documentElement.dataset.aiTheme = theme;
-          }
-        });
-      }
+      import { initAll } from '/dist/behavior/index.js';
+      initAll();
     </script>
   </body>
 </html>

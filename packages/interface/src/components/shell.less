@@ -1,0 +1,168 @@
+// Application shell: sidebar + topbar + main. Built for the demo, usable by
+// any documentation-style page.
+
+.ai-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-block-size: 100dvh;
+
+  .mq(@ai-bp-lg, {
+    grid-template-columns: 16rem minmax(0, 1fr);
+  });
+}
+
+.ai-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ai-space-6);
+  padding: var(--ai-space-5) var(--ai-space-4);
+  border-block-end: 1px solid var(--ai-border);
+  background: var(--ai-bg-raised);
+
+  .mq(@ai-bp-lg, {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100dvh;
+    overflow-y: auto;
+    border-block-end: 0;
+    border-inline-end: 1px solid var(--ai-border);
+  });
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ai-space-1);
+  }
+
+  .group {
+    margin-block: var(--ai-space-4) var(--ai-space-2);
+    padding-inline: var(--ai-space-3);
+  }
+}
+
+.ai-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ai-space-2);
+  color: var(--ai-text);
+  font-weight: var(--ai-weight-bold);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+
+  .mark {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    border-radius: var(--ai-radius-soft);
+    background: var(--ai-primary);
+    color: var(--ai-primary-contrast);
+    font-size: var(--ai-text-sm);
+  }
+}
+
+.ai-topbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ai-space-4);
+  min-block-size: 3.5rem;
+  padding-inline: var(--ai-space-4);
+  border-block-end: 1px solid var(--ai-border);
+  background: color-mix(in srgb, var(--ai-bg) 84%, transparent);
+  backdrop-filter: blur(12px);
+
+  .mq(@ai-bp-md, {
+    padding-inline: var(--ai-space-8);
+  });
+}
+
+.ai-main {
+  padding: var(--ai-space-8) var(--ai-space-4) var(--ai-space-16);
+
+  .mq(@ai-bp-md, {
+    padding-inline: var(--ai-space-8);
+  });
+}
+
+.ai-section {
+  margin-block-end: var(--ai-space-12);
+
+  > h2 {
+    padding-block-end: var(--ai-space-2);
+    border-block-end: 1px solid var(--ai-border);
+  }
+}
+
+// Theme toggle: shows the label of the mode in effect. Works with the
+// data-ai-theme-state attribute the behaviour layer maintains.
+.ai-theme-toggle {
+  .state {
+    display: none;
+  }
+
+  &[data-ai-theme-state='auto'] .state.auto,
+  &[data-ai-theme-state='light'] .state.light,
+  &[data-ai-theme-state='dark'] .state.dark {
+    display: inline;
+  }
+}
+
+// Example block: a rendered preview above its source.
+.ai-example {
+  margin-block-end: var(--ai-space-6);
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-rounded);
+  overflow: hidden;
+
+  > .preview {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ai-space-3);
+    padding: var(--ai-space-6);
+    background: var(--ai-bg-raised);
+  }
+
+  > .preview.stack {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  > pre {
+    margin: 0;
+    border: 0;
+    border-block-start: 1px solid var(--ai-border);
+    border-radius: 0;
+    font-size: var(--ai-text-sm);
+  }
+}
+
+// Colour swatch used on the tokens page.
+.ai-swatch {
+  display: grid;
+  gap: var(--ai-space-2);
+  padding: var(--ai-space-3);
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-rounded);
+  background: var(--ai-bg-raised);
+  font-size: var(--ai-text-sm);
+
+  .color {
+    block-size: 3rem;
+    border-radius: var(--ai-radius-soft);
+  }
+
+  code {
+    justify-self: start;
+  }
+}
+
+.ai-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--ai-space-3);
+}
