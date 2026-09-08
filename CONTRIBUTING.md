@@ -13,6 +13,13 @@ conventions enforced by CI.
 pnpm install
 ```
 
+## Documentation
+
+The site at [yankikucuk.github.io/monorepo](https://yankikucuk.github.io/monorepo/)
+is generated from each package's `README.md`, its TSDoc comments and its
+`CHANGELOG.md`, so documenting a package means editing those. `pnpm docs:dev`
+serves the site locally; `pnpm docs:build` is what CI and the Pages workflow run.
+
 ## Development workflow
 
 1. Create a branch off `stage`.
