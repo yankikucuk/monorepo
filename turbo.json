@@ -3,7 +3,7 @@
   // Files that every task reads without declaring them as a dependency: ESLint
   // and Prettier resolve their configuration by walking up to the repository
   // root, and the shared configuration packages are consumed straight from
-  // source (ADR 0004). Listing them here keeps the cache correct when a rule or
+  // source. Listing them here keeps the cache correct when a rule or
   // preset changes.
   "globalDependencies": [
     ".editorconfig",

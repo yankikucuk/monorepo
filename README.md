@@ -74,10 +74,6 @@ pnpm test
 - **Commits:** Husky + lint-staged + commitlint (Angular convention).
 - **CI:** GitHub Actions run all of the above, plus CodeQL and dependency-review.
 
-## Architecture decisions
-
-Notable decisions are recorded as ADRs under [`docs/adr`](docs/adr).
-
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the local workflow and conventions,
