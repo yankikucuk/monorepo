@@ -6,10 +6,10 @@ deliberate deviation, a documented pin, or deliberately absent.
 
 ## Presets
 
-| Preset         | Extend with                    | Use for                                    |
-| -------------- | ------------------------------ | ------------------------------------------ |
-| `base.json`    | `@april/tsconfig/base.json`    | Strict base (type-checking, no emit opts). |
-| `library.json` | `@april/tsconfig/library.json` | Emitting libraries (declaration + maps).   |
+| Preset         | Extend with                    | Use for                                                     |
+| -------------- | ------------------------------ | ----------------------------------------------------------- |
+| `base.json`    | `@april/tsconfig/base.json`    | Strict base; emits nothing extra (no declarations or maps). |
+| `library.json` | `@april/tsconfig/library.json` | Emitting libraries (declaration + maps).                    |
 
 ## Option rationale
 
@@ -20,7 +20,9 @@ deliberate deviation, a documented pin, or deliberately absent.
 `noImplicitOverride`, `noImplicitReturns`, `noFallthroughCasesInSwitch`,
 `noUnusedLocals`/`noUnusedParameters`, `allowUnreachableCode: false`,
 `allowUnusedLabels: false`, `skipLibCheck: false` (third-party types are
-checked too; packages with broken upstream `.d.ts` opt out locally).
+checked too; packages whose upstream `.d.ts` do not type-check under this
+strictness opt out locally, as `eslint-config`, `prettier-config` and
+`import-sort` do today).
 
 ### Pinned values (guard against default/`strict` changes)
 
