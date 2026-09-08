@@ -214,6 +214,8 @@ export const order: OrderRule = {
       unsortedSpecifiers: "Specifiers of '{{source}}' are not sorted: '{{specifier}}' should come before '{{before}}'.",
       missingBlankLine: "Expected one blank line before the import of '{{source}}' (it starts a new group).",
       missingGroupComment: "Expected the comment '{{comment}}' above the group starting with '{{source}}'.",
+      duplicateGroupComment:
+        "Unexpected group comment '{{comment}}' above the import of '{{source}}'; it belongs above the block it labels.",
       sameLine: "Expected the import of '{{source}}' to start on its own line.",
       unexpectedBlankLine: "Unexpected blank line before the import of '{{source}}'.",
       unexpectedWhitespace: "Unexpected whitespace before the import of '{{source}}'.",
@@ -236,6 +238,7 @@ export const order: OrderRule = {
               eol,
               newlinesBetween,
               restOfLine: chunk.restOfLine,
+              groupComments: chunkContext.groupComments,
             });
             if (rendered.text !== chunk.text) {
               context.report({

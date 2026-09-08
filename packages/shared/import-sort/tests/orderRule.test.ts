@@ -97,6 +97,15 @@ const valid: Valid[] = [
     options: [{ safeSideEffects: ['\\.css$'], groups: ['external', 'style'] }],
   },
   {
+    name: 'a group comment above an import with its own comment is recognised on re-run',
+    code: src('// Packages', '// about a', "import a from 'a';", "import b from 'b';"),
+    options: [{ groups: [{ group: 'external', commentAbove: 'Packages' }] }],
+  },
+  {
+    name: 'a trailing import-sort-ignore pins only the import it is written on',
+    code: src("import m from 'm'; // import-sort-ignore", "import a from 'a';", "import b from 'b';"),
+  },
+  {
     name: 'partitionByComment keeps hand-written sections apart',
     code: src("import z from 'z';", '// --- fixtures', "import a from 'a';", "import m from 'm';"),
     options: [{ partitionByComment: ['^---'] }],
@@ -411,6 +420,47 @@ const invalid: Invalid[] = [
       },
     ],
     errors: [{ messageId: 'missingGroupComment', data: { comment: '// Platform', source: 'node:fs' }, line: 1 }],
+  },
+  {
+    name: 'a group comment is not duplicated when a new import sorts ahead of the opener',
+    code: src('// Packages', "import b from 'b';", "import a from 'a';"),
+    output: src('// Packages', "import a from 'a';", "import b from 'b';"),
+    options: [{ groups: [{ group: 'external', commentAbove: 'Packages' }] }],
+    errors: [{ messageId: 'unsortedImports', data: { source: 'a', before: 'b' }, line: 3 }],
+  },
+  {
+    name: 'a group comment above an opener with its own comment moves to the new opener',
+    code: src('// Packages', '// about b', "import b from 'b';", "import a from 'a';"),
+    output: src('// Packages', "import a from 'a';", '// about b', "import b from 'b';"),
+    options: [{ groups: [{ group: 'external', commentAbove: 'Packages' }] }],
+    errors: [{ messageId: 'unsortedImports', data: { source: 'a', before: 'b' }, line: 4 }],
+  },
+  {
+    name: 'a duplicated group comment is removed',
+    code: src('// Packages', "import a from 'a';", '// Packages', "import b from 'b';"),
+    output: src('// Packages', "import a from 'a';", "import b from 'b';"),
+    options: [{ groups: [{ group: 'external', commentAbove: 'Packages' }] }],
+    errors: [{ messageId: 'duplicateGroupComment', data: { comment: '// Packages', source: 'b' }, line: 4 }],
+  },
+  {
+    name: 'a group comment written with trailing whitespace is normalised instead of crashing',
+    code: src('// Packages   ', "import a from 'a';"),
+    output: src('// Packages', "import a from 'a';"),
+    options: [{ groups: [{ group: 'external', commentAbove: 'Packages' }] }],
+    errors: [{ messageId: 'unexpectedWhitespace', data: { source: 'a' }, line: 2 }],
+  },
+  {
+    name: 'a trailing import-sort-ignore on the previous import does not pin the next one',
+    code: src("import m from 'm'; // import-sort-ignore", "import b from 'b';", "import a from 'a';"),
+    output: src("import m from 'm'; // import-sort-ignore", "import a from 'a';", "import b from 'b';"),
+    errors: [{ messageId: 'unsortedImports', data: { source: 'a', before: 'b' }, line: 3 }],
+  },
+  {
+    name: 'a trailing partition comment on the previous import does not start a partition',
+    code: src("import z from 'z'; // --- fixtures", "import b from 'b';", "import a from 'a';"),
+    output: src("import a from 'a';", "import b from 'b';", "import z from 'z'; // --- fixtures"),
+    options: [{ partitionByComment: ['^---'] }],
+    errors: [{ messageId: 'unsortedImports', data: { source: 'a', before: 'z' }, line: 3 }],
   },
   {
     name: 'line-length sorting orders whole declarations',

@@ -65,7 +65,7 @@ export interface EntryInput {
  * one.
  */
 const DIRECTIVE_COMMENT =
-  /^\s*(?:eslint-disable-next-line|eslint-disable-line|@ts-ignore|@ts-expect-error|prettier-ignore|biome-ignore|(?:c8|v8|istanbul)\s+ignore)\b/u;
+  /^\s*(?:eslint-disable-next-line|@ts-ignore|@ts-expect-error|prettier-ignore|biome-ignore|(?:c8|v8|istanbul)\s+ignore)\b/u;
 
 /** The opt-out comment that pins a single import in place. */
 const IGNORE_COMMENT = /^\s*import-sort-ignore\b/u;
@@ -80,6 +80,25 @@ const IGNORE_COMMENT = /^\s*import-sort-ignore\b/u;
 export const isSideEffectImport = (node: TSESTree.ImportDeclaration): boolean => node.specifiers.length === 0;
 
 /**
+ * The comments above a declaration that are not trailing comments of whatever
+ * precedes it: everything `getCommentsBefore` returns that starts on a later
+ * line than the previous token ends on. A comment at the end of the previous
+ * statement's line belongs to that statement, whatever it says.
+ * @param {TSESTree.ImportDeclaration} node - The import declaration.
+ * @param {Readonly<TSESLint.SourceCode>} sourceCode - Source code accessor.
+ * @returns {TSESTree.Comment[]} The declaration's own leading comments, in source order.
+ */
+export const ownLeadingComments = (
+  node: TSESTree.ImportDeclaration,
+  sourceCode: Readonly<TSESLint.SourceCode>
+): TSESTree.Comment[] => {
+  const previousToken = sourceCode.getTokenBefore(node);
+  return sourceCode
+    .getCommentsBefore(node)
+    .filter(comment => previousToken === null || comment.loc.start.line > previousToken.loc.end.line);
+};
+
+/**
  * Whether a declaration opts out of sorting with an `import-sort-ignore`
  * comment, written either on the line directly above it or at the end of its
  * own line. Such a declaration never moves and nothing moves across it.
@@ -88,9 +107,9 @@ export const isSideEffectImport = (node: TSESTree.ImportDeclaration): boolean =>
  * @returns {boolean} `true` when the declaration is pinned.
  */
 export const isPinnedImport = (node: TSESTree.ImportDeclaration, sourceCode: Readonly<TSESLint.SourceCode>): boolean =>
-  sourceCode
-    .getCommentsBefore(node)
-    .some(comment => IGNORE_COMMENT.test(comment.value) && comment.loc.end.line === node.loc.start.line - 1) ||
+  ownLeadingComments(node, sourceCode).some(
+    comment => IGNORE_COMMENT.test(comment.value) && comment.loc.end.line === node.loc.start.line - 1
+  ) ||
   sourceCode
     .getCommentsAfter(node)
     .some(comment => IGNORE_COMMENT.test(comment.value) && comment.loc.start.line === node.loc.end.line);
@@ -144,43 +163,40 @@ const isMovableComment = (comment: TSESTree.Comment): boolean => {
 const leadingComments = (
   node: TSESTree.ImportDeclaration,
   sourceCode: Readonly<TSESLint.SourceCode>
-): TSESTree.Comment[] => {
-  const previousToken = sourceCode.getTokenBefore(node);
-  return sourceCode
-    .getCommentsBefore(node)
-    .filter(
-      comment =>
-        isMovableComment(comment) && (previousToken === null || comment.loc.start.line > previousToken.loc.end.line)
-    );
-};
+): TSESTree.Comment[] => ownLeadingComments(node, sourceCode).filter(comment => isMovableComment(comment));
 
 /**
- * The unbroken run of directive comments immediately above a declaration —
- * every one of them on its own line, with no blank line in between.
+ * The comments the first declaration of a block takes with it: the unbroken
+ * run of comments immediately above it (each on its own line, no blank line
+ * in between), starting at the topmost directive or group comment in that
+ * run. Ordinary comments *below* such a binding comment travel too — the
+ * fixer itself puts a group label above an import's own comment — while
+ * ordinary comments above it (file headers, banners) stay where they are.
  * @param {TSESTree.ImportDeclaration} node - The import declaration.
  * @param {readonly TSESTree.Comment[]} comments - Its owned leading comments, in source order.
  * @param {Pick<EntryInput, 'groupComments' | 'sourceCode'>} input - Source access and the configured group comments.
- * @returns {TSESTree.Comment[]} The trailing run of directives, in source order.
+ * @returns {TSESTree.Comment[]} The owned run, in source order.
  */
 const directiveRun = (
   node: TSESTree.ImportDeclaration,
   comments: readonly TSESTree.Comment[],
   input: Pick<EntryInput, 'groupComments' | 'sourceCode'>
 ): TSESTree.Comment[] => {
-  const run: TSESTree.Comment[] = [];
   let boundary = node.loc.start.line;
+  let ownedFrom = comments.length;
 
-  for (const comment of comments.toReversed()) {
-    const binds =
-      DIRECTIVE_COMMENT.test(comment.value) || input.groupComments.has(input.sourceCode.getText(comment).trim());
-    if (comment.loc.end.line !== boundary - 1 || !binds) {
+  for (let index = comments.length - 1; index >= 0; index -= 1) {
+    const comment = comments[index];
+    if (comment?.loc.end.line !== boundary - 1) {
       break;
     }
-    run.push(comment);
+    if (DIRECTIVE_COMMENT.test(comment.value) || input.groupComments.has(input.sourceCode.getText(comment).trim())) {
+      ownedFrom = index;
+    }
     boundary = comment.loc.start.line;
   }
 
-  return run.toReversed();
+  return comments.slice(ownedFrom);
 };
 
 /**

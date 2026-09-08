@@ -140,12 +140,23 @@ const toBlockSpec = (spec: GroupSpec): GroupBlockSpec => {
  * @param {GroupBlockSpec} spec - The block in long form.
  * @param {number} index - Its position in `groups`, for error messages.
  * @returns {Pick<ResolvedBlock, 'commentAbove' | 'newlinesInside'>} The validated details.
- * @throws {TypeError} On an empty comment or a non-integer line count.
+ * @throws {TypeError} On an empty, multi-line or unterminated comment, or a non-integer line count.
  */
 const blockLayout = (spec: GroupBlockSpec, index: number): Pick<ResolvedBlock, 'commentAbove' | 'newlinesInside'> => {
   const { commentAbove, newlinesInside } = spec;
-  if (typeof commentAbove === 'string' && commentAbove.trim() === '') {
-    throw new TypeError(`"groups[${index}].commentAbove" must not be empty.`);
+  if (typeof commentAbove === 'string') {
+    if (commentAbove.trim() === '') {
+      throw new TypeError(`"groups[${index}].commentAbove" must not be empty.`);
+    }
+    if (/[\r\n]/u.test(commentAbove)) {
+      throw new TypeError(`"groups[${index}].commentAbove" must be a single line.`);
+    }
+    if (
+      commentAbove.startsWith('/*') &&
+      (!commentAbove.endsWith('*/') || commentAbove.indexOf('*/') !== commentAbove.length - 2)
+    ) {
+      throw new TypeError(`"groups[${index}].commentAbove" must be a complete block comment when it starts with "/*".`);
+    }
   }
   if (typeof newlinesInside === 'number' && (!Number.isInteger(newlinesInside) || newlinesInside < 0)) {
     throw new TypeError(`"groups[${index}].newlinesInside" must be a non-negative integer.`);
@@ -208,6 +219,24 @@ const compileFallback = (fallbackSort: NonNullable<SortOptions['fallbackSort']>,
 });
 
 /**
+ * Builds a collator, turning an invalid language tag into the same kind of
+ * descriptive `TypeError` every other option produces.
+ * @param {readonly string[] | string} locales - The `locales` option.
+ * @param {boolean} ignoreCase - Whether case is folded.
+ * @param {boolean} numeric - Whether digit runs compare numerically.
+ * @returns {Intl.Collator} The collator.
+ * @throws {TypeError} If `locales` is not a valid BCP 47 language tag.
+ */
+const collatorFor = (locales: readonly string[] | string, ignoreCase: boolean, numeric: boolean): Intl.Collator => {
+  try {
+    return createCollator({ locales, ignoreCase, numeric });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new TypeError(`Invalid "locales" ${JSON.stringify(locales)}: ${reason}`, { cause: error });
+  }
+};
+
+/**
  * Validates and normalizes user options into a {@link ResolvedSortOptions}.
  *
  * Idempotent on its own output shape: hosts may resolve once per lint run and
@@ -239,6 +268,7 @@ export const resolveOptions = (options: SortOptions = {}): ResolvedSortOptions =
   const alphabet = options.alphabet ?? DEFAULT_SORT_OPTIONS.alphabet;
   const kindOrder: KindOrder = options.kindOrder ?? DEFAULT_SORT_OPTIONS.kindOrder;
   const fallback = compileFallback(options.fallbackSort ?? DEFAULT_SORT_OPTIONS.fallbackSort, order);
+  const locales = options.locales ?? DEFAULT_SORT_OPTIONS.locales;
 
   if ((algorithm === 'custom' || fallback.algorithm === 'custom') && alphabet === '') {
     throw new TypeError('The "custom" algorithm requires a non-empty "alphabet".');
@@ -263,11 +293,8 @@ export const resolveOptions = (options: SortOptions = {}): ResolvedSortOptions =
     alphabet,
     fallback,
     kindOrder,
-    collator: createCollator({
-      locales: options.locales ?? DEFAULT_SORT_OPTIONS.locales,
-      ignoreCase,
-      numeric: algorithm === 'natural' || fallback.algorithm === 'natural',
-    }),
+    collator: collatorFor(locales, ignoreCase, algorithm === 'natural'),
+    fallbackCollator: collatorFor(locales, ignoreCase, fallback.algorithm === 'natural'),
   };
 };
 

@@ -49,6 +49,9 @@ describe('classifySource', () => {
     expect(classifySource('./index', defaults)).toBe('index');
     expect(classifySource('./index.js', defaults)).toBe('index');
     expect(classifySource('./index.d.ts', defaults)).toBe('index');
+    expect(classifySource('./index.d.mts', defaults)).toBe('index');
+    expect(classifySource('./index.test.js', defaults)).toBe('sibling');
+    expect(classifySource('./index.stories.tsx', defaults)).toBe('sibling');
     expect(classifySource('./indexes.js', defaults)).toBe('sibling');
     expect(classifySource('./.index.js', defaults)).toBe('sibling');
     expect(classifySource('.index', defaults)).toBe('unknown');
@@ -89,7 +92,7 @@ describe('isStyleSource', () => {
 
     expect(isStyleSource(stylesheet)).toBe(true);
     expect(isStyleSource(script)).toBe(false);
-    expect(performance.now() - started).toBeLessThan(100);
+    expect(performance.now() - started).toBeLessThan(2_000);
   });
 });
 

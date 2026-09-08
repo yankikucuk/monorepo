@@ -281,13 +281,13 @@ and it keeps relative paths ordered from far to near:
 Within a segment, `algorithm`, `ignoreCase`, `locales` and `specialCharacters`
 apply:
 
-| `algorithm`    | Compares                                                                                       |
-| -------------- | ---------------------------------------------------------------------------------------------- |
-| `natural`      | Locale-aware, digit runs numerically: `v2` before `v10`. The default.                          |
-| `alphabetical` | Locale-aware, character by character: `v10` before `v2`.                                       |
-| `line-length`  | The length of the whole declaration (of the name, for specifiers). Shortest first under `asc`. |
-| `custom`       | The position of each character in `alphabet`; characters outside it sort last.                 |
-| `unsorted`     | Nothing — records keep their source order inside their group. Useful for grouping only.        |
+| `algorithm`    | Compares                                                                                                                                                                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `natural`      | Locale-aware, digit runs numerically: `v2` before `v10`. The default.                                                                                                      |
+| `alphabetical` | Locale-aware, character by character: `v10` before `v2`.                                                                                                                   |
+| `line-length`  | The length of the whole declaration (of the name, for specifiers). Shortest first under `asc`.                                                                             |
+| `custom`       | The position of each character in `alphabet`; characters outside it sort last. With `ignoreCase`, both strings are lower-cased first, so write the alphabet in lower case. |
+| `unsorted`     | Nothing — records keep their source order inside their group. Useful for grouping only.                                                                                    |
 
 `alphabetical` and `natural` use `Intl.Collator`, so `./été.js` sorts next to
 `./ete.js` rather than after `./z.js`, and `locales` decides what "next to"
@@ -439,30 +439,35 @@ Rather than repeating the compiler's aliases in `internalPattern`, read them:
 }
 ```
 
-Every key of `compilerOptions.paths` becomes an `internal` pattern — `@app/*`
-matches by prefix, `~config` matches exactly — and they are merged with any
-`internalPattern` you wrote by hand. `extends` chains are resolved by
+Every key of `compilerOptions.paths` becomes an anchored `internal` pattern —
+the wildcard matches anything (`@app/*` → `^@app/.*$`, and `@app/*.js` keeps
+its suffix), `~config` matches exactly — and they are merged with any
+`internalPattern` you wrote by hand. A bare `*` catch-all alias is skipped,
+since it would make every specifier internal. `extends` chains are resolved by
 TypeScript itself, which is loaded lazily: the option needs `typescript`
 installed (an optional peer dependency) and silently yields no patterns when it
-is missing or no configuration file is found. Results are cached per
-configuration file for the lifetime of the process.
+is missing, when no configuration file is found, or when the file does not
+parse (that is `tsc`'s error to report). Results are cached per configuration
+file for the lifetime of the process.
 
 ### Comments
 
 - A comment on the same line **after** an import belongs to that import and
   moves with it.
-- Comments on the lines **directly above** an import belong to that import and
-  move with it (`// eslint-disable-next-line`, docs, TODOs).
+- Comments **above** an import — everything between the previous statement and
+  the import, blank lines included — belong to that import and move with it
+  (`// eslint-disable-next-line`, docs, TODOs).
 - Comments above the **first import of a block** stay where they are. This
   keeps file headers, licence banners, hashbangs, and `/* eslint-disable */`
   pragmas at the top of the file.
 - The one exception: **directive comments** bind to the line below them, so the
-  unbroken run of them directly above the first import travels with it —
-  leaving them behind would silently re-target the directive at whichever
-  import the fixer moves up. Recognised directives are
-  `eslint-disable-next-line`, `eslint-disable-line`, `@ts-ignore`,
-  `@ts-expect-error`, `prettier-ignore`, `biome-ignore`, and
-  `c8`/`v8`/`istanbul ignore`. A blank line between a directive and the import
+  unbroken run of comments directly above the first import travels with it from
+  the topmost directive down — leaving them behind would silently re-target the
+  directive at whichever import the fixer moves up. Recognised directives are
+  `eslint-disable-next-line`, `@ts-ignore`, `@ts-expect-error`,
+  `prettier-ignore`, `biome-ignore`, `c8`/`v8`/`istanbul ignore`, and the
+  group comments configured with `commentAbove`. Ordinary comments above the
+  topmost directive stay; a blank line between a directive and the import
   breaks the run.
 - A declaration that contains comments **inside** it (between specifiers) is
   never rewritten, so a comment can never be attached to the wrong specifier.
@@ -514,8 +519,11 @@ A block written in its long form can also label itself:
 ```
 
 `commentAbove` is inserted as a line comment (a value that already starts with
-`//` or `/*` is used verbatim) and is recognised again on the next run, so it is
-never duplicated. Moving a labelled group moves its comment with it.
+`//` or `/*` is used verbatim; a `/*` value must be a complete, single-line
+block comment) and is recognised again on later runs: a label that ends up
+above an import which no longer opens its block is removed and reported as
+`duplicateGroupComment`, and a label written with different whitespace is
+rewritten. Moving a labelled group moves its comment with it.
 
 The fixer follows the file's line terminator: separators are emitted as CRLF
 when the file contains a CRLF anywhere, and as LF otherwise.
@@ -547,15 +555,16 @@ The rule reports **one** problem per import block, choosing the most useful
 message. All messages carry the module specifier so they read well in editors
 and CI logs.
 
-| Message id             | When                                                               | Example                                                                          |
-| ---------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `unsortedImports`      | An import is not at its canonical position.                        | `'node:fs' should be imported before './a.js'.`                                  |
-| `unsortedSpecifiers`   | Statement order is right, but specifiers inside braces are not.    | `Specifiers of 'x' are not sorted: 'a' should come before 'b'.`                  |
-| `missingBlankLine`     | Two blocks are not separated by a blank line.                      | `Expected one blank line before the import of './b.js' (it starts a new group).` |
-| `unexpectedBlankLine`  | A blank line appears inside a block, or more than one between two. | `Unexpected blank line before the import of 'b'.`                                |
-| `unexpectedWhitespace` | The gap between two imports contains stray whitespace.             | `Unexpected whitespace before the import of 'b'.`                                |
-| `sameLine`             | Two imports share a line.                                          | `Expected the import of 'b' to start on its own line.`                           |
-| `missingGroupComment`  | A group configured with `commentAbove` is not labelled.            | `Expected the comment '// Packages' above the group starting with 'react'.`      |
+| Message id              | When                                                               | Example                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `unsortedImports`       | An import is not at its canonical position.                        | `'node:fs' should be imported before './a.js'.`                                                           |
+| `unsortedSpecifiers`    | Statement order is right, but specifiers inside braces are not.    | `Specifiers of 'x' are not sorted: 'a' should come before 'b'.`                                           |
+| `missingBlankLine`      | Two blocks are not separated by a blank line.                      | `Expected one blank line before the import of './b.js' (it starts a new group).`                          |
+| `unexpectedBlankLine`   | A blank line appears inside a block, or more than one between two. | `Unexpected blank line before the import of 'b'.`                                                         |
+| `unexpectedWhitespace`  | The gap between two imports contains stray whitespace.             | `Unexpected whitespace before the import of 'b'.`                                                         |
+| `sameLine`              | Two imports share a line.                                          | `Expected the import of 'b' to start on its own line.`                                                    |
+| `missingGroupComment`   | A group configured with `commentAbove` is not labelled.            | `Expected the comment '// Packages' above the group starting with 'react'.`                               |
+| `duplicateGroupComment` | A group comment sits above an import that does not open its block. | `Unexpected group comment '// Packages' above the import of 'zod'; it belongs above the block it labels.` |
 
 `unsortedImports` is anchored on the import that has to move up, mirroring how
 `import/order` reports.
@@ -710,20 +719,20 @@ for (const block of sortImports(records, options)) {
 // ['type']     ['node:fs']
 ```
 
-| Export                                                     | Purpose                                                                                       |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `resolveOptions(options?)`                                 | Validate and normalize `SortOptions` → `ResolvedSortOptions`. Throws `TypeError` on mistakes. |
-| `sortImports(records, options?)`                           | Bucket records into blocks and sort each. Accepts raw or resolved options. Stable.            |
-| `classifySource(source, resolved)`                         | Structural category of a specifier (`builtin`, `external`, …).                                |
-| `groupCandidates(record, resolved)`                        | Candidate chain for a record, most specific first.                                            |
-| `resolveGroup(record, resolved)`                           | The group and block index a record lands in.                                                  |
-| `isStyleSource(source)`                                    | Stylesheet detection.                                                                         |
-| `compareStrings(a, b, { algorithm, ignoreCase })`          | Total-order string comparison.                                                                |
-| `compareModuleSources(a, b, { algorithm, ignoreCase })`    | Segment-wise specifier comparison.                                                            |
-| `createComparator(resolved)`                               | Specifier comparator honouring `order`.                                                       |
-| `createRecordComparator(resolved)`                         | Record comparator used inside blocks (side-effect and type rules included).                   |
-| `applyOrder(result, order)`                                | Negates a comparator result for `desc` without producing `-0`.                                |
-| `DEFAULT_GROUPS`, `DEFAULT_SORT_OPTIONS`, `BUILTIN_GROUPS` | Defaults and the list of built-in group names.                                                |
+| Export                                                     | Purpose                                                                                         |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `resolveOptions(options?)`                                 | Validate and normalize `SortOptions` → `ResolvedSortOptions`. Throws `TypeError` on mistakes.   |
+| `sortImports(records, options?)`                           | Bucket records into blocks and sort each. Accepts raw or resolved options. Stable.              |
+| `classifySource(source, resolved)`                         | Structural category of a specifier (`builtin`, `external`, …).                                  |
+| `groupCandidates(record, resolved)`                        | Candidate chain for a record, most specific first.                                              |
+| `resolveGroup(record, resolved)`                           | The group and block index a record lands in.                                                    |
+| `isStyleSource(source)`                                    | Stylesheet detection.                                                                           |
+| `compareStrings(a, b, resolved)`                           | Total-order string comparison; takes `CompareOptions`, which a `ResolvedSortOptions` satisfies. |
+| `compareModuleSources(a, b, resolved)`                     | Segment-wise specifier comparison, same options.                                                |
+| `createComparator(resolved)`                               | Specifier comparator honouring `order`.                                                         |
+| `createRecordComparator(resolved)`                         | Record comparator used inside blocks (side-effect and type rules included).                     |
+| `applyOrder(result, order)`                                | Negates a comparator result for `desc` without producing `-0`.                                  |
+| `DEFAULT_GROUPS`, `DEFAULT_SORT_OPTIONS`, `BUILTIN_GROUPS` | Defaults and the list of built-in group names.                                                  |
 
 The plugin entry (`@april/import-sort`) additionally exports `plugin`
 (default), `rules`, `configs`, `order` (the rule module),

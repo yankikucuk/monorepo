@@ -201,8 +201,10 @@ export interface ResolvedSortOptions {
   readonly alphabet: string;
   readonly fallback: ComparePass;
   readonly kindOrder: KindOrder;
-  /** Collator built from `locales` and `ignoreCase`; shared by every comparison. */
+  /** Collator for the primary pass, built from `locales`, `ignoreCase` and `algorithm`. */
   readonly collator: Intl.Collator;
+  /** Collator for the fallback pass; numeric only when `fallbackSort.algorithm` is `natural`. */
+  readonly fallbackCollator: Intl.Collator;
 }
 
 /** A non-empty output block: the group names it merges and its records in final order. */

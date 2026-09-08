@@ -17,7 +17,7 @@ import { AST_NODE_TYPES } from '@typescript-eslint/utils';
 
 import { isOrderSensitive } from '../core/classify.js';
 
-import { buildEntry, isPinnedImport, isSideEffectImport } from './entries.js';
+import { buildEntry, isPinnedImport, isSideEffectImport, ownLeadingComments } from './entries.js';
 import { sortSpecifiers } from './specifiers.js';
 
 import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
@@ -86,7 +86,7 @@ const importRuns = (container: ImportContainer): TSESTree.ImportDeclaration[][] 
  * @returns {boolean} `true` when the declaration opens a new chunk.
  */
 const startsPartition = (node: TSESTree.ImportDeclaration, context: ChunkContext): boolean =>
-  context.sourceCode.getCommentsBefore(node).some(comment => context.isPartitionComment(comment));
+  ownLeadingComments(node, context.sourceCode).some(comment => context.isPartitionComment(comment));
 
 /**
  * Classifies a declaration's role inside its run.

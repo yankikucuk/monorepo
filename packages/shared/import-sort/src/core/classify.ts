@@ -23,8 +23,8 @@ export type PathCategory = 'builtin' | 'external' | 'index' | 'internal' | 'pare
 const STYLE_EXTENSION = /\.(?:css|less|pcss|postcss|sass|scss|styl|stylus)$/u;
 /** Start of a query string or fragment (`./a.css?inline`, `./a.css#id`). */
 const QUERY_OR_FRAGMENT = /[?#]/u;
-/** `.`, `./`, `./index`, `./index.js`, `./index.d.ts`, … — but never `.index`. */
-const INDEX_SOURCE = /^(?:\.|\.\/(?:index(?:\.[\w-]+)*)?)$/u;
+/** `.`, `./`, `./index`, `./index.js`, `./index.d.ts` — but never `.index` or `./index.test.js`. */
+const INDEX_SOURCE = /^(?:\.|\.\/(?:index(?:\.d)?(?:\.[\w-]+)?)?)$/u;
 /** A URL-like scheme prefix (`https://`, `npm:`, `bun:`). `node:` is handled by `isBuiltin` first. */
 const SCHEME_PREFIX = /^[a-z][a-z\d+.-]*:/iu;
 
