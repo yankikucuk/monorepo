@@ -17,14 +17,7 @@ import { backend, JSDOC_JS_TYPE_RULES, TEST_RULES } from '@april/eslint-config';
  */
 export default tseslint.config(
   {
-    ignores: [
-      '**/build/**',
-      '**/coverage/**',
-      '**/dist/**',
-      '**/docs/api/**',
-      '**/node_modules/**',
-      '**/.turbo/**',
-    ],
+    ignores: ['**/build/**', '**/coverage/**', '**/dist/**', '**/docs/api/**', '**/node_modules/**', '**/.turbo/**'],
   },
   {
     // Product code and the import-sort engine: strict and fully type-checked (ADR 0002).
