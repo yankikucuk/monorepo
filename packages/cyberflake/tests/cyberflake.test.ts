@@ -155,7 +155,7 @@ describe('CyberFlake', () => {
     const ids = Array.from({ length: 100 }, () => BigInt(cf.generate()));
 
     for (let i = 1; i < ids.length; i += 1) {
-      expect(ids[i]).toBeGreaterThan(ids[i - 1]);
+      expect(ids[i]).toBeGreaterThan(ids[i - 1] ?? -1n);
     }
   });
 
@@ -193,7 +193,7 @@ describe('CyberFlake', () => {
     const ids = Array.from({ length: 5_000 }, () => BigInt(cf.generate()));
 
     for (let i = 1; i < ids.length; i += 1) {
-      expect(ids[i]).toBeGreaterThan(ids[i - 1]);
+      expect(ids[i]).toBeGreaterThan(ids[i - 1] ?? -1n);
     }
 
     // Exactly 4096 sequence values fit in one logical millisecond.

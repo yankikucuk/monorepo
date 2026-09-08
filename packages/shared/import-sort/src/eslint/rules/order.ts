@@ -24,7 +24,7 @@ import { internalPatternsFromTsconfig } from '../tsconfig.js';
 import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 import type { JSONSchema4 } from '@typescript-eslint/utils/json-schema';
 import type { SortOptions } from '../../core/types.js';
-import type { ImportContainer } from '../chunks.js';
+import type { ChunkContext, ImportContainer } from '../chunks.js';
 import type { OrderMessageId } from '../diagnose.js';
 import type { PartitionByComment } from '../partitions.js';
 import type { NewlinesBetween } from '../render.js';
@@ -141,6 +141,60 @@ export type OrderRule = TSESLint.RuleModule<OrderMessageId, OrderRuleOptionsTupl
 const isImportContainer = (node: TSESTree.Node): node is ImportContainer =>
   node.type === AST_NODE_TYPES.Program || node.type === AST_NODE_TYPES.TSModuleBlock;
 
+/** Everything `create()` derives once per file from the rule options and the source. */
+interface PreparedRule {
+  readonly chunkContext: ChunkContext;
+  readonly eol: string;
+  readonly newlinesBetween: NonNullable<OrderRuleOptions['newlinesBetween']>;
+  readonly options: ReturnType<typeof resolveOptions>;
+}
+
+/**
+ * Resolves the rule options and builds the per-file context shared by every
+ * import container.
+ * @param {Readonly<TSESLint.RuleContext<OrderMessageId, OrderRuleOptionsTuple>>} context - ESLint rule context.
+ * @returns {PreparedRule} Comparator, chunk context and layout settings.
+ */
+const prepareRule = (context: Readonly<TSESLint.RuleContext<OrderMessageId, OrderRuleOptionsTuple>>): PreparedRule => {
+  const [userOptions = {}] = context.options;
+  const {
+    newlinesBetween = DEFAULT_ORDER_RULE_OPTIONS.newlinesBetween,
+    sortSpecifiers = DEFAULT_ORDER_RULE_OPTIONS.sortSpecifiers,
+    typeSpecifiers = DEFAULT_ORDER_RULE_OPTIONS.typeSpecifiers,
+    partitionByComment,
+    tsconfig,
+    ...sortOptions
+  } = userOptions;
+
+  const aliases = tsconfig ? internalPatternsFromTsconfig(tsconfig, context.filename) : [];
+  const options = resolveOptions({
+    ...sortOptions,
+    internalPattern: [...(sortOptions.internalPattern ?? []), ...aliases],
+  });
+  const { sourceCode } = context;
+  const groupComments = new Set(
+    options.groups.flatMap(block => {
+      const comment = commentLine(block.commentAbove);
+      return comment === null ? [] : [comment];
+    })
+  );
+
+  return {
+    chunkContext: {
+      sourceCode,
+      options,
+      compare: createComparator(options),
+      sortSpecifiers,
+      typeSpecifiers,
+      isPartitionComment: compilePartitionComments(partitionByComment),
+      groupComments,
+    },
+    eol: detectEol(sourceCode.text),
+    newlinesBetween,
+    options,
+  };
+};
+
 /**
  * The `order` rule.
  */
@@ -166,40 +220,7 @@ export const order: OrderRule = {
     },
   },
   create(context) {
-    const [userOptions = {}] = context.options;
-    const {
-      newlinesBetween = DEFAULT_ORDER_RULE_OPTIONS.newlinesBetween,
-      sortSpecifiers = DEFAULT_ORDER_RULE_OPTIONS.sortSpecifiers,
-      typeSpecifiers = DEFAULT_ORDER_RULE_OPTIONS.typeSpecifiers,
-      partitionByComment,
-      tsconfig,
-      ...sortOptions
-    } = userOptions;
-
-    const aliases = tsconfig ? internalPatternsFromTsconfig(tsconfig, context.filename) : [];
-    const options = resolveOptions({
-      ...sortOptions,
-      internalPattern: [...(sortOptions.internalPattern ?? []), ...aliases],
-    });
-    const compare = createComparator(options);
-    const isPartitionComment = compilePartitionComments(partitionByComment);
-    const { sourceCode } = context;
-    const eol = detectEol(sourceCode.text);
-    const groupComments = new Set(
-      options.groups.flatMap(block => {
-        const comment = commentLine(block.commentAbove);
-        return comment === null ? [] : [comment];
-      })
-    );
-    const chunkContext = {
-      sourceCode,
-      options,
-      compare,
-      sortSpecifiers,
-      typeSpecifiers,
-      isPartitionComment,
-      groupComments,
-    };
+    const { chunkContext, eol, newlinesBetween, options } = prepareRule(context);
     const containers = new Set<ImportContainer>();
 
     return {

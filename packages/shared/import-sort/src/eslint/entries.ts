@@ -21,7 +21,7 @@
  * @packageDocumentation
  */
 
-import { AST_NODE_TYPES } from '@typescript-eslint/utils';
+import { AST_NODE_TYPES, AST_TOKEN_TYPES } from '@typescript-eslint/utils';
 
 import type { TSESLint, TSESTree } from '@typescript-eslint/utils';
 import type { ImportKind, ImportRecord, ImportStyle } from '../core/types.js';
@@ -129,7 +129,8 @@ const importKindOf = (node: TSESTree.ImportDeclaration): ImportKind => (node.imp
  * @returns {boolean} `true` for ordinary line and block comments.
  */
 const isMovableComment = (comment: TSESTree.Comment): boolean => {
-  const type = String(comment.type);
+  // Typed as Line | Block, but ESLint also hands out `Shebang` comments at runtime.
+  const type: string = comment.type;
   return type === 'Line' || type === 'Block';
 };
 
@@ -231,7 +232,7 @@ const declarationEnd = ({ node, sourceCode, last }: Pick<EntryInput, 'last' | 'n
   }
 
   const [beforeLast, lastToken] = sourceCode.getLastTokens(node, { count: 2 });
-  if (!beforeLast || !lastToken || lastToken.value !== ';') {
+  if (!beforeLast || lastToken?.value !== ';') {
     return node.range[1];
   }
 
@@ -268,7 +269,7 @@ const trailingComments = (
   if (!last) {
     return { end, endsWithLineComment: false };
   }
-  return { end: last.range[1], endsWithLineComment: String(last.type) === 'Line' };
+  return { end: last.range[1], endsWithLineComment: last.type === AST_TOKEN_TYPES.Line };
 };
 
 /**

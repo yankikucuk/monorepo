@@ -127,6 +127,6 @@ describe('@april/stylelint-config', () => {
   it('resolves postcss-less from its own dependency tree', () => {
     expect(typeof config.customSyntax).toBe('string');
     expect(config.customSyntax).toMatch(/postcss-less/u);
-    expect(config.customSyntax?.startsWith('/')).toBe(true);
+    expect(String(config.customSyntax).startsWith('/')).toBe(true);
   });
 });

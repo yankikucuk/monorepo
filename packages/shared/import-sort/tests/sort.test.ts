@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createRecordComparator, resolveOptions, sortImports } from '../src/core/index.js';
 
-import type { ImportRecord, SortedGroup, SortOptions } from '../src/core/index.js';
+import type { ImportRecord, ResolvedSortOptions, SortedGroup, SortOptions } from '../src/core/index.js';
 
 interface TaggedRecord extends ImportRecord {
   readonly tag: number;
@@ -30,10 +30,13 @@ function summarize(blocks: readonly SortedGroup<ImportRecord>[]): [readonly stri
 /**
  * Sorts sources with the given options and returns the flattened result.
  * @param {readonly string[]} sources - Module specifiers in source order.
- * @param {SortOptions} [options] - Sort options.
+ * @param {ResolvedSortOptions | SortOptions} [options] - Sort options, raw or already resolved.
  * @returns {[readonly string[], string[]][]} Summarized blocks.
  */
-function sortSources(sources: readonly string[], options?: SortOptions): [readonly string[], string[]][] {
+function sortSources(
+  sources: readonly string[],
+  options?: ResolvedSortOptions | SortOptions
+): [readonly string[], string[]][] {
   return summarize(
     sortImports(
       sources.map(source => record(source)),

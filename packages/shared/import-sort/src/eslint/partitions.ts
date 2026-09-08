@@ -8,6 +8,8 @@
  * @packageDocumentation
  */
 
+import { AST_TOKEN_TYPES } from '@typescript-eslint/utils';
+
 import type { TSESTree } from '@typescript-eslint/utils';
 
 /** One or more regular-expression sources, or `true` for "every comment". */
@@ -50,7 +52,7 @@ const compileMatcher = (patterns: CommentPatterns | undefined, location: string)
   if (typeof patterns === 'string') {
     return compileMatcher([patterns], location);
   }
-  if (!Array.isArray(patterns)) {
+  if (!patterns) {
     return false;
   }
   return patterns.map((source, index) => {
@@ -98,5 +100,5 @@ export const compilePartitionComments = (option?: PartitionByComment): ((comment
   const block = compileMatcher(kinds.block, 'partitionByComment.block');
   const line = compileMatcher(kinds.line, 'partitionByComment.line');
 
-  return comment => matches(String(comment.type) === 'Block' ? block : line, comment.value);
+  return comment => matches(comment.type === AST_TOKEN_TYPES.Block ? block : line, comment.value);
 };

@@ -1,4 +1,10 @@
 {
   "extends": "@april/tsconfig/base.json",
-  "exclude": ["node_modules", "dist", "artifacts", "**/*.test.ts"]
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "dist", "coverage", "docs/api"]
 }

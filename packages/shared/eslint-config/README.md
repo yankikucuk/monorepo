@@ -10,7 +10,6 @@ April monorepo.
 | `base`                | `@april/eslint-config/base`     | Environment-agnostic base (rarely used alone).          |
 | `frontend`            | `@april/eslint-config/frontend` | Browser packages. Hard-bans `alert`/`confirm`/`prompt`. |
 | `backend`             | `@april/eslint-config/backend`  | Node.js / server-side packages.                         |
-| `ignores`             | `@april/eslint-config`          | Global build-artifact ignore block.                     |
 | `TEST_RULES`          | `@april/eslint-config`          | Relaxed size limits for test files.                     |
 | `JSDOC_JS_TYPE_RULES` | `@april/eslint-config`          | JSDoc type annotations for plain JS files.              |
 
@@ -41,9 +40,9 @@ group under `src/rules/`, one file per concern:
 | `rules/jsdoc.ts`      | **`JSDOC_RULES`** — documentation mandatory, type annotations not required in TS. **`JSDOC_JS_TYPE_RULES`** — type annotations for plain JS.                                                                                                                                                                                |
 | `rules/tests.ts`      | **`TEST_RULES`** — relaxed size limits for test files.                                                                                                                                                                                                                                                                      |
 
-`ignores` is exported separately and deliberately **not** baked into `base`:
-global ignores belong at the top of a consuming config exactly once, while
-`base` may be extended by several file-scoped blocks.
+Global ignores are deliberately **not** baked into `base`: they belong at the
+top of a consuming config exactly once, while `base` may be extended by several
+file-scoped blocks.
 
 ### Preset-specific rules
 

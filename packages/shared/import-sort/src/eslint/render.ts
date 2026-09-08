@@ -197,8 +197,10 @@ export const renderChunk = (blocks: readonly SortedGroup<ImportEntry>[], options
     }
   }
 
-  // An entry that ends in a line comment must not end up in front of code that
-  // stayed on the chunk's last line — the comment would swallow it.
+  /*
+   * An entry that ends in a line comment must not end up in front of code that
+   * stayed on the chunk's last line — the comment would swallow it.
+   */
   const closing = order.at(-1)?.endsWithLineComment === true && options.restOfLine.trim() !== '' ? options.eol : '';
 
   return { text: text + closing, order, separators, missingComments };

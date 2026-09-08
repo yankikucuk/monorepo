@@ -5,16 +5,16 @@
   "private": true,
   "description": "April — a strict, type-safe TypeScript monorepo (pnpm + Turborepo).",
   "keywords": [],
-  "homepage": "https://github.com/playerberry/april",
+  "homepage": "https://github.com/yankikucuk/monorepo",
   "bugs": {
-    "url": "https://github.com/playerberry/april/issues",
+    "url": "https://github.com/yankikucuk/monorepo/issues",
     "email": "bugs@playerberry.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/playerberry/april.git"
+    "url": "https://github.com/yankikucuk/monorepo.git"
   },
-  "funding": "https://github.com/playerberry/april?sponsor",
+  "funding": "https://github.com/yankikucuk/monorepo?sponsor",
   "license": "Apache-2.0",
   "author": {
     "name": "Yankı Küçük",
@@ -25,9 +25,9 @@
     "prepare": "is-ci || husky",
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "turbo run typecheck && pnpm typecheck:root",
     "lint": "turbo run lint",
-    "lint:build": "prettier --check . && eslint .",
+    "lint:build": "prettier --check . && eslint . --max-warnings=0",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "knip": "knip",
@@ -42,9 +42,9 @@
     "clean:root": "rm -rf node_modules .husky/_ .turbo pnpm-lock.yaml",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "changeset publish",
     "update": "pnpm --recursive update --interactive",
-    "update:latest": "pnpm --recursive update --interactive --latest"
+    "update:latest": "pnpm --recursive update --interactive --latest",
+    "typecheck:root": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@april/eslint-config": "workspace:*",

@@ -24,7 +24,7 @@ const manifest = createRequire(import.meta.url)('../package.json') as { name: st
  */
 function lint(code: string, overrides: Linter.Config = {}, filename = 'file.ts'): Linter.FixReport {
   const linter = new Linter();
-  const config = { files: ['**/*.ts', '**/*.js'], ...(configs.recommended as Linter.Config), ...overrides };
+  const config = { files: ['**/*.ts', '**/*.js'], ...(configs.recommended as unknown as Linter.Config), ...overrides };
   return linter.verifyAndFix(code, [config], { filename });
 }
 
@@ -99,9 +99,13 @@ describe('recommended config end to end', () => {
 
   it('reports with rule id and message when not fixing', () => {
     const linter = new Linter();
-    const messages = linter.verify("import b from 'b';\nimport a from 'a';\n", [configs.recommended as Linter.Config], {
-      filename: 'file.js',
-    });
+    const messages = linter.verify(
+      "import b from 'b';\nimport a from 'a';\n",
+      [configs.recommended as unknown as Linter.Config],
+      {
+        filename: 'file.js',
+      }
+    );
     expect(messages).toHaveLength(1);
     expect(messages[0]).toMatchObject({
       ruleId: 'import-sort/order',
@@ -116,7 +120,10 @@ describe('recommended config end to end', () => {
     const linter = new Linter();
     expect(() =>
       linter.verify('', [
-        { ...(configs.recommended as Linter.Config), rules: { 'import-sort/order': ['error', { nope: true }] } },
+        {
+          ...(configs.recommended as unknown as Linter.Config),
+          rules: { 'import-sort/order': ['error', { nope: true }] },
+        },
       ])
     ).toThrow(/nope/u);
   });
@@ -125,7 +132,10 @@ describe('recommended config end to end', () => {
     const linter = new Linter();
     expect(() =>
       linter.verify("import a from 'a';\n", [
-        { ...(configs.recommended as Linter.Config), rules: { 'import-sort/order': ['error', { groups: ['nope'] }] } },
+        {
+          ...(configs.recommended as unknown as Linter.Config),
+          rules: { 'import-sort/order': ['error', { groups: ['nope'] }] },
+        },
       ])
     ).toThrow(/Unknown group "nope"/u);
   });

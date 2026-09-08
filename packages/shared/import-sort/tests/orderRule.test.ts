@@ -4,8 +4,6 @@ import { describe, it } from 'vitest';
 
 import { order } from '../src/eslint/rules/order.js';
 
-import type { RuleDefinition } from 'eslint';
-
 /**
  * `import-sort/order` rule tests.
  *
@@ -635,7 +633,7 @@ const ruleTester = new RuleTester({
   languageOptions: { parser: tsParser, ecmaVersion: 'latest', sourceType: 'module' },
 });
 
-ruleTester.run('order', order as unknown as RuleDefinition, {
+ruleTester.run('order', order as unknown as Parameters<RuleTester['run']>[1], {
   valid: [...valid, ...outputsAsValid(invalid, valid)],
   invalid,
 });
