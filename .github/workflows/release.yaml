@@ -3,6 +3,13 @@ name: Release
 # Packages are private (internal-only), so this workflow only maintains the
 # Changesets "version packages" PR — it deliberately does not publish. Add a
 # `publish:` input to changesets/action if the packages ever go public.
+#
+# The version PR is pushed with RELEASE_TOKEN when that secret exists: pushes
+# made with the default GITHUB_TOKEN never trigger other workflows, so a PR
+# opened that way has no status checks and cannot be merged into the protected
+# branch without a close/reopen. RELEASE_TOKEN is a fine-grained personal
+# access token scoped to this repository with Contents and Pull requests set
+# to read and write. Without it the workflow still runs on GITHUB_TOKEN.
 
 on:
   push:
@@ -26,6 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -47,7 +55,7 @@ jobs:
           commit: 'chore(release): version packages'
           title: 'chore(release): version packages'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       # Tag current package versions once no changesets are pending (i.e.
       # right after a version PR merges). `changeset tag` skips tags that
