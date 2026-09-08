@@ -21,6 +21,7 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
     />
     <link rel="stylesheet" href="../dist/interface.css" />
+    <link rel="stylesheet" href="../dist/icons.css" />
   </head>
   <body>
     <div class="ai-shell">
@@ -31,6 +32,7 @@
           <a class="ai-link nav block" href="./typography.html">Typography</a>
           <a class="ai-link nav block" href="./links.html">Links</a>
           <a class="ai-link nav block primary" href="./buttons.html" aria-current="page">Buttons</a>
+          <a class="ai-link nav block" href="./icons.html">Icons</a>
         </nav>
       </aside>
       <div>
@@ -179,12 +181,18 @@
               <h2>Icon and block</h2>
               <div class="ai-example">
                 <div class="preview">
-                  <button class="ai-button primary icon" type="button" aria-label="Search">⌕</button>
-                  <button class="ai-button outline neutral icon sm" type="button" aria-label="Close">×</button>
-                  <button class="ai-button ghost icon lg rounded" type="button" aria-label="Menu">≡</button>
+                  <button class="ai-button primary icon" type="button" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+                  <button class="ai-button outline neutral icon sm" type="button" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                  <button class="ai-button ghost icon lg rounded" type="button" aria-label="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                  </button>
                   <button class="ai-button secondary block" type="button">Block button</button>
                 </div>
-                <pre><code>&lt;button class="ai-button primary icon" aria-label="Search"&gt;⌕&lt;/button&gt;
+                <pre><code>&lt;button class="ai-button primary icon" aria-label="Search"&gt;&lt;i class="fa-solid fa-magnifying-glass"&gt;&lt;/i&gt;&lt;/button&gt;
 &lt;button class="ai-button secondary block"&gt;Block button&lt;/button&gt;</code></pre>
               </div>
             </section>
@@ -199,7 +207,9 @@
                   </div>
                   <div class="ai-button-group soft">
                     <button class="ai-button primary sm" type="button">Save</button>
-                    <button class="ai-button primary sm icon" type="button" aria-label="More">▾</button>
+                    <button class="ai-button primary sm icon" type="button" aria-label="More">
+                      <i class="fa-solid fa-chevron-down"></i>
+                    </button>
                   </div>
                 </div>
                 <pre><code>&lt;div class="ai-button-group"&gt;

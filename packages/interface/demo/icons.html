@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Icons · April Interface</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ai-theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-ai-theme', t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../dist/interface.css" />
+    <link rel="stylesheet" href="../dist/icons.css" />
+  </head>
+  <body>
+    <div class="ai-shell">
+      <aside class="ai-sidebar">
+        <a class="ai-brand" href="./index.html"><span class="mark">A</span> April Interface</a>
+        <nav aria-label="Demo pages">
+          <a class="ai-link nav block" href="./index.html">Overview</a>
+          <a class="ai-link nav block" href="./typography.html">Typography</a>
+          <a class="ai-link nav block" href="./links.html">Links</a>
+          <a class="ai-link nav block" href="./buttons.html">Buttons</a>
+          <a class="ai-link nav block primary" href="./icons.html" aria-current="page">Icons</a>
+        </nav>
+      </aside>
+      <div>
+        <header class="ai-topbar">
+          <span class="ai-text sm muted">Icons</span>
+          <button
+            class="ai-button ghost sm ai-theme-toggle"
+            type="button"
+            data-ai-theme-toggle
+            aria-label="Switch theme"
+          >
+            <span class="state auto">Theme: auto</span>
+            <span class="state light">Theme: light</span>
+            <span class="state dark">Theme: dark</span>
+          </button>
+        </header>
+        <main class="ai-main">
+          <div class="ai-container">
+            <p class="ai-eyebrow">Components</p>
+            <h1>Icons</h1>
+            <p class="ai-lead">
+              Font Awesome Pro, solid style, as an opt-in stylesheet (<code>@april/interface/icons.css</code>). Icons
+              inherit the text colour and size of their parent, so they follow every role and size modifier.
+            </p>
+            <section class="ai-section">
+              <h2>Usage</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <i class="fa-solid fa-heart"></i>
+                  <i class="fa-solid fa-heart fa-lg"></i>
+                  <i class="fa-solid fa-heart fa-xl"></i>
+                  <i class="fa-solid fa-heart fa-2x"></i>
+                  <span class="ai-text danger"><i class="fa-solid fa-heart fa-2x"></i></span>
+                  <i class="fa-solid fa-spinner fa-spin fa-xl"></i>
+                </div>
+                <pre><code>&lt;i class="fa-solid fa-heart"&gt;&lt;/i&gt;
+&lt;i class="fa-solid fa-heart fa-2x"&gt;&lt;/i&gt;
+&lt;span class="ai-text danger"&gt;&lt;i class="fa-solid fa-heart"&gt;&lt;/i&gt;&lt;/span&gt;
+&lt;i class="fa-solid fa-spinner fa-spin"&gt;&lt;/i&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>In buttons and links</h2>
+              <div class="ai-example">
+                <div class="preview">
+                  <button class="ai-button primary" type="button"><i class="fa-solid fa-check"></i> Save</button>
+                  <button class="ai-button outline danger" type="button">
+                    <i class="fa-solid fa-trash"></i> Delete
+                  </button>
+                  <button class="ai-button ghost neutral" type="button">
+                    Next <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                  <button class="ai-button tonal info icon" type="button" aria-label="Info">
+                    <i class="fa-solid fa-circle-info"></i>
+                  </button>
+                  <a class="ai-link" href="#"><i class="fa-solid fa-download"></i> Download</a>
+                  <a class="ai-link nav" href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+                </div>
+                <pre><code>&lt;button class="ai-button primary"&gt;&lt;i class="fa-solid fa-check"&gt;&lt;/i&gt; Save&lt;/button&gt;
+&lt;a class="ai-link nav" href="#"&gt;&lt;i class="fa-solid fa-gear"&gt;&lt;/i&gt; Settings&lt;/a&gt;</code></pre>
+              </div>
+            </section>
+            <section class="ai-section">
+              <h2>Common icons</h2>
+              <div class="ai-swatch-grid">
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-house" style="font-size: 1.5rem"></i><code>fa-house</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-user" style="font-size: 1.5rem"></i><code>fa-user</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-gear" style="font-size: 1.5rem"></i><code>fa-gear</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-magnifying-glass" style="font-size: 1.5rem"></i><code>fa-magnifying-glass</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-bell" style="font-size: 1.5rem"></i><code>fa-bell</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-envelope" style="font-size: 1.5rem"></i><code>fa-envelope</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-heart" style="font-size: 1.5rem"></i><code>fa-heart</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-star" style="font-size: 1.5rem"></i><code>fa-star</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-check" style="font-size: 1.5rem"></i><code>fa-check</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-xmark" style="font-size: 1.5rem"></i><code>fa-xmark</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-plus" style="font-size: 1.5rem"></i><code>fa-plus</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-minus" style="font-size: 1.5rem"></i><code>fa-minus</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-trash" style="font-size: 1.5rem"></i><code>fa-trash</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-pen" style="font-size: 1.5rem"></i><code>fa-pen</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-arrow-right" style="font-size: 1.5rem"></i><code>fa-arrow-right</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-arrow-left" style="font-size: 1.5rem"></i><code>fa-arrow-left</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-chevron-down" style="font-size: 1.5rem"></i><code>fa-chevron-down</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-chevron-right" style="font-size: 1.5rem"></i><code>fa-chevron-right</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-bars" style="font-size: 1.5rem"></i><code>fa-bars</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-circle-info" style="font-size: 1.5rem"></i><code>fa-circle-info</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem"></i
+                  ><code>fa-triangle-exclamation</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-circle-check" style="font-size: 1.5rem"></i><code>fa-circle-check</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-circle-xmark" style="font-size: 1.5rem"></i><code>fa-circle-xmark</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-lock" style="font-size: 1.5rem"></i><code>fa-lock</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-unlock" style="font-size: 1.5rem"></i><code>fa-unlock</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-eye" style="font-size: 1.5rem"></i><code>fa-eye</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-eye-slash" style="font-size: 1.5rem"></i><code>fa-eye-slash</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-download" style="font-size: 1.5rem"></i><code>fa-download</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-upload" style="font-size: 1.5rem"></i><code>fa-upload</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-share-nodes" style="font-size: 1.5rem"></i><code>fa-share-nodes</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-link" style="font-size: 1.5rem"></i><code>fa-link</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-copy" style="font-size: 1.5rem"></i><code>fa-copy</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-calendar" style="font-size: 1.5rem"></i><code>fa-calendar</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-clock" style="font-size: 1.5rem"></i><code>fa-clock</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-image" style="font-size: 1.5rem"></i><code>fa-image</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-file" style="font-size: 1.5rem"></i><code>fa-file</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-folder" style="font-size: 1.5rem"></i><code>fa-folder</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-tag" style="font-size: 1.5rem"></i><code>fa-tag</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-filter" style="font-size: 1.5rem"></i><code>fa-filter</code>
+                </div>
+                <div class="ai-swatch" style="place-items: center; text-align: center">
+                  <i class="fa-solid fa-sliders" style="font-size: 1.5rem"></i><code>fa-sliders</code>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module">
+      import { initAll } from '../dist/behavior/index.js';
+      initAll();
+    </script>
+  </body>
+</html>

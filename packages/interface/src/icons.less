@@ -1,0 +1,8 @@
+// Icons: Font Awesome Pro, solid style only, as an opt-in stylesheet.
+//
+// Font Awesome 7 ships compiled CSS rather than Less sources, so the two
+// files are inlined verbatim. The build rewrites the font URL to
+// `./webfonts/` and copies the solid webfont next to the output, so
+// `dist/icons.css` is self-contained. Usage: `<i class="fa-solid fa-check"></i>`.
+@import (inline) '../node_modules/@fortawesome/fontawesome-pro/css/fontawesome.css';
+@import (inline) '../node_modules/@fortawesome/fontawesome-pro/css/solid.css';

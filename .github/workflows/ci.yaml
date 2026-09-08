@@ -31,6 +31,11 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
+      - name: Configure the Font Awesome registry
+        run: echo "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}" >> ~/.npmrc
+        env:
+          FONTAWESOME_TOKEN: ${{ secrets.FONTAWESOME_TOKEN }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -95,6 +100,11 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
 
+      - name: Configure the Font Awesome registry
+        run: echo "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}" >> ~/.npmrc
+        env:
+          FONTAWESOME_TOKEN: ${{ secrets.FONTAWESOME_TOKEN }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -121,6 +131,11 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+
+      - name: Configure the Font Awesome registry
+        run: echo "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}" >> ~/.npmrc
+        env:
+          FONTAWESOME_TOKEN: ${{ secrets.FONTAWESOME_TOKEN }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

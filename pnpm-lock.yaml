@@ -108,6 +108,9 @@ importers:
       '@april/tsconfig':
         specifier: workspace:*
         version: link:../shared/tsconfig
+      '@fortawesome/fontawesome-pro':
+        specifier: ^7.3.1
+        version: 7.3.1
       browserslist:
         specifier: ^4.24.0
         version: 4.28.8
@@ -949,6 +952,10 @@ packages:
   '@eslint/plugin-kit@0.7.2':
     resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
+  '@fortawesome/fontawesome-pro@7.3.1':
+    resolution: {integrity: sha512-Y7cPcgdqYkuwa1huWuB3N57ICm2+3XdepQ3hZN0Zm0lJFxujtzl10FmvTQu86/21rpUMIQcBUCYsWBdenaWuMw==}
+    engines: {node: '>=6'}
 
   '@gerrit0/mini-shiki@3.23.0':
     resolution: {integrity: sha512-bEMORlG0cqdjVyCEuU0cDQbORWX+kYCeo0kV1lbxF5bt4r7SID2l9bqsxJEM0zndaxpOUT7riCyIVEuqq/Ynxg==}
@@ -4854,6 +4861,8 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
+
+  '@fortawesome/fontawesome-pro@7.3.1': {}
 
   '@gerrit0/mini-shiki@3.23.0':
     dependencies:
