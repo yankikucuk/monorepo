@@ -65,13 +65,16 @@ in `<head>` before the stylesheet.
 ## Development
 
 ```sh
-pnpm --filter @april/interface dev     # rebuild on change and serve demo/ at http://localhost:4400/
+pnpm --filter @april/interface dev     # build, rebuild on change and serve demo/ at http://localhost:4400/
 pnpm --filter @april/interface build   # dist/interface.css, dist/interface.min.css, dist/behavior/
 pnpm --filter @april/interface lint    # Prettier, Stylelint (@april/stylelint-config), ESLint
 ```
 
 Cross-browser verification is manual: open the demo in Safari, Chrome and Opera
-and compare.
+and compare. The demo pages reference `../dist/interface.css`, so after
+`pnpm --filter @april/interface build` they also open straight from disk; the
+theme toggle needs the module script, which browsers only run over HTTP, so
+use `pnpm dev` for that.
 
 ## License
 

@@ -53,6 +53,7 @@ const fileFor = url => {
   } catch {
     return null;
   }
+  // Pages link to ../dist/…, which the browser resolves to /dist/… at the server root.
   const [prefix, base] = path.startsWith('/dist/') ? ['/dist/', distDir] : ['/', demoDir];
   const candidate = resolve(base, path.slice(prefix.length) || 'index.html');
   return candidate.startsWith(base + sep) ? candidate : null;
