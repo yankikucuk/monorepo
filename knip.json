@@ -2,7 +2,8 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
     ".": {
-      "project": ["*.ts"]
+      "entry": ["docs/.vitepress/config.ts", "docs/.vitepress/theme/index.ts", "scripts/*.mjs"],
+      "project": ["*.ts", "docs/.vitepress/**/*.ts", "scripts/**/*.mjs"]
     },
     "packages/cyberflake": {
       "entry": ["src/cyberflake.ts", "benchmarks/*.bench.ts"]

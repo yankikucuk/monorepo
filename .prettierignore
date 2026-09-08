@@ -5,3 +5,9 @@ coverage/
 .turbo/
 dist/
 build/
+docs/api
+docs/packages
+docs/guide/contributing.md
+docs/.vitepress/generated
+docs/.vitepress/cache
+docs/.vitepress/dist

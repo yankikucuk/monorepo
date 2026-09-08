@@ -1,5 +1,5 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src/index.ts", "src/core/index.ts"],
-  "readme": "README.md"
+  "readme": "none"
 }
