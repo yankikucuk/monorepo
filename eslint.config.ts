@@ -20,7 +20,7 @@ export default tseslint.config(
     ignores: ['**/build/**', '**/coverage/**', '**/dist/**', '**/docs/api/**', '**/node_modules/**', '**/.turbo/**'],
   },
   {
-    // Product code and the import-sort engine: strict and fully type-checked (ADR 0002).
+    // Product code and the import-sort engine: strict and fully type-checked.
     files: ['packages/cyberflake/src/**/*.ts', 'packages/shared/import-sort/src/**/*.ts'],
     extends: [backend],
     languageOptions: {
