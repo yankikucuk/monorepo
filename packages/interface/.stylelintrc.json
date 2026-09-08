@@ -1,0 +1,3 @@
+{
+  "extends": ["@april/stylelint-config"]
+}

@@ -1,0 +1,9 @@
+// Mobile-first breakpoint mixin. The base layer contains no media queries;
+// wider layouts opt in through .mq() so breakpoint literals live in one place.
+//
+//   .ai-grid { .mq(@ai-bp-md, { gap: var(--ai-space-6); }); }
+.mq(@min, @rules) {
+  @media (min-width: @min) {
+    @rules();
+  }
+}

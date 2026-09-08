@@ -1,0 +1,82 @@
+// Semantic tokens: CSS custom properties on :root, light theme first.
+// Rule: a value that changes with the theme is a custom property; a value that
+// never changes, or is used inside a media query condition, is a Less variable.
+
+:root {
+  color-scheme: light dark;
+
+  // Surfaces
+  --ai-surface-base: @ai-white;
+  --ai-surface-raised: @ai-gray-050;
+  --ai-surface-solid: @ai-white;
+  --ai-surface-glass: rgb(255 255 255 / 60%);
+  --ai-glass-rim-top: rgb(255 255 255 / 80%);
+  --ai-glass-rim-bottom: rgb(0 0 0 / 6%);
+  --ai-shadow-ambient: rgb(0 0 0 / 12%);
+
+  // Text
+  --ai-text-primary: @ai-gray-950;
+  --ai-text-secondary: @ai-gray-500;
+
+  // Actions
+  --ai-action-primary: @ai-blue-600;
+  --ai-link: @ai-link-600;
+
+  // Typography — system stack resolves to SF Pro on Apple platforms.
+  --ai-font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --ai-text-body: 1.0625rem; // 17px, Apple's body size
+  --ai-leading-body: 1.47059;
+
+  // Spacing (4px base) and radius
+  --ai-space-1: 0.25rem;
+  --ai-space-2: 0.5rem;
+  --ai-space-3: 0.75rem;
+  --ai-space-4: 1rem;
+  --ai-space-6: 1.5rem;
+  --ai-space-8: 2rem;
+  --ai-radius-sm: 6px;
+  --ai-radius-md: 12px;
+  --ai-radius-lg: 18px;
+  --ai-radius-pill: 980px;
+
+  // Motion
+  --ai-duration-fast: 200ms;
+  --ai-duration-base: 300ms;
+  --ai-duration-slow: 500ms;
+  --ai-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+// Dark theme: written once, applied twice (OS preference without an explicit
+// light choice, and an explicit dark choice).
+.ai-tokens-dark() {
+  --ai-surface-base: @ai-black;
+  --ai-surface-raised: @ai-gray-950;
+  --ai-surface-solid: @ai-gray-950;
+  --ai-surface-glass: rgb(255 255 255 / 8%);
+  --ai-glass-rim-top: rgb(255 255 255 / 18%);
+  --ai-glass-rim-bottom: rgb(0 0 0 / 40%);
+  --ai-shadow-ambient: rgb(0 0 0 / 50%);
+  --ai-text-primary: @ai-gray-050;
+  --ai-text-secondary: @ai-gray-400;
+  --ai-action-primary: @ai-blue-500;
+  --ai-link: @ai-link-400;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-ai-theme='light']) {
+    .ai-tokens-dark();
+  }
+}
+
+[data-ai-theme='dark'] {
+  .ai-tokens-dark();
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ai-duration-fast: 1ms;
+    --ai-duration-base: 1ms;
+    --ai-duration-slow: 1ms;
+  }
+}

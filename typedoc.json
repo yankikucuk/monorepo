@@ -1,7 +1,7 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPointStrategy": "packages",
-  "entryPoints": ["packages/cyberflake", "packages/shared/import-sort"],
+  "entryPoints": ["packages/cyberflake", "packages/interface", "packages/shared/import-sort"],
   "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
   "out": "docs/api",
   "docsRoot": "docs",

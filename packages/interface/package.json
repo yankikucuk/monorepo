@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@april/interface",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Component-oriented CSS framework for April: a compiled stylesheet authored in Less with a small behaviour layer, Apple-derived design language and liquid-glass surfaces.",
+  "keywords": [
+    "css",
+    "less",
+    "design-system",
+    "components",
+    "glass"
+  ],
+  "homepage": "https://github.com/yankikucuk/monorepo/tree/stage/packages/interface#readme",
+  "bugs": {
+    "url": "https://github.com/yankikucuk/monorepo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yankikucuk/monorepo.git",
+    "directory": "packages/interface"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Yankı Küçük",
+    "email": "kendinikertenkelebek@me.com"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/behavior/index.d.ts",
+      "import": "./dist/behavior/index.js",
+      "default": "./dist/behavior/index.js"
+    },
+    "./styles.css": "./dist/interface.css",
+    "./styles.min.css": "./dist/interface.min.css",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/behavior/index.js",
+  "types": "./dist/behavior/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs && tsc",
+    "dev": "node scripts/dev.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "prettier --check ./src ./demo ./scripts && stylelint \"src/**/*.less\" && eslint ./src ./scripts --max-warnings=0",
+    "format": "prettier --write ./src ./demo ./scripts && stylelint --fix \"src/**/*.less\" && eslint --fix ./src ./scripts",
+    "clean": "rm -rf node_modules .turbo dist"
+  },
+  "browserslist": [
+    "safari >= 17.4",
+    "chrome >= 117",
+    "opera >= 103",
+    "firefox >= 128"
+  ],
+  "devDependencies": {
+    "@april/stylelint-config": "workspace:*",
+    "@april/tsconfig": "workspace:*",
+    "browserslist": "^4.24.0",
+    "less": "^4.9.1",
+    "lightningcss": "^1.33.0",
+    "stylelint": "^17.14.1"
+  },
+  "engines": {
+    "node": ">=26.0.0"
+  }
+}

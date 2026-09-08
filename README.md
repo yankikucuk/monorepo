@@ -14,14 +14,15 @@ themselves, lives at **[yankikucuk.github.io/monorepo](https://yankikucuk.github
 
 ## Packages
 
-| Package                                                       | Description                                                                   |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [`@april/cyberflake`](packages/cyberflake)                    | Snowflake-inspired distributed ID generator (the core library).               |
-| [`@april/eslint-config`](packages/shared/eslint-config)       | Shared strict, type-checked flat ESLint config (`base`/`frontend`/`backend`). |
-| [`@april/import-sort`](packages/shared/import-sort)           | Deterministic import sorting: ESLint rule `import-sort/order` + core engine.  |
-| [`@april/prettier-config`](packages/shared/prettier-config)   | Shared Prettier config.                                                       |
-| [`@april/stylelint-config`](packages/shared/stylelint-config) | Shared Stylelint config for Less sources (postcss-less syntax).               |
-| [`@april/tsconfig`](packages/shared/tsconfig)                 | Shared TypeScript config presets (`base`/`library`).                          |
+| Package                                                       | Description                                                                      |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [`@april/cyberflake`](packages/cyberflake)                    | Snowflake-inspired distributed ID generator (the core library).                  |
+| [`@april/interface`](packages/interface)                      | Component-oriented CSS framework authored in Less, with a small behaviour layer. |
+| [`@april/eslint-config`](packages/shared/eslint-config)       | Shared strict, type-checked flat ESLint config (`base`/`frontend`/`backend`).    |
+| [`@april/import-sort`](packages/shared/import-sort)           | Deterministic import sorting: ESLint rule `import-sort/order` + core engine.     |
+| [`@april/prettier-config`](packages/shared/prettier-config)   | Shared Prettier config.                                                          |
+| [`@april/stylelint-config`](packages/shared/stylelint-config) | Shared Stylelint config for Less sources (postcss-less syntax).                  |
+| [`@april/tsconfig`](packages/shared/tsconfig)                 | Shared TypeScript config presets (`base`/`library`).                             |
 
 All packages are `private` and consumed **internally** via the workspace
 protocol; nothing is published to a registry. The shared config packages live

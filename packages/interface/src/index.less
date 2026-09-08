@@ -1,0 +1,19 @@
+// @april/interface — single entry point.
+//
+// Everything the framework emits is scoped under one top-level cascade layer,
+// `april`, with ordered sub-layers. Order comes from this declaration, never
+// from file position, and a consumer's unlayered CSS always wins over the
+// framework, so nobody needs `!important` to override it.
+@layer april.reset, april.tokens, april.base, april.layout, april.components, april.utilities;
+
+// Less-only inputs: variables and mixins emit nothing by themselves.
+@import (reference) './tokens/palette.less';
+@import (reference) './mixins/media.less';
+
+@layer april.reset {
+  @import './reset.less';
+}
+
+@layer april.tokens {
+  @import './tokens/semantic.less';
+}

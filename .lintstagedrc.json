@@ -2,5 +2,6 @@
   "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
   "*": "prettier --ignore-unknown --write",
   "**/*.{ts,js,mjs}": "eslint --fix",
-  "packages/**/src/**/*.ts": "vitest related --run"
+  "packages/**/src/**/*.ts": "vitest related --run",
+  "packages/interface/src/**/*.less": "pnpm --filter @april/interface exec stylelint --fix"
 }
