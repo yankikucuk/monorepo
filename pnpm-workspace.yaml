@@ -16,3 +16,7 @@ overrides:
   # GHSA-mh99-v99m-4gvg, GHSA-rgw5-rvv9-x895 — denial of service in brace-expansion,
   # reached through minimatch (typedoc, eslint-plugin-import-x, eslint-plugin-sonarjs).
   brace-expansion@>=4.0.0 <5.0.9: '>=5.0.9'
+  # GHSA-fx2h-pf6j-xcff — `server.fs.deny` bypass in vite. The vite 5 line that
+  # vitepress 1.6 depends on has no patch, so vitepress alone is lifted to the
+  # patched 6.x (its @vitejs/plugin-vue supports vite 5 and 6).
+  'vitepress>vite': '>=6.4.3 <7'
