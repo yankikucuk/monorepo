@@ -140,7 +140,7 @@ const afterLengthComparator = (options: ResolvedSortOptions): ((left: string, ri
  *    requires a total order to produce a stable, meaningful result.
  * 3. The declaration length, when the algorithm is `line-length`.
  * 4. The module source (under `line-length`, only the fallback pass — see
- *    {@link afterLengthComparator}).
+ *    `afterLengthComparator`).
  * 5. For two imports of the *same* module: the import kind (see `kindOrder`),
  *    then the declaration shape. Different modules that tie — which only
  *    happens with the `unsorted` algorithm — keep their source order.
